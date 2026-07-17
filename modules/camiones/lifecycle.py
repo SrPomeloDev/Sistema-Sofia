@@ -255,20 +255,23 @@ async def init_module():
         records = parse_excel_camiones(excel_path)
         if records:
             await guardar_camiones_bulk(records)
-            logger.info("Importación inicial: %d registros", len(records))
+            total_locales = len(records)
+            logger.info("Importación inicial: %d registros", total_locales)
     
     await sheets_client.initialize()
     
     if sheets_client.enabled:
         try:
-            result = await sheets_client.read_all_rows()
-            if result.get("success") and result.get("data"):
-                await sincronizar_desde_sheets()
-            elif result.get("success") and not result.get("data"):
-                if total_locales > 0:
-                    await inicializar_sheets_con_local()
+            if total_locales > 0:
+                logger.info("Local tiene %d registros. Push programado en segundo plano.", total_locales)
+                asyncio.create_task(push_to_sheets_background())
+            else:
+                result = await sheets_client.read_all_rows()
+                if result.get("success") and result.get("data"):
+                    logger.info("Local vacío, sheets con datos. Sync sheets -> local.")
+                    await sincronizar_desde_sheets()
         except Exception as e:
-            logger.warning("Sync inicial falló (no crítico): %s", e)
+            logger.warning("Sync/push inicial falló (no crítico): %s", e)
     
     await update_queue.start()
     
