@@ -68,8 +68,8 @@ async def sincronizar_desde_sheets():
                 entry["sistema_camion"] = existentes_local[placa].sistema_camion
                 entry["estado_servicio"] = existentes_local[placa].estado_servicio
             else:
-                entry["sistema_camion"] = "SIN INFORMACIÓN"
-                entry["estado_servicio"] = "EN SERVICIO"
+                entry["sistema_camion"] = obj.get("sistema_camion") or "SIN INFORMACIÓN"
+                entry["estado_servicio"] = obj.get("estado_servicio") or "EN SERVICIO"
             camiones_sincronizados.append(entry)
 
     # Si viene como raw arrays (gspread fallback)
@@ -155,6 +155,7 @@ async def inicializar_sheets_con_local():
             str(c.capacidad_maples),
             str(c.capacidad_util_kg),
             str(c.sistema_camion),
+            str(c.estado_servicio or "EN SERVICIO"),
         ])
 
     # Intentar un solo request (setAll)
@@ -227,8 +228,8 @@ async def auto_sync_loop():
                     entry["sistema_camion"] = existentes_local[placa].sistema_camion
                     entry["estado_servicio"] = existentes_local[placa].estado_servicio
                 else:
-                    entry["sistema_camion"] = "SIN INFORMACIÓN"
-                    entry["estado_servicio"] = "EN SERVICIO"
+                    entry["sistema_camion"] = obj.get("sistema_camion") or "SIN INFORMACIÓN"
+                    entry["estado_servicio"] = obj.get("estado_servicio") or "EN SERVICIO"
                 camiones.append(entry)
             await upsert_camiones_desde_sheets(camiones)
             logger.debug("Auto-sync completado: %d camiones upsertados", len(camiones))
