@@ -1330,10 +1330,20 @@
                     <span>Recargar</span>
                     <span id="pendingBadge" class="pending-badge" style="display:none;">0</span>
                 </button>
+                <!-- Sync desde Google Sheets -->
+                <button id="syncBtn" class="btn btn-secondary" title="Sincronizar desde Google Sheets" style="border-color:rgba(16,185,129,0.3);">
+                    <i data-lucide="download-cloud" style="width: 16px; height: 16px;"></i>
+                    <span>Sync</span>
+                </button>
+                <!-- Push a Google Sheets -->
+                <button id="pushBtn" class="btn btn-secondary" title="Subir datos a Google Sheets" style="border-color:rgba(245,158,11,0.3);">
+                    <i data-lucide="upload-cloud" style="width: 16px; height: 16px;"></i>
+                    <span>Push</span>
+                </button>
                 <!-- Registrar Camión -->
                 <button id="addCamionBtn" class="btn btn-primary">
                     <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
-                    <span>Registrar Camión</span>
+                    <span>Registrar</span>
                 </button>
                 <!-- Exportar CSV -->
                 <button id="exportCsvBtn" class="btn btn-secondary" title="Exportar a CSV">
@@ -2229,6 +2239,48 @@
                     showToast('Actualizado', 'Datos locales recargados.', 'success');
                 }
                 refreshBtn.disabled = false;
+            });
+
+            const syncBtn = document.getElementById('syncBtn');
+            syncBtn.addEventListener('click', async () => {
+                syncBtn.disabled = true;
+                syncBtn.innerHTML = '<i data-lucide="loader" style="width:16px;height:16px;" class="spin-animation"></i><span>Syncing...</span>';
+                try {
+                    const res = await fetch('/api/sync', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Sync OK', data.message || 'Datos sincronizados desde Sheets.', 'success');
+                        await fetchCamiones();
+                        await fetchStatus();
+                    } else {
+                        showToast('Error Sync', data.message || data.detail || 'Error al sincronizar', 'error');
+                    }
+                } catch(e) {
+                    showToast('Error Sync', e.message || 'Error de conexión', 'error');
+                }
+                syncBtn.innerHTML = '<i data-lucide="download-cloud" style="width:16px;height:16px;"></i><span>Sync</span>';
+                syncBtn.disabled = false;
+                lucide.createIcons({node: syncBtn});
+            });
+
+            const pushBtn = document.getElementById('pushBtn');
+            pushBtn.addEventListener('click', async () => {
+                pushBtn.disabled = true;
+                pushBtn.innerHTML = '<i data-lucide="loader" style="width:16px;height:16px;" class="spin-animation"></i><span>Pushing...</span>';
+                try {
+                    const res = await fetch('/api/push-to-sheets', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Push OK', data.message || 'Subida iniciada.', 'success');
+                    } else {
+                        showToast('Error Push', data.message || data.detail || 'Error al subir', 'error');
+                    }
+                } catch(e) {
+                    showToast('Error Push', e.message || 'Error de conexión', 'error');
+                }
+                pushBtn.innerHTML = '<i data-lucide="upload-cloud" style="width:16px;height:16px;"></i><span>Push</span>';
+                pushBtn.disabled = false;
+                lucide.createIcons({node: pushBtn});
             });
 
             // Agregar animación de rotación al cargar
