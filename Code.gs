@@ -1,6 +1,6 @@
 /**
  * Code.gs — Google Apps Script para Gestión de Camiones
- * v5.1 — 10/11 columnas. Lee estado_servicio de col K si existe.
+ * v5.2 — Detecta Ruta en col D; lee estado_servicio de col K si existe.
  */
 
 var API_TOKEN = "pablo9090";
@@ -41,40 +41,29 @@ function handleRequest(e, method) {
   }
 }
 
-function actionGetAll(sheet) {
-  var range = sheet.getDataRange();
-  var rows = range.getValues();
-  if (rows.length < 1) return [];
-  var result = [];
-  for (var i = 1; i < rows.length; i++) {
-    var row = rows[i];
-    if (!row.some(function(c) { return c !== "" && c !== null; })) continue;
-    var obj = {
-      fila_id: i + 1,
+function detectFormat(headers) {
+  // Col D (index 3) es "Ruta"? → legacy 11-columnas
+  return String(headers[3] || "").trim().toLowerCase() === "ruta" ? 11 : 10;
+}
+
+function rowToObj(row, filaId, fmt) {
+  if (fmt === 11) {
+    return {
+      fila_id: filaId,
       nro: String(row[0] || ""),
       placa: String(row[1] || ""),
       estado_trabajo: String(row[2] || "Fijo"),
-      tipo_combustible: String(row[3] || "GAS-GASOLINA"),
-      costo_flete: parseFloat(row[4]) || 0,
-      sucursal: String(row[5] || ""),
-      capacidad_kg: parseInt(row[6]) || 0,
-      capacidad_maples: parseInt(row[7]) || 0,
-      capacidad_util_kg: parseFloat(row[8]) || 0,
-      sistema_camion: String(row[9] || ""),
+      tipo_combustible: String(row[4] || "GAS-GASOLINA"),
+      costo_flete: parseFloat(row[5]) || 0,
+      sucursal: String(row[6] || ""),
+      capacidad_kg: parseInt(row[7]) || 0,
+      capacidad_maples: parseInt(row[8]) || 0,
+      capacidad_util_kg: parseFloat(row[9]) || 0,
+      sistema_camion: String(row[10] || ""),
     };
-    if (row.length > 10) obj.estado_servicio = String(row[10] || "");
-    result.push(obj);
   }
-  return result;
-}
-
-function actionGetRow(sheet, fila) {
-  if (fila < 1) throw new Error("fila debe ser >= 1");
-  var numCols = Math.max(sheet.getLastColumn(), 10);
-  var row = sheet.getRange(fila, 1, 1, numCols).getValues()[0];
-  if (!row) throw new Error("Fila " + fila + " no encontrada");
   var obj = {
-    fila_id: fila,
+    fila_id: filaId,
     nro: String(row[0] || ""),
     placa: String(row[1] || ""),
     estado_trabajo: String(row[2] || "Fijo"),
@@ -90,16 +79,69 @@ function actionGetRow(sheet, fila) {
   return obj;
 }
 
+function actionGetAll(sheet) {
+  var range = sheet.getDataRange();
+  var rows = range.getValues();
+  if (rows.length < 1) return [];
+  var fmt = detectFormat(rows[0]);
+  var result = [];
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    if (!row.some(function(c) { return c !== "" && c !== null; })) continue;
+    result.push(rowToObj(row, i + 1, fmt));
+  }
+  return result;
+}
+
+function actionGetRow(sheet, fila) {
+  if (fila < 1) throw new Error("fila debe ser >= 1");
+  var numCols = Math.max(sheet.getLastColumn(), 10);
+  var headers = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+  var fmt = detectFormat(headers);
+  var row = sheet.getRange(fila, 1, 1, numCols).getValues()[0];
+  if (!row) throw new Error("Fila " + fila + " no encontrada");
+  return rowToObj(row, fila, fmt);
+}
+
 function actionAppend(sheet, values) {
   if (!values || values.length < 10) throw new Error("Se requieren 10+ valores");
-  sheet.appendRow(values.map(function(v) { return v !== null && v !== undefined ? v : ""; }));
+  var numCols = Math.max(sheet.getLastColumn(), values.length);
+  if (numCols >= 11) {
+    var fmt = detectFormat(sheet.getRange(1, 1, 1, numCols).getValues()[0]);
+    if (fmt === 11) {
+      // Legacy Ruta: insertar espacio en col D
+      var p = [];
+      for (var j = 0; j < numCols; j++) {
+        if (j === 3) { p.push(""); continue; }
+        var src = j > 3 ? j - 1 : j;
+        p.push(src < values.length ? (values[src] != null ? values[src] : "") : "");
+      }
+      sheet.appendRow(p);
+      return { fila_insertada: sheet.getLastRow() };
+    }
+  }
+  sheet.appendRow(values.map(function(v) { return v != null ? v : ""; }));
   return { fila_insertada: sheet.getLastRow() };
 }
 
 function actionUpdate(sheet, fila, values) {
   if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
   if (!values || values.length < 10) throw new Error("Se requieren 10+ valores");
-  var flat = values.map(function(v) { return v !== null && v !== undefined ? v : ""; });
+  var numCols = Math.max(sheet.getLastColumn(), values.length);
+  if (numCols >= 11) {
+    var fmt = detectFormat(sheet.getRange(1, 1, 1, numCols).getValues()[0]);
+    if (fmt === 11) {
+      var p = [];
+      for (var j = 0; j < numCols; j++) {
+        if (j === 3) { p.push(""); continue; }
+        var src = j > 3 ? j - 1 : j;
+        p.push(src < values.length ? (values[src] != null ? values[src] : "") : "");
+      }
+      sheet.getRange(fila, 1, 1, numCols).setValues([p]);
+      return { fila_actualizada: fila };
+    }
+  }
+  var flat = values.map(function(v) { return v != null ? v : ""; });
   sheet.getRange(fila, 1, 1, flat.length).setValues([flat]);
   return { fila_actualizada: fila };
 }
@@ -112,6 +154,20 @@ function actionClear(sheet) {
 
 function actionWriteHeaders(sheet, headers) {
   if (!headers || headers.length < 10) throw new Error("Se requieren 10+ cabeceras");
+  var numCols = Math.max(sheet.getLastColumn(), headers.length);
+  if (numCols >= 11) {
+    var fmt = detectFormat(sheet.getRange(1, 1, 1, numCols).getValues()[0]);
+    if (fmt === 11) {
+      var p = [];
+      for (var j = 0; j < numCols; j++) {
+        if (j === 3) { p.push("Ruta"); continue; }
+        var src = j > 3 ? j - 1 : j;
+        p.push(src < headers.length ? headers[src] : "");
+      }
+      sheet.getRange(1, 1, 1, numCols).setValues([p]);
+      return { cabeceras_escritas: headers };
+    }
+  }
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   return { cabeceras_escritas: headers };
 }
@@ -119,14 +175,39 @@ function actionWriteHeaders(sheet, headers) {
 function actionSetAll(sheet, headers, data) {
   if (!headers || headers.length < 10) throw new Error("Se requieren 10+ cabeceras");
   if (!data || !data.length) throw new Error("data vacío");
-  var numCols = headers.length;
-  var allRows = [headers];
+  var numCols = Math.max(sheet.getLastColumn(), headers.length);
+  var fmt = (numCols >= 11) ? detectFormat(sheet.getRange(1, 1, 1, numCols).getValues()[0]) : 10;
+  var allRows = [];
+  if (fmt === 11) {
+    var h = [];
+    for (var j = 0; j < numCols; j++) {
+      if (j === 3) { h.push("Ruta"); continue; }
+      var src = j > 3 ? j - 1 : j;
+      h.push(src < headers.length ? headers[src] : "");
+    }
+    allRows.push(h);
+  } else {
+    var h2 = [];
+    for (var j = 0; j < numCols; j++)
+      h2.push(j < headers.length ? headers[j] : "");
+    allRows.push(h2);
+  }
   for (var i = 0; i < data.length; i++) {
     var row = data[i];
-    var flat = [];
-    for (var j = 0; j < numCols; j++)
-      flat.push(j < row.length ? (row[j] != null ? row[j] : "") : "");
-    allRows.push(flat);
+    if (fmt === 11) {
+      var r = [];
+      for (var j = 0; j < numCols; j++) {
+        if (j === 3) { r.push(""); continue; }
+        var src = j > 3 ? j - 1 : j;
+        r.push(src < row.length ? (row[src] != null ? row[src] : "") : "");
+      }
+      allRows.push(r);
+    } else {
+      var r2 = [];
+      for (var j = 0; j < numCols; j++)
+        r2.push(j < row.length ? (row[j] != null ? row[j] : "") : "");
+      allRows.push(r2);
+    }
   }
   sheet.getRange(1, 1, allRows.length, numCols).setValues(allRows);
   return { filas_escritas: data.length };
