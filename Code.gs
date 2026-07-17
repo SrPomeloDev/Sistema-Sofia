@@ -1,34 +1,12 @@
 /**
  * Code.gs — Google Apps Script para Gestión de Camiones
- * v4 — Column mapping by header name (robust to any column layout)
+ * v3 — Soporte 10 columnas (A-J)
  */
 
 var API_TOKEN = "pablo9090";
 
 var SPREADSHEET_ID = "1g9nAeqyimh5VMwkfane8kPstHedFIHKDE0C7HL5KhFw";
 var SHEET_NAME = "Hoja1";
-
-// ── Column header → internal key mapping ────────────────────────
-var HEADER_MAP = {
-  "Nº":                           "nro",
-  "Nº placa ":                    "placa",
-  "Estado de trabajo":            "estado_trabajo",
-  "Ruta":                         "ruta",
-  "Tipo de combustible":          "tipo_combustible",
-  "Costo flete (Bs/viaje)":      "costo_flete",
-  "Sucursal":                     "sucursal",
-  "Capacidad en KG":              "capacidad_kg",
-  "Capacidad de carga útil en maples":  "capacidad_maples",
-  "Capacidad de carga útil en Kg":      "capacidad_util_kg",
-  "Sistema Camión":               "sistema_camion",
-  "Estado Servicio":              "estado_servicio",
-};
-
-var KEYS_ORDERED = [
-  "nro", "placa", "estado_trabajo", "ruta", "tipo_combustible",
-  "costo_flete", "sucursal", "capacidad_kg", "capacidad_maples",
-  "capacidad_util_kg", "sistema_camion", "estado_servicio"
-];
 
 // ── doGet / doPost ───────────────────────────────────────────────
 
@@ -97,117 +75,119 @@ function handleRequest(e, method) {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────
-
-function buildColumnMap(sheet) {
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  var map = {};
-  for (var i = 0; i < headers.length; i++) {
-    var h = String(headers[i]).trim();
-    if (HEADER_MAP[h]) {
-      map[HEADER_MAP[h]] = i;
-    }
-  }
-  return map;
-}
-
-function rowToDict(row, colMap) {
-  var obj = {};
-  for (var key in colMap) {
-    var idx = colMap[key];
-    obj[key] = (idx !== undefined && row[idx] !== undefined && row[idx] !== null)
-      ? String(row[idx]) : "";
-  }
-  return obj;
-}
-
-function numVal(v, def) {
-  var n = parseFloat(v);
-  return isNaN(n) ? def : n;
-}
-
-function intVal(v, def) {
-  var n = parseInt(v);
-  return isNaN(n) ? def : n;
-}
-
 // ── ACCIONES ────────────────────────────────────────────────────
 
 function actionGetAll(sheet) {
-  var range = sheet.getDataRange();
-  var rows = range.getValues();
+  var rows = sheet.getDataRange().getValues();
   if (rows.length < 1) return [];
-
-  var colMap = buildColumnMap(sheet);
+  var headers = rows[0];
+  var hasRutaCol = headers.length >= 11;
   var result = [];
-
   for (var i = 1; i < rows.length; i++) {
     var row = rows[i];
     if (!row.some(function(cell) { return cell !== "" && cell !== null; })) continue;
-    var d = rowToDict(row, colMap);
-    result.push({
-      fila_id: i + 1,
-      nro: d.nro || "",
-      placa: d.placa || "",
-      estado_trabajo: d.estado_trabajo || "Fijo",
-      tipo_combustible: d.tipo_combustible || "GAS-GASOLINA",
-      costo_flete: numVal(d.costo_flete, 0),
-      sucursal: d.sucursal || "",
-      capacidad_kg: intVal(d.capacidad_kg, 0),
-      capacidad_maples: intVal(d.capacidad_maples, 0),
-      capacidad_util_kg: numVal(d.capacidad_util_kg, 0),
-      sistema_camion: d.sistema_camion || "",
-      estado_servicio: d.estado_servicio || "",
-    });
+    if (hasRutaCol) {
+      // Sheet con 11 columnas (incluye Ruta en col D) — mapeo legacy
+      result.push({
+        fila_id: i + 1,
+        nro: String(row[0] || ""),
+        placa: String(row[1] || ""),
+        estado_trabajo: String(row[2] || "Fijo"),
+        tipo_combustible: String(row[4] || "GAS-GASOLINA"),
+        costo_flete: parseFloat(row[5]) || 0,
+        sucursal: String(row[6] || ""),
+        capacidad_kg: parseInt(row[7]) || 0,
+        capacidad_maples: parseInt(row[8]) || 0,
+        capacidad_util_kg: parseFloat(row[9]) || 0,
+        sistema_camion: String(row[10] || ""),
+      });
+    } else {
+      // Sheet con 10 columnas (sin Ruta)
+      result.push({
+        fila_id: i + 1,
+        nro: String(row[0] || ""),
+        placa: String(row[1] || ""),
+        estado_trabajo: String(row[2] || "Fijo"),
+        tipo_combustible: String(row[3] || "GAS-GASOLINA"),
+        costo_flete: parseFloat(row[4]) || 0,
+        sucursal: String(row[5] || ""),
+        capacidad_kg: parseInt(row[6]) || 0,
+        capacidad_maples: parseInt(row[7]) || 0,
+        capacidad_util_kg: parseFloat(row[8]) || 0,
+        sistema_camion: String(row[9] || ""),
+      });
+    }
   }
   return result;
 }
 
 function actionGetRow(sheet, fila) {
   if (fila < 1) throw new Error("fila debe ser >= 1");
-  var numCols = Math.max(sheet.getLastColumn(), 10);
-  var row = sheet.getRange(fila, 1, 1, numCols).getValues()[0];
+  var numCols = sheet.getLastColumn();
+  var row = sheet.getRange(fila, 1, 1, Math.max(numCols, 10)).getValues()[0];
   if (!row || row.length === 0) throw new Error("Fila " + fila + " no encontrada");
-
-  var colMap = buildColumnMap(sheet);
-  var d = rowToDict(row, colMap);
+  if (numCols >= 11) {
+    // Legacy 11-columnas (incluye Ruta)
+    return {
+      fila_id: fila,
+      nro: String(row[0] || ""),
+      placa: String(row[1] || ""),
+      estado_trabajo: String(row[2] || "Fijo"),
+      tipo_combustible: String(row[4] || "GAS-GASOLINA"),
+      costo_flete: parseFloat(row[5]) || 0,
+      sucursal: String(row[6] || ""),
+      capacidad_kg: parseInt(row[7]) || 0,
+      capacidad_maples: parseInt(row[8]) || 0,
+      capacidad_util_kg: parseFloat(row[9]) || 0,
+      sistema_camion: String(row[10] || ""),
+    };
+  }
   return {
     fila_id: fila,
-    nro: d.nro || "",
-    placa: d.placa || "",
-    estado_trabajo: d.estado_trabajo || "Fijo",
-    tipo_combustible: d.tipo_combustible || "GAS-GASOLINA",
-    costo_flete: numVal(d.costo_flete, 0),
-    sucursal: d.sucursal || "",
-    capacidad_kg: intVal(d.capacidad_kg, 0),
-    capacidad_maples: intVal(d.capacidad_maples, 0),
-    capacidad_util_kg: numVal(d.capacidad_util_kg, 0),
-    sistema_camion: d.sistema_camion || "",
-    estado_servicio: d.estado_servicio || "",
+    nro: String(row[0] || ""),
+    placa: String(row[1] || ""),
+    estado_trabajo: String(row[2] || "Fijo"),
+    tipo_combustible: String(row[3] || "GAS-GASOLINA"),
+    costo_flete: parseFloat(row[4]) || 0,
+    sucursal: String(row[5] || ""),
+    capacidad_kg: parseInt(row[6]) || 0,
+    capacidad_maples: parseInt(row[7]) || 0,
+    capacidad_util_kg: parseFloat(row[8]) || 0,
+    sistema_camion: String(row[9] || ""),
   };
 }
 
 function actionAppend(sheet, values) {
-  if (!values || values.length < 10) throw new Error("Se requieren al menos 10 valores");
-  var numCols = Math.max(sheet.getLastColumn(), values.length);
-  var out = [];
-  for (var j = 0; j < numCols; j++) {
-    out.push(j < values.length ? (values[j] !== null && values[j] !== undefined ? values[j] : "") : "");
+  if (!values || values.length < 10) throw new Error("Se requieren 10 valores (A-J)");
+  var numCols = sheet.getLastColumn();
+  var flatValues = values.map(function(v) { return v !== null && v !== undefined ? v : ""; });
+  if (numCols >= 11) {
+    // Sheet legacy 11 columnas: insertar espacio para col D (Ruta)
+    var padded = [flatValues[0], flatValues[1], flatValues[2], "",
+                  flatValues[3], flatValues[4], flatValues[5],
+                  flatValues[6], flatValues[7], flatValues[8], flatValues[9]];
+    sheet.appendRow(padded);
+  } else {
+    sheet.appendRow(flatValues);
   }
-  sheet.appendRow(out);
-  return { fila_insertada: sheet.getLastRow(), valores: values };
+  return { fila_insertada: sheet.getLastRow(), valores: flatValues };
 }
 
 function actionUpdate(sheet, fila, values) {
   if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
-  if (!values || values.length < 10) throw new Error("Se requieren al menos 10 valores");
-  var numCols = Math.max(sheet.getLastColumn(), values.length);
-  var out = [];
-  for (var j = 0; j < numCols; j++) {
-    out.push(j < values.length ? (values[j] !== null && values[j] !== undefined ? values[j] : "") : "");
+  if (!values || values.length < 10) throw new Error("Se requieren 10 valores");
+  var numCols = sheet.getLastColumn();
+  var flatValues = values.map(function(v) { return v !== null && v !== undefined ? v : ""; });
+  if (numCols >= 11) {
+    // Sheet legacy 11 columnas: mapear saltando col D (Ruta)
+    var padded = [flatValues[0], flatValues[1], flatValues[2], "",
+                  flatValues[3], flatValues[4], flatValues[5],
+                  flatValues[6], flatValues[7], flatValues[8], flatValues[9]];
+    sheet.getRange(fila, 1, 1, 11).setValues([padded]);
+  } else {
+    sheet.getRange(fila, 1, 1, 10).setValues([flatValues]);
   }
-  sheet.getRange(fila, 1, 1, numCols).setValues([out]);
-  return { fila_actualizada: fila, valores: values };
+  return { fila_actualizada: fila, valores: flatValues };
 }
 
 function actionClear(sheet) {
@@ -220,45 +200,69 @@ function actionClear(sheet) {
 }
 
 function actionWriteHeaders(sheet, headers) {
-  if (!headers || headers.length < 10) throw new Error("Se requieren al menos 10 cabeceras");
-  var numCols = Math.max(sheet.getLastColumn(), headers.length);
-  var out = [];
-  for (var j = 0; j < numCols; j++) {
-    out.push(j < headers.length ? headers[j] : "");
+  if (!headers || headers.length < 10) throw new Error("Se requieren 10 cabeceras");
+  var numCols = sheet.getLastColumn();
+  if (numCols >= 11) {
+    // Legacy 11 columnas: preservar col D vacía
+    var padded = [headers[0], headers[1], headers[2], "",
+                  headers[3], headers[4], headers[5],
+                  headers[6], headers[7], headers[8], headers[9]];
+    sheet.getRange(1, 1, 1, 11).setValues([padded]);
+  } else {
+    sheet.getRange(1, 1, 1, 10).setValues([headers]);
   }
-  sheet.getRange(1, 1, 1, numCols).setValues([out]);
   return { cabeceras_escritas: headers };
 }
 
+/**
+ * setAll — Escribe headers + datos en UNA sola llamada.
+ * @param {Sheet} sheet
+ * @param {Array} headers - Array 10 cabeceras
+ * @param {Array} data - Array de arrays (cada uno 10 valores)
+ */
 function actionSetAll(sheet, headers, data) {
-  if (!headers || headers.length < 10) throw new Error("Se requieren al menos 10 cabeceras");
+  if (!headers || headers.length < 10) throw new Error("Se requieren 10 cabeceras");
   if (!data || !data.length) throw new Error("data vacío");
 
-  var numCols = Math.max(sheet.getLastColumn(), headers.length);
-  var allRows = [];
+  var numCols = sheet.getLastColumn();
+  var numOutCols = numCols >= 11 ? 11 : 10;
 
-  // Headers row — pad to numCols
-  var hdrRow = [];
-  for (var j = 0; j < numCols; j++) {
-    hdrRow.push(j < headers.length ? headers[j] : "");
+  var allRows = [];
+  // Headers row
+  if (numOutCols === 11) {
+    allRows.push([headers[0], headers[1], headers[2], "",
+                  headers[3], headers[4], headers[5],
+                  headers[6], headers[7], headers[8], headers[9]]);
+  } else {
+    allRows.push(headers.map(function(v) { return v !== null && v !== undefined ? v : ""; }));
   }
-  allRows.push(hdrRow);
 
   for (var i = 0; i < data.length; i++) {
     var row = data[i];
-    var out = [];
-    for (var j = 0; j < numCols; j++) {
-      out.push(j < row.length ? (row[j] !== null && row[j] !== undefined ? row[j] : "") : "");
+    var flat = [];
+    for (var j = 0; j < 10; j++) {
+      flat.push(row[j] !== null && row[j] !== undefined ? row[j] : "");
     }
-    allRows.push(out);
+    if (numOutCols === 11) {
+      allRows.push([flat[0], flat[1], flat[2], "",
+                    flat[3], flat[4], flat[5],
+                    flat[6], flat[7], flat[8], flat[9]]);
+    } else {
+      allRows.push(flat);
+    }
   }
 
   var numRows = allRows.length;
-  sheet.getRange(1, 1, numRows, numCols).setValues(allRows);
+  sheet.getRange(1, 1, numRows, numOutCols).setValues(allRows);
 
   return { filas_escritas: data.length };
 }
 
+/**
+ * deleteRow — Elimina una fila específica del sheet (desplaza hacia arriba).
+ * @param {Sheet} sheet
+ * @param {Number} fila - Número de fila a eliminar (1 = headers, no permitido)
+ */
 function actionDeleteRow(sheet, fila) {
   if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
   sheet.deleteRow(fila);
