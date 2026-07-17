@@ -481,13 +481,17 @@ async def force_sync():
                 "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
             })
 
-        # Add sistema_camion from existing local records if not in Sheets data
+        # Preserve local fields not stored in the sheet
         camiones_local = {c.placa: c for c in await obtener_todos_camiones()}
         for c in camiones:
-            if c["placa"] in camiones_local and hasattr(camiones_local[c["placa"]], "sistema_camion"):
-                c["sistema_camion"] = camiones_local[c["placa"]].sistema_camion
+            placa = c["placa"]
+            if placa in camiones_local:
+                local = camiones_local[placa]
+                c["sistema_camion"] = getattr(local, "sistema_camion", "SIN INFORMACIÓN")
+                c["estado_servicio"] = getattr(local, "estado_servicio", "EN SERVICIO")
             else:
                 c["sistema_camion"] = "SIN INFORMACIÓN"
+                c["estado_servicio"] = "EN SERVICIO"
 
         await upsert_camiones_desde_sheets(camiones)
         return {"success": True, "message": f"Sincronizados/actualizados {len(camiones)} camiones."}
