@@ -255,6 +255,31 @@ async def auto_sync_loop():
         except Exception as e:
             logger.warning("Error en auto-sync periódico: %s", e)
 
+async def _initial_sync_background():
+    """Sync/push inicial en segundo plano para no bloquear startup."""
+    try:
+        if not sheets_client.enabled:
+            return
+        result = await sheets_client.read_all_rows()
+        total_locales = await obtener_total_camiones_count()
+        if result.get("success") and result.get("data"):
+            n_sheets = len(result["data"])
+            if total_locales > 0 and total_locales >= n_sheets:
+                logger.info("Local (%d) >= Sheets (%d). Push local -> sheets.", total_locales, n_sheets)
+                await inicializar_sheets_con_local()
+            elif total_locales > 0 and total_locales < n_sheets:
+                logger.info("Sheets (%d) > Local (%d). Sync sheets -> local.", n_sheets, total_locales)
+                await sincronizar_desde_sheets()
+            elif total_locales == 0 and n_sheets > 0:
+                logger.info("Local vacío. Sincronizando desde Sheets (%d registros)...", n_sheets)
+                await sincronizar_desde_sheets()
+        else:
+            if total_locales > 0:
+                logger.info("Sheets vacío, local tiene %d. Push local -> sheets.", total_locales)
+                await inicializar_sheets_con_local()
+    except Exception as e:
+        logger.warning("Sync/push inicial falló (no crítico): %s", e)
+
 async def init_module():
     """Called during app startup"""
     global auto_sync_task
@@ -274,28 +299,8 @@ async def init_module():
     
     await sheets_client.initialize()
     
-    if sheets_client.enabled:
-        try:
-            result = await sheets_client.read_all_rows()
-            if result.get("success") and result.get("data"):
-                n_sheets = len(result["data"])
-                if total_locales > 0 and total_locales >= n_sheets:
-                    logger.info("Local (%d) >= Sheets (%d). Push local -> sheets.", total_locales, n_sheets)
-                    await inicializar_sheets_con_local()
-                elif total_locales > 0 and total_locales < n_sheets:
-                    logger.info("Sheets (%d) > Local (%d). Sync sheets -> local.", n_sheets, total_locales)
-                    await sincronizar_desde_sheets()
-                elif total_locales == 0 and n_sheets > 0:
-                    logger.info("Local vacío. Sincronizando desde Sheets (%d registros)...", n_sheets)
-                    await sincronizar_desde_sheets()
-            else:
-                if total_locales > 0:
-                    logger.info("Sheets vacío, local tiene %d. Push local -> sheets.", total_locales)
-                    await inicializar_sheets_con_local()
-                else:
-                    logger.info("Ambos vacíos. No se hace nada.")
-        except Exception as e:
-            logger.warning("Sync inicial falló (no crítico): %s", e)
+    # Sync/push en segundo plano, no bloquea startup
+    asyncio.create_task(_initial_sync_background())
     
     await update_queue.start()
     
