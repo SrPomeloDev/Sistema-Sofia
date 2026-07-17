@@ -25,6 +25,7 @@ HEADERS_LIST = [
     "Capacidad de carga útil en maples",
     "Capacidad de carga útil en Kg",
     "Sistema Camión",
+    "Estado Servicio",
 ]
 
 

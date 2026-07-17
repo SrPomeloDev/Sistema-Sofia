@@ -155,6 +155,7 @@ async def inicializar_sheets_con_local():
             str(c.capacidad_maples),
             str(c.capacidad_util_kg),
             str(c.sistema_camion),
+            str(c.estado_servicio or "EN SERVICIO"),
         ])
 
     # Intentar un solo request (setAll)
