@@ -160,34 +160,51 @@ async def inicializar_sheets_con_local():
             str(c.estado_servicio or "EN SERVICIO"),
         ])
 
-    # Intentar un solo request (setAll)
-    result = await sheets_client.set_all_rows(HEADERS_LIST, rows)
-    if result.get("success"):
-        logger.info("Push completado en 1 request: %d filas.", len(rows))
-        return
-
-    logger.info("setAll no disponible, usando clear + batches concurrentes...")
+    # Limpiar datos viejos y escribir headers
     await sheets_client.clear_sheet()
+    await sheets_client.write_headers()
 
     total = len(rows)
+    total_exitosas = 0
+    total_fallidas = 0
     for start in range(0, total, BATCH_SIZE):
         batch = rows[start:start + BATCH_SIZE]
         tasks = []
         for j, row in enumerate(batch):
             fila = start + j + 2
             tasks.append(sheets_client.update_row(fila, row))
-        await asyncio.gather(*tasks)
-        logger.info("  Batch %d/%d completado", start // BATCH_SIZE + 1, (total + BATCH_SIZE - 1) // BATCH_SIZE)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        ok = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
+        total_exitosas += ok
+        total_fallidas += len(results) - ok
+        if total_fallidas > 0:
+            logger.warning("  Batch %d: %d ok, %d fallos", start // BATCH_SIZE + 1, ok, len(results) - ok)
+        else:
+            logger.info("  Batch %d/%d completado (%d ok)", start // BATCH_SIZE + 1, (total + BATCH_SIZE - 1) // BATCH_SIZE, ok)
 
-    logger.info("Push completado: %d filas actualizadas en %d batches.", total, (total + BATCH_SIZE - 1) // BATCH_SIZE)
+    # Limpiar filas extra del sheet si las hay
+    try:
+        total_actual = len((await sheets_client.read_all_rows()).get("data", []))
+        if total_actual > total:
+            for fila in range(total + 2, total_actual + 2):
+                await sheets_client.delete_row(fila)
+            logger.info("Limpiadas %d filas extra del sheet.", total_actual - total)
+    except Exception as e:
+        logger.warning("No se pudieron limpiar filas extra: %s", e)
+
+    logger.info("Push completado: %d exitosas, %d fallidas de %d.", total_exitosas, total_fallidas, total)
 
 async def push_to_sheets_background():
     """Corre push-to-sheets en un task separado."""
     global _push_task
     try:
+        if not sheets_client.enabled:
+            logger.error("Push abortado: Google Sheets no está configurado.")
+            return
         await inicializar_sheets_con_local()
+        logger.info("Push finalizado correctamente.")
     except Exception as e:
-        logger.error("Push a Sheets falló: %s", e)
+        logger.error("Push a Sheets falló: %s", e, exc_info=True)
     finally:
         _push_task = None
 
@@ -270,12 +287,15 @@ async def init_module():
                 elif total_locales > 0 and total_locales < n_sheets:
                     logger.info("Sheets (%d) > Local (%d). Sync sheets -> local.", n_sheets, total_locales)
                     await sincronizar_desde_sheets()
-                else:
-                    logger.info("Sheets vacío. Push local -> sheets.")
-                    await inicializar_sheets_con_local()
+                elif total_locales == 0 and n_sheets > 0:
+                    logger.info("Local vacío. Sincronizando desde Sheets (%d registros)...", n_sheets)
+                    await sincronizar_desde_sheets()
             else:
                 if total_locales > 0:
+                    logger.info("Sheets vacío, local tiene %d. Push local -> sheets.", total_locales)
                     await inicializar_sheets_con_local()
+                else:
+                    logger.info("Ambos vacíos. No se hace nada.")
         except Exception as e:
             logger.warning("Sync inicial falló (no crítico): %s", e)
     

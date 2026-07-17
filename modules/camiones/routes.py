@@ -115,6 +115,14 @@ async def push_to_sheets():
     _push_task = asyncio.create_task(push_to_sheets_background())
     return {"success": True, "message": "Subida iniciada en segundo plano. Esperá unos minutos y revisá el Sheet."}
 
+@router.get("/api/push-status")
+async def push_status():
+    """Estado de la subida actual."""
+    from modules.camiones.lifecycle import _push_task
+    if _push_task and not _push_task.done():
+        return {"success": True, "running": True, "message": "Subida en progreso..."}
+    return {"success": True, "running": False, "message": "Sin subida activa."}
+
 @router.get("/api/health")
 async def health():
     """Health check simple para monitoreo."""
