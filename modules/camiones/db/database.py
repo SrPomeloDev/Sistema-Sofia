@@ -221,11 +221,12 @@ async def upsert_camiones_desde_sheets(camiones_list: list[dict]):
         logger.info("Upsert desde Sheets: %d actualizados, %d insertados", actualizados, insertados)
 
         # ── Limpiar registros sincronizados que ya no existen en Sheets ───
-        # Solo si hay datos válidos (placas) en el Sheet
+        # No eliminar FUERA DE SERVICIO (se gestionan solo localmente)
         if vistos and len(vistos) > 5:
             stmt_delete = delete(CamionDb).where(
                 CamionDb.estado_sincronizacion == "sincronizado",
-                CamionDb.placa.notin_(vistos)
+                CamionDb.placa.notin_(vistos),
+                CamionDb.estado_servicio != "FUERA DE SERVICIO"
             )
             result = await session.execute(stmt_delete)
             if result.rowcount:

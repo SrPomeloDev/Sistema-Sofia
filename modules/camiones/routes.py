@@ -275,6 +275,13 @@ async def create_camion(request: CamionCreate):
         await crear_camion_local(camion_dict, nueva_fila, estado_sinc)
         
         auditoria_id = None
+        # Si el camión está FUERA DE SERVICIO, no se escribe en Sheets
+        if request.estado_servicio == "FUERA DE SERVICIO":
+            return UpdateSheetResponse(
+                success=True,
+                message="Registro guardado localmente (FUERA DE SERVICIO, no se sincroniza con Sheets).",
+                auditoria_id=None
+            )
         # Si Sheets está habilitado, encolar escritura
         if sheets_client.enabled:
             valores_fila = [
@@ -350,6 +357,14 @@ async def update_camion(fila_id: int, request: CamionUpdate):
         camion_actualizado = await actualizar_camion_local(fila_id, camion_dict, estado_sinc)
         
         auditoria_id = None
+        # Si el camión queda FUERA DE SERVICIO, no se escribe en Sheets
+        nuevo_servicio = camion_dict.get("estado_servicio", camion_existente.estado_servicio)
+        if nuevo_servicio == "FUERA DE SERVICIO":
+            return UpdateSheetResponse(
+                success=True,
+                message="Actualizado localmente (FUERA DE SERVICIO, no se sincroniza con Sheets).",
+                auditoria_id=None
+            )
         if sheets_client.enabled and camion_actualizado:
             # Lista completa ordenada de columnas A-J
             valores_fila = [

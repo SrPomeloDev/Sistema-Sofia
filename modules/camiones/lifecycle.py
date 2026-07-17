@@ -144,6 +144,8 @@ async def inicializar_sheets_con_local():
 
     rows = []
     for c in camiones:
+        if c.estado_servicio == "FUERA DE SERVICIO":
+            continue
         rows.append([
             str(c.nro or ""),
             str(c.placa),
@@ -252,7 +254,8 @@ async def init_module():
         records = parse_excel_camiones(excel_path)
         if records:
             await guardar_camiones_bulk(records)
-            logger.info("Importación inicial: %d registros", len(records))
+            total_locales = len(records)
+            logger.info("Importación inicial: %d registros", total_locales)
     
     await sheets_client.initialize()
     
@@ -260,9 +263,19 @@ async def init_module():
         try:
             result = await sheets_client.read_all_rows()
             if result.get("success") and result.get("data"):
-                await sincronizar_desde_sheets()
-            elif result.get("success") and not result.get("data"):
-                await inicializar_sheets_con_local()
+                n_sheets = len(result["data"])
+                if total_locales > 0 and total_locales >= n_sheets:
+                    logger.info("Local (%d) >= Sheets (%d). Push local -> sheets.", total_locales, n_sheets)
+                    await inicializar_sheets_con_local()
+                elif total_locales > 0 and total_locales < n_sheets:
+                    logger.info("Sheets (%d) > Local (%d). Sync sheets -> local.", n_sheets, total_locales)
+                    await sincronizar_desde_sheets()
+                else:
+                    logger.info("Sheets vacío. Push local -> sheets.")
+                    await inicializar_sheets_con_local()
+            else:
+                if total_locales > 0:
+                    await inicializar_sheets_con_local()
         except Exception as e:
             logger.warning("Sync inicial falló (no crítico): %s", e)
     
