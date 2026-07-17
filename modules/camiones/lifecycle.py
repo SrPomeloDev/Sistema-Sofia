@@ -195,8 +195,7 @@ async def push_to_sheets_background():
 async def auto_sync_loop():
     """
     Cada SYNC_INTERVAL segundos trae los cambios de Google Sheets a SQLite.
-    Así, si alguien edita una celda directamente en Sheets, el dashboard
-    se entera sin necesidad de reiniciar ni hacer clic en Sync.
+    Solo sincroniza si el sheet tiene MAS datos que local (evita corromper datos limpios).
     """
     while True:
         await asyncio.sleep(SYNC_INTERVAL)
@@ -208,6 +207,10 @@ async def auto_sync_loop():
                 continue
             rows = result.get("data", [])
             if not rows:
+                continue
+            n_locales = await obtener_total_camiones_count()
+            if n_locales > 0 and n_locales >= len(rows):
+                logger.debug("Auto-sync: local (%d) >= sheets (%d). Saltando sync.", n_locales, len(rows))
                 continue
             camiones = []
             existentes_local = {c.placa: c for c in await obtener_todos_camiones()}
