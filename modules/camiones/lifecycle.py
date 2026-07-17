@@ -158,39 +158,25 @@ async def inicializar_sheets_con_local():
             str(c.estado_servicio or "EN SERVICIO"),
         ])
 
-    # Limpiar datos viejos y escribir headers
-    await sheets_client.clear_sheet()
-    await sheets_client.write_headers()
+    # Intentar setAll (1 request)
+    result = await sheets_client.set_all_rows(HEADERS_LIST, rows)
+    if result.get("success"):
+        logger.info("Push completado en 1 request: %d filas.", len(rows))
+        return
 
+    # Fallback: actualizar fila por fila SIN limpiar el sheet primero
+    logger.info("setAll no disponible, actualizando filas existentes...")
     total = len(rows)
-    total_exitosas = 0
-    total_fallidas = 0
     for start in range(0, total, BATCH_SIZE):
         batch = rows[start:start + BATCH_SIZE]
         tasks = []
         for j, row in enumerate(batch):
             fila = start + j + 2
             tasks.append(sheets_client.update_row(fila, row))
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        ok = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
-        total_exitosas += ok
-        total_fallidas += len(results) - ok
-        if total_fallidas > 0:
-            logger.warning("  Batch %d: %d ok, %d fallos", start // BATCH_SIZE + 1, ok, len(results) - ok)
-        else:
-            logger.info("  Batch %d/%d completado (%d ok)", start // BATCH_SIZE + 1, (total + BATCH_SIZE - 1) // BATCH_SIZE, ok)
+        await asyncio.gather(*tasks)
+        logger.info("  Batch %d/%d completado", start // BATCH_SIZE + 1, (total + BATCH_SIZE - 1) // BATCH_SIZE)
 
-    # Limpiar filas extra del sheet si las hay
-    try:
-        total_actual = len((await sheets_client.read_all_rows()).get("data", []))
-        if total_actual > total:
-            for fila in range(total + 2, total_actual + 2):
-                await sheets_client.delete_row(fila)
-            logger.info("Limpiadas %d filas extra del sheet.", total_actual - total)
-    except Exception as e:
-        logger.warning("No se pudieron limpiar filas extra: %s", e)
-
-    logger.info("Push completado: %d exitosas, %d fallidas de %d.", total_exitosas, total_fallidas, total)
+    logger.info("Push completado: %d filas actualizadas.", total)
 
 async def push_to_sheets_background():
     """Corre push-to-sheets en un task separado."""
@@ -255,31 +241,6 @@ async def auto_sync_loop():
         except Exception as e:
             logger.warning("Error en auto-sync periódico: %s", e)
 
-async def _initial_sync_background():
-    """Sync/push inicial en segundo plano para no bloquear startup."""
-    try:
-        if not sheets_client.enabled:
-            return
-        result = await sheets_client.read_all_rows()
-        total_locales = await obtener_total_camiones_count()
-        if result.get("success") and result.get("data"):
-            n_sheets = len(result["data"])
-            if total_locales > 0 and total_locales >= n_sheets:
-                logger.info("Local (%d) >= Sheets (%d). Push local -> sheets.", total_locales, n_sheets)
-                await inicializar_sheets_con_local()
-            elif total_locales > 0 and total_locales < n_sheets:
-                logger.info("Sheets (%d) > Local (%d). Sync sheets -> local.", n_sheets, total_locales)
-                await sincronizar_desde_sheets()
-            elif total_locales == 0 and n_sheets > 0:
-                logger.info("Local vacío. Sincronizando desde Sheets (%d registros)...", n_sheets)
-                await sincronizar_desde_sheets()
-        else:
-            if total_locales > 0:
-                logger.info("Sheets vacío, local tiene %d. Push local -> sheets.", total_locales)
-                await inicializar_sheets_con_local()
-    except Exception as e:
-        logger.warning("Sync/push inicial falló (no crítico): %s", e)
-
 async def init_module():
     """Called during app startup"""
     global auto_sync_task
@@ -294,13 +255,20 @@ async def init_module():
         records = parse_excel_camiones(excel_path)
         if records:
             await guardar_camiones_bulk(records)
-            total_locales = len(records)
-            logger.info("Importación inicial: %d registros", total_locales)
+            logger.info("Importación inicial: %d registros", len(records))
     
     await sheets_client.initialize()
     
-    # Sync/push en segundo plano, no bloquea startup
-    asyncio.create_task(_initial_sync_background())
+    if sheets_client.enabled:
+        try:
+            result = await sheets_client.read_all_rows()
+            if result.get("success") and result.get("data"):
+                await sincronizar_desde_sheets()
+            elif result.get("success") and not result.get("data"):
+                if total_locales > 0:
+                    await inicializar_sheets_con_local()
+        except Exception as e:
+            logger.warning("Sync inicial falló (no crítico): %s", e)
     
     await update_queue.start()
     
