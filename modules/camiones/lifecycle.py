@@ -144,8 +144,6 @@ async def inicializar_sheets_con_local():
 
     rows = []
     for c in camiones:
-        if c.estado_servicio == "FUERA DE SERVICIO":
-            continue
         rows.append([
             str(c.nro or ""),
             str(c.placa),
