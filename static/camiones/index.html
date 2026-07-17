@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Camiones - Sofía Ltda</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/icons/logo-192.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#d81a1b">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ── Diseño Base y Variables ─────────────────────────────────── */
+        :root {
+            --bg-base: #fdf2f2;
+            --bg-surface: rgba(255, 252, 252, 0.9);
+            --bg-surface-opaque: #fefbfb;
+            --border-glow: rgba(216, 26, 27, 0.1);
+            --border-light: rgba(180, 50, 50, 0.1);
+            
+            --primary: #d81a1b;
+            --primary-hover: #b91c1c;
+            --primary-glow: rgba(216, 26, 27, 0.15);
+            
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.1);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.1);
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.1);
+            --local-mode: #d97706;
+            
+            --text-main: #1c0a0a;
+            --text-muted: #5c3a3a;
+            --text-dimmed: #8c5a5a;
+            
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            
+            --font-family-title: 'Outfit', sans-serif;
+            --font-family-body: 'Inter', sans-serif;
+            
+            --shadow-glass: 0 8px 32px 0 rgba(180, 50, 50, 0.06);
+            --shadow-glow: 0 0 20px rgba(216, 26, 27, 0.1);
+            
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            --header-h: 68px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(216, 26, 27, 0.07) 0px, transparent 50%),
+                radial-gradient(at 90% 10%, rgba(200, 40, 40, 0.05) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(216, 26, 27, 0.03) 0px, transparent 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding-bottom: 2rem;
+        }
+
+        /* ── Scrollbar Personalizada ────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(180, 50, 50, 0.04);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(180, 50, 50, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(180, 50, 50, 0.25);
+        }
+
+        /* ── Cabecera / Header ────────────────────────────────────────── */
+        header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(180, 50, 50, 0.12);
+            background: rgba(255, 252, 252, 0.88);
+            padding: 0.85rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-h);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .logo-text h1 {
+            font-family: var(--font-family-title);
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #b91c1c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(216, 26, 27, 0.05);
+            border: 1px solid rgba(180, 50, 50, 0.12);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.active {
+            background-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 1.8s infinite;
+        }
+
+        .status-dot.warning {
+            background-color: var(--warning);
+            box-shadow: 0 0 10px var(--warning);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        /* ── Contenedor Principal ────────────────────────────────────── */
+        main {
+            max-width: 1480px;
+            width: 100%;
+            margin: 1.5rem auto 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            flex: 1;
+        }
+
+        /* Banner de Aviso modo local */
+        .alert-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(216, 26, 27, 0.06);
+            border: 1px solid rgba(216, 26, 27, 0.15);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            color: #991b1b;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        /* ── KPIs pequeños de Estado de Flota ──────────────────────── */
+        .flota-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.85rem;
+        }
+        .flota-mini-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: var(--transition);
+        }
+        .flota-mini-card:hover {
+            transform: translateY(-2px);
+        }
+        .flota-mini-icon {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .flota-mini-icon.success { background: rgba(16,185,129,0.12); color: var(--success); }
+        .flota-mini-icon.danger { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .flota-mini-icon.warning { background: rgba(245,158,11,0.12); color: var(--warning); }
+        .flota-mini-info { flex: 1; min-width: 0; }
+        .flota-mini-info .label {
+            font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.04em; font-weight: 500; line-height: 1.2;
+        }
+        .flota-mini-info .number {
+            font-family: var(--font-family-title); font-size: 1.25rem;
+            font-weight: 700; line-height: 1.3;
+        }
+        .flota-mini-info .number.success { color: var(--success); }
+        .flota-mini-info .number.danger { color: var(--danger); }
+        .flota-mini-info .number.warning { color: var(--warning); }
+        @media (max-width: 768px) {
+            .flota-mini-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            .flota-mini-card { padding: 0.6rem; gap: 0.5rem; }
+            .flota-mini-icon { width: 28px; height: 28px; }
+            .flota-mini-icon i { width: 14px; height: 14px; }
+            .flota-mini-info .number { font-size: 1rem; }
+        }
+
+        /* ── Load-more row ─────────────────────────────────────────── */
+        .load-more-row {
+            padding: 1rem; text-align: center; border-top: 1px solid var(--border-light);
+        }
+        .load-more-row .counter {
+            font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;
+        }
+
+        /* ── Badge de pendientes en botón Recargar ──────────────────── */
+        .pending-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--color-error, #ef4444);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            border-radius: 999px;
+            padding: 0 5px;
+            box-shadow: 0 0 0 2px var(--bg-app, #f8fafc);
+            animation: badge-pulse 1.5s ease-in-out infinite;
+        }
+        .pending-badge.zero { display: none; }
+        @keyframes badge-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ── Panel de Estadísticas / Stats Grid ─────────────────────── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1.25rem;
+            box-shadow: var(--shadow-glass);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(216, 26, 27, 0.15);
+        }
+
+        .stat-card.blue:hover { box-shadow: 0 4px 20px rgba(216, 26, 27, 0.1); }
+        .stat-card.green:hover { box-shadow: 0 4px 20px rgba(216, 26, 27, 0.1); }
+        .stat-card.orange:hover { box-shadow: 0 4px 20px rgba(216, 26, 27, 0.1); }
+        
+        .stat-card.blue::before { background: var(--primary); }
+        .stat-card.green::before { background: var(--primary); }
+        .stat-card.orange::before { background: var(--primary); }
+
+        .stat-info p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.15rem;
+        }
+
+        .stat-info .value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: var(--font-family-title);
+        }
+
+        .stat-info .subtext {
+            font-size: 0.65rem;
+            color: var(--text-dimmed);
+            margin-top: 0.15rem;
+        }
+
+        .stat-icon {
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            background: rgba(216, 26, 27, 0.06);
+            color: #8c4a4a;
+        }
+
+        .stat-card.blue .stat-icon { color: var(--primary); background: rgba(216, 26, 27, 0.08); }
+        .stat-card.green .stat-icon { color: var(--primary); background: rgba(216, 26, 27, 0.08); }
+        .stat-card.orange .stat-icon { color: var(--primary); background: rgba(216, 26, 27, 0.08); }
+
+        /* ── Barra de Acciones y Filtros ────────────────────────────── */
+        .actions-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow-glass);
+        }
+
+        .filters-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dimmed);
+            pointer-events: none;
+            width: 16px;
+            height: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1rem 0.6rem 2.25rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(216, 26, 27, 0.12);
+            background: #ffffff;
+        }
+
+        .select-filter {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 0.6rem 2rem 0.6rem 1rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px;
+        }
+
+        .select-filter:focus {
+            border-color: var(--primary);
+            background-color: #ffffff;
+        }
+
+        .buttons-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* ── Botones ─────────────────────────────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(216, 26, 27, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 20px rgba(216, 26, 27, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+        #refreshBtn { position: relative; }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(216, 26, 27, 0.06);
+            border-color: rgba(216, 26, 27, 0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-icon {
+            padding: 0.6rem;
+            border-radius: var(--radius-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+        }
+
+        /* ── Tabla de Datos / Data Table ─────────────────────────────── */
+        .table-container {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-glass);
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+            table-layout: fixed;
+        }
+
+        thead {
+            background: rgba(216, 26, 27, 0.04);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        th {
+            padding: 1rem 0.9rem;
+            font-family: var(--font-family-title);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            position: relative;
+            -webkit-user-select: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th .resize-handle {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            width: 11px;
+            height: 100%;
+            cursor: col-resize;
+            background: transparent;
+            z-index: 2;
+        }
+        th .resize-handle::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            right: 4px;
+            width: 3px;
+            height: 70%;
+            background: rgba(180, 50, 50, 0.12);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+        th:hover .resize-handle::after {
+            background: rgba(216, 26, 27, 0.35);
+        }
+        th .resize-handle:hover::after,
+        th .resize-handle.resizing::after {
+            background: var(--primary) !important;
+            width: 4px;
+            right: 3px;
+            top: 5%;
+            height: 90%;
+        }
+        /* Guide line that follows the mouse during resize */
+        .resize-guide {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary);
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.5;
+            display: none;
+        }
+
+        /* Column widths */
+        colgroup .col-nro { width: 48px; }
+        colgroup .col-placa { width: 130px; }
+        colgroup .col-sucursal { width: 110px; }
+        colgroup .col-sistema { width: 120px; }
+        colgroup .col-servicio { width: 130px; }
+        colgroup .col-estado { width: 100px; }
+        colgroup .col-combustible { width: 120px; }
+        colgroup .col-flete { width: 95px; }
+        colgroup .col-kg { width: 80px; }
+        colgroup .col-maples { width: 80px; }
+        colgroup .col-util { width: 95px; }
+        colgroup .col-factor { width: 80px; }
+        colgroup .col-accion { width: 80px; }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(216, 26, 27, 0.05);
+        }
+
+        td {
+            padding: 0.85rem 0.9rem;
+            color: var(--text-main);
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .placa-badge {
+            font-family: 'Courier New', monospace;
+            background: rgba(216, 26, 27, 0.06);
+            border: 1px solid rgba(180, 50, 50, 0.15);
+            padding: 0.25rem 0.6rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            white-space: nowrap;
+            color: var(--text-main);
+        }
+
+        /* Badges de Sincronización */
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .sync-badge.sincronizado {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .sync-badge.pendiente {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .sync-badge.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            cursor: pointer;
+        }
+
+        .sync-badge.local {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--local-mode);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .sync-badge .spinner-micro {
+            width: 12px;
+            height: 12px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .edit-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .edit-action-btn:hover {
+            background: rgba(216, 26, 27, 0.12);
+            color: var(--primary);
+        }
+
+        /* Tabla Cargando / Vacía */
+        .table-placeholder {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .spinner-large {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(180, 50, 50, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Modales / Forms (Glassmorphism Modal) ───────────────────── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 10, 18, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--bg-surface-opaque);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        .modal-overlay.show .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-family-title);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* ── Diseño de Formulario ────────────────────────────────────── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 0.65rem 0.85rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(216, 26, 27, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-dimmed);
+        }
+
+        .form-input:disabled {
+            background: rgba(216, 26, 27, 0.04);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* ── Panel de Auditoría / Actividad ───────────────────────────── */
+        .audit-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-glass);
+        }
+
+        .audit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .audit-header h3 {
+            font-family: var(--font-family-title);
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .audit-content {
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            padding-right: 0.5rem;
+        }
+
+        .audit-content.show {
+            display: block;
+        }
+
+        .audit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .audit-item {
+            background: rgba(216, 26, 27, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .audit-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .audit-title {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .audit-time {
+            font-size: 0.75rem;
+            color: var(--text-dimmed);
+        }
+
+        .audit-badge {
+            padding: 0.15rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .audit-badge.pendiente { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .audit-badge.exito { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .audit-badge.fallido { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* ── Toasts / Notificaciones ─────────────────────────────────── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 300;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-surface-opaque);
+            border: 1px solid var(--border-light);
+            border-left-width: 4px;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-main);
+            font-size: 0.875rem;
+            min-width: 280px;
+            max-width: 400px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.error { border-left-color: var(--danger); }
+
+        .toast-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast.success .toast-icon { color: var(--success); }
+        .toast.warning .toast-icon { color: var(--warning); }
+        .toast.error .toast-icon { color: var(--danger); }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-content h4 {
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        .toast-content p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: var(--text-dimmed);
+            cursor: pointer;
+        }
+
+        .toast-close:hover {
+            color: var(--text-main);
+        }
+
+        /* ── Wrapper scroll horizontal para tabla ────────────────────── */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+        }
+
+        /* ── Diseño Responsivo ───────────────────────────────────────── */
+        @media (max-width: 1024px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.65rem; }
+            .flota-mini-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            main { padding: 0 1rem; }
+            .tab-nav { padding: 0 1rem; }
+        }
+
+        @media (max-width: 768px) {
+            :root { --header-h: 56px; }
+            header { padding: 0.6rem 0.75rem; }
+            .header-content { gap: 0.4rem; }
+            .logo-section img { width: 32px; height: 32px; }
+            .logo-text h1 { font-size: 0.95rem; }
+            .logo-text p { font-size: 0.65rem; }
+            .connection-status { font-size: 0.7rem; padding: 0.25rem 0.6rem; gap: 0.35rem; }
+            .nav-tab { padding: 0.55rem 0.65rem !important; font-size: 0.75rem !important; }
+            main { padding: 0 0.6rem; margin-top: 0.75rem; gap: 0.75rem; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            .stat-card { padding: 0.65rem 0.75rem; }
+            .stat-info .value { font-size: 1rem; }
+            .stat-info p { font-size: 0.6rem; }
+            .stat-icon { padding: 0.35rem; }
+            .stat-info .subtext { font-size: 0.6rem; }
+            .flota-mini-grid { gap: 0.5rem; }
+            .flota-mini-card { padding: 0.65rem 0.75rem; gap: 0.5rem; }
+            .flota-mini-icon { width: 28px; height: 28px; }
+            .flota-mini-icon i { width: 14px !important; height: 14px !important; }
+            .flota-mini-info .number { font-size: 1rem; }
+            .actions-panel { flex-direction: column; align-items: stretch; padding: 0.75rem; gap: 0.65rem; }
+            .filters-group { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+            .search-wrapper { max-width: none; }
+            .buttons-group { justify-content: stretch; }
+            .buttons-group .btn { flex: 1; font-size: 0.78rem; padding: 0.5rem 0.65rem; }
+            td, th { padding: 0.55rem 0.5rem; font-size: 0.7rem; }
+            .placa-badge { font-size: 0.78rem; padding: 0.15rem 0.4rem; letter-spacing: 0.05em; }
+            .sync-badge { font-size: 0.6rem !important; padding: 0.15rem 0.35rem !important; }
+            .table-container { border-radius: var(--radius-md); }
+            .table-scroll table { min-width: 600px; }
+            .modal-card { max-width: 95vw; margin: 0.5rem; }
+            .modal-body { padding: 0.75rem; max-height: 80vh; }
+            .form-grid { gap: 0.65rem; }
+            .form-input { font-size: 0.8rem; padding: 0.45rem 0.6rem; }
+            .form-group label { font-size: 0.68rem; }
+            .modal-header { padding: 0.75rem 1rem; }
+            .modal-header h2 { font-size: 0.95rem; }
+            .modal-footer { padding: 0.65rem 1rem; flex-direction: column; }
+            .modal-footer .btn { width: 100%; }
+            .audit-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+            .toast { min-width: auto; max-width: calc(100vw - 1.5rem); bottom: 1rem; right: 0.75rem; }
+            .tab-nav { padding: 0 0.6rem; margin-top: 0.4rem; gap: 0.35rem; }
+            .tab-btn { font-size: 0.75rem; padding: 0.5rem 0.65rem !important; }
+            .tab-btn span { display: none; }
+            #sucursalStats .stat-card { padding: 0.55rem 0.7rem; }
+            #sucursalStats .stat-info .value { font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+            .flota-mini-grid { grid-template-columns: 1fr; }
+            .stat-card { padding: 0.55rem 0.65rem; }
+            .stat-info .value { font-size: 0.95rem; }
+            .stat-info p { font-size: 0.6rem; }
+            .stat-icon { padding: 0.35rem; }
+            .stat-icon i { width: 16px !important; height: 16px !important; }
+            #sucursalStats { grid-template-columns: 1fr; }
+            .logo-section { gap: 0.4rem; }
+            .logo-section img { width: 28px; height: 28px; }
+            .btn span { display: none; }
+            .btn i { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav style="display:flex;align-items:center;justify-content:center;padding:0.4rem 1rem;background:rgba(216,26,27,0.02);border-bottom:1px solid rgba(180,50,50,0.05);">
+        <div style="display:flex;align-items:center;justify-content:space-between;max-width:1480px;width:100%;">
+            <a href="/" style="display:flex;align-items:center;gap:0.35rem;color:#5c3a3a;text-decoration:none;font-size:0.78rem;">
+                <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
+                Inicio
+            </a>
+            <span style="font-size:0.68rem;color:#8c5a5a;">Sistema de Camiones — Sofía Ltda</span>
+        </div>
+    </nav>
+
+    <!-- Cabecera -->
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="/static/icons/logo-192.svg" alt="Sofía Ltda" style="width:42px;height:42px;border-radius:10px;box-shadow:0 4px 12px rgba(216,26,27,0.2);flex-shrink:0;">
+                <div class="logo-text">
+                    <h1>SISTEMA DE CAMIONES</h1>
+                    <p>Fijos — Sofía Ltda</p>
+                </div>
+            </div>
+            
+            <div id="connectionStatus" class="connection-status">
+                <span id="statusDot" class="status-dot"></span>
+                <span id="statusText">Cargando estado...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar Tabs -->
+    <nav class="tab-nav">
+        <button id="tabDashboard" class="tab-btn active" data-tab="dashboard">
+            <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
+            <span>Dashboard</span>
+        </button>
+        <button id="tabFletes" class="tab-btn" data-tab="fletes">
+            <i data-lucide="dollar-sign" style="width:18px;height:18px;"></i>
+            <span>Pago de Flete</span>
+        </button>
+    </nav>
+
+    <style>
+        .tab-nav {
+            max-width: 1480px; margin: 1rem auto 0; padding: 0 1.5rem;
+            display: flex; gap: 0;
+            background: var(--bg-surface); border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: var(--shadow-glass);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        }
+        .tab-btn {
+            flex: 1; padding: 0.85rem 1.5rem; background: transparent; border: none;
+            color: var(--text-muted); font-family: var(--font-family-title);
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn:hover { color: var(--text-main); background: rgba(216,26,27,0.03); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+
+    <!-- Contenedor Principal -->
+    <main>
+        <div id="tabDashboardContent" class="tab-content active">
+        
+        <!-- Banner de advertencia modo local -->
+        <div id="localWarningBanner" class="alert-banner" style="display: none;">
+            <i data-lucide="alert-triangle" style="width: 20px; height: 20px;"></i>
+            <div>
+                <strong>Modo Local Activo:</strong> La aplicación no está conectada a Google Sheets debido a credenciales no configuradas. Los cambios se guardarán solo localmente en SQLite.
+            </div>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <section class="stats-grid">
+            <!-- Total Camiones -->
+            <div class="stat-card blue">
+                <div class="stat-info">
+                    <p>Total Camiones</p>
+                    <div id="statTotal" class="value">-</div>
+                    <div id="statActiveCount" class="subtext">Fijos y temporales en flota</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="gauge" style="width: 20px; height: 20px;"></i>
+                </div>
+            </div>
+
+            <!-- Capacidad Kg -->
+            <div class="stat-card green">
+                <div class="stat-info">
+                    <p>Capacidad Total útil</p>
+                    <div id="statCapacidadKg" class="value">-</div>
+                    <div id="statCapacidadMaples" class="subtext">-</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="layers" style="width: 20px; height: 20px;"></i>
+                </div>
+            </div>
+
+            <!-- Último Cambio -->
+            <div class="stat-card blue">
+                <div class="stat-info">
+                    <p>Último Cambio</p>
+                    <div id="statUltimoCambio" class="value" style="font-size:1rem;">-</div>
+                    <div id="statUltimoCambioPor" class="subtext">-</div>
+                </div>
+                <div class="stat-icon">
+                    <i data-lucide="clock" style="width: 20px; height: 20px;"></i>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Tarjetas por Sucursal (dinámicas) -->
+        <section id="sucursalStats" class="stats-grid" style="margin-top:-0.5rem;"></section>
+
+        <!-- KPIs Estado de Flota (EN SERVICIO / FUERA DE SERVICIO / CONSULTAR) -->
+        <section class="flota-mini-grid" id="flotaStatusGrid">
+            <div class="flota-mini-card">
+                <div class="flota-mini-icon success"><i data-lucide="check-circle" style="width:18px;height:18px;"></i></div>
+                <div class="flota-mini-info">
+                    <div class="label">En Servicio</div>
+                    <div class="number success" id="flotaEnServicio">-</div>
+                </div>
+            </div>
+            <div class="flota-mini-card">
+                <div class="flota-mini-icon danger"><i data-lucide="x-circle" style="width:18px;height:18px;"></i></div>
+                <div class="flota-mini-info">
+                    <div class="label">Fuera de Servicio</div>
+                    <div class="number danger" id="flotaFueraServicio">-</div>
+                </div>
+            </div>
+            <div class="flota-mini-card">
+                <div class="flota-mini-icon warning"><i data-lucide="help-circle" style="width:18px;height:18px;"></i></div>
+                <div class="flota-mini-info">
+                    <div class="label">Consultar</div>
+                    <div class="number warning" id="flotaConsultar">-</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros y Acciones -->
+        <section class="actions-panel">
+            <div class="filters-group">
+                <!-- Buscador de Placa -->
+                <div class="search-wrapper">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="filterPlaca" class="search-input" placeholder="Buscar por placa...">
+                </div>
+                
+                <!-- Filtro Sucursal -->
+                <select id="filterSucursal" class="select-filter">
+                    <option value="">Todas las Sucursales</option>
+                    <option value="La Paz">La Paz</option>
+                    <option value="Cochabamba">Cochabamba</option>
+                    <option value="Santa Cruz">Santa Cruz</option>
+                </select>
+
+                <!-- Filtro Combustible -->
+                <select id="filterCombustible" class="select-filter">
+                    <option value="">Todos los Combustibles</option>
+                    <option value="GAS-GASOLINA">GAS-GASOLINA</option>
+                    <option value="GASOLINA">GASOLINA</option>
+                    <option value="DIESEL">DIESEL</option>
+                </select>
+
+                <!-- Filtro Sistema Camión (NUEVO) -->
+                <select id="filterSistemaCamion" class="select-filter">
+                    <option value="">Todos los Sistemas</option>
+                    <option value="SIN INFORMACIÓN">SIN INFORMACIÓN</option>
+                    <option value="HIBRIDO">HIBRIDO</option>
+                    <option value="SECOS">SECOS</option>
+                    <option value="REFRIGERADO">REFRIGERADO</option>
+                </select>
+
+                <!-- Filtro Estado Servicio -->
+                <select id="filterEstadoServicio" class="select-filter">
+                    <option value="">Todos los Estados</option>
+                    <option value="EN SERVICIO">EN SERVICIO</option>
+                    <option value="FUERA DE SERVICIO">FUERA DE SERVICIO</option>
+                    <option value="CONSULTAR">CONSULTAR</option>
+                </select>
+            </div>
+
+            <div class="buttons-group">
+                <!-- Recargar datos locales -->
+                <button id="refreshBtn" class="btn btn-secondary" title="Recargar datos locales">
+                    <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                    <span>Recargar</span>
+                    <span id="pendingBadge" class="pending-badge" style="display:none;">0</span>
+                </button>
+                <!-- Registrar Camión -->
+                <button id="addCamionBtn" class="btn btn-primary">
+                    <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
+                    <span>Registrar Camión</span>
+                </button>
+                <!-- Exportar CSV -->
+                <button id="exportCsvBtn" class="btn btn-secondary" title="Exportar a CSV">
+                    <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                    <span>CSV</span>
+                </button>
+                <!-- Exportar Excel -->
+                <button id="exportExcelBtn" class="btn btn-secondary" title="Exportar a Excel">
+                    <i data-lucide="file-spreadsheet" style="width: 16px; height: 16px;"></i>
+                    <span>Excel</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Tabla de Datos -->
+        <section class="table-container">
+            <div class="table-scroll">
+            <table id="camionesTable">
+                <colgroup>
+                    <col class="col-nro">
+                    <col class="col-placa">
+                    <col class="col-sucursal">
+                    <col class="col-sistema">
+                    <col class="col-servicio">
+                    <col class="col-estado">
+                    <col class="col-combustible">
+                    <col class="col-flete">
+                    <col class="col-kg">
+                    <col class="col-maples">
+                    <col class="col-util">
+                    <col class="col-factor">
+                    <col class="col-accion">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>Nº</th>
+                    <th>Placa</th>
+                    <th>Sucursal</th>
+                    <th>Sistema</th>
+                    <th>Servicio</th>
+                    <th>Estado Trabajo</th>
+                    <th>Combustible</th>
+                    <th>Flete (Bs)</th>
+                    <th>Cap. KG</th>
+                    <th>Maples</th>
+                    <th>Cap. Útil Kg</th>
+                    <th>F. 0.75</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+                </thead>
+                <tbody id="camionesTableBody">
+                    <!-- Filas dinámicas -->
+                </tbody>
+            </table>
+            </div><!-- .table-scroll -->
+            
+            <!-- Cargando indicador -->
+            <div id="tableLoading" class="table-placeholder">
+                <div class="spinner-large"></div>
+                <p>Cargando lista de camiones...</p>
+            </div>
+
+            <!-- Vacío indicador -->
+            <div id="tableEmpty" class="table-placeholder" style="display: none;">
+                <i data-lucide="inbox" style="width: 48px; height: 48px;"></i>
+                <p>No se encontraron camiones registrados.</p>
+            </div>
+        </section>
+
+        <!-- Panel de Auditoría / Historial -->
+        <section class="audit-panel">
+            <div id="auditHeader" class="audit-header">
+                <h3>
+                    <i data-lucide="activity" style="width: 18px; height: 18px;"></i>
+                    Historial de Sincronización
+                </h3>
+                <i data-lucide="chevron-down" id="auditChevron" style="width: 18px; height: 18px; transition: var(--transition);"></i>
+            </div>
+            
+            <div id="auditContent" class="audit-content">
+                <div id="auditList" class="audit-list">
+                    <!-- Lista de auditoría -->
+                </div>
+            </div>
+        </section>
+        
+        </div><!-- fin tabDashboardContent -->
+
+        <!-- Tab Pago de Flete -->
+        <div id="tabFletesContent" class="tab-content">
+            <section class="stats-grid" id="fleteStats">
+                <!-- KPIs de flete -->
+            </section>
+            <section class="table-container" style="margin-top:1.5rem;">
+                <table id="fletesTable">
+                    <thead>
+                        <tr>
+                            <th>Sucursal</th>
+                            <th>Promedio Flete (Bs)</th>
+                            <th>Total Camiones</th>
+                            <th>Total Flete (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fletesTableBody"></tbody>
+                </table>
+                <div id="fletesLoading" class="table-placeholder" style="display:flex;">
+                    <div class="spinner-large"></div>
+                    <p>Cargando datos de flete...</p>
+                </div>
+                <div id="fletesEmpty" class="table-placeholder" style="display:none;">
+                    <i data-lucide="inbox" style="width: 48px; height: 48px;"></i>
+                    <p>No hay datos de flete disponibles.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Formulario (Crear y Editar) -->
+    <div id="camionModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modalTitle">Registrar Nuevo Camión</h2>
+                <button id="closeModalBtn" class="close-btn">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            
+            <form id="camionForm">
+                <input type="hidden" id="formFilaId">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <!-- Sucursal -->
+                        <div class="form-group">
+                            <label for="formSucursal">Sucursal *</label>
+                            <select id="formSucursal" class="form-input" required>
+                                <option value="">(sin información)</option>
+                                <option value="La Paz">La Paz</option>
+                                <option value="Cochabamba">Cochabamba</option>
+                                <option value="Santa Cruz">Santa Cruz</option>
+                            </select>
+                        </div>
+
+                        <!-- Placa -->
+                        <div class="form-group">
+                            <label for="formPlaca">Nº Placa *</label>
+                            <input type="text" id="formPlaca" class="form-input" placeholder="Ej: 4453-KNL" required>
+                        </div>
+
+                        <!-- Nombre (quien registra) -->
+                        <div class="form-group">
+                            <label for="formModificadoPor">Su Nombre *</label>
+                            <input type="text" id="formModificadoPor" class="form-input" placeholder="Ej: Juan Pérez" required>
+                        </div>
+
+                        <!-- Email (quien registra) -->
+                        <div class="form-group">
+                            <label for="formModificadoPorEmail">Su Email *</label>
+                            <input type="email" id="formModificadoPorEmail" class="form-input" placeholder="Ej: juan@ejemplo.com" required>
+                        </div>
+
+                        <!-- Sistema Camión -->
+                        <div class="form-group">
+                            <label for="formSistemaCamion">Sistema Camión</label>
+                            <select id="formSistemaCamion" class="form-input">
+                                <option value="SIN INFORMACIÓN">(sin información)</option>
+                                <option value="HIBRIDO">HIBRIDO</option>
+                                <option value="SECOS">SECOS</option>
+                                <option value="REFRIGERADO">REFRIGERADO</option>
+                            </select>
+                        </div>
+
+                        <!-- Estado Servicio (al lado de Sistema Camión) -->
+                        <div class="form-group">
+                            <label for="formEstadoServicio">Estado Servicio</label>
+                            <select id="formEstadoServicio" class="form-input">
+                                <option value="EN SERVICIO">EN SERVICIO</option>
+                                <option value="FUERA DE SERVICIO">FUERA DE SERVICIO</option>
+                                <option value="CONSULTAR">CONSULTAR</option>
+                            </select>
+                        </div>
+
+                        <!-- Estado Trabajo -->
+                        <div class="form-group">
+                            <label for="formEstadoTrabajo">Estado Trabajo</label>
+                            <select id="formEstadoTrabajo" class="form-input">
+                                <option value="">(sin información)</option>
+                                <option value="Fijo">Fijo</option>
+                                <option value="Temporal">Temporal</option>
+                            </select>
+                        </div>
+
+                        <!-- Combustible -->
+                        <div class="form-group">
+                            <label for="formCombustible">Tipo combustible</label>
+                            <select id="formCombustible" class="form-input">
+                                <option value="">(sin información)</option>
+                                <option value="GAS-GASOLINA">GAS-GASOLINA</option>
+                                <option value="GASOLINA">GASOLINA</option>
+                                <option value="DIESEL">DIESEL</option>
+                            </select>
+                        </div>
+
+                        <!-- Costo Flete -->
+                        <div class="form-group">
+                            <label for="formCostoFlete">Costo Flete (Bs/viaje)</label>
+                            <input type="number" id="formCostoFlete" class="form-input" placeholder="Ej: 620" min="0" step="0.01" value="0">
+                        </div>
+
+                        <!-- Capacidad KG -->
+                        <div class="form-group">
+                            <label for="formCapacidadKg">Capacidad en KG</label>
+                            <input type="number" id="formCapacidadKg" class="form-input" placeholder="Ej: 1200" min="0" value="0">
+                        </div>
+
+                        <!-- Capacidad Maples (Calculadora activa!) -->
+                        <div class="form-group">
+                            <label for="formCapacidadMaples">Capacidad en Maples</label>
+                            <input type="number" id="formCapacidadMaples" class="form-input" placeholder="Ej: 450" min="0" value="0">
+                        </div>
+
+                        <!-- Capacidad Útil KG (Auto-calculada) -->
+                        <div class="form-group full-width">
+                            <label for="formCapacidadUtilKg" style="color: var(--primary); font-weight: 600;">
+                                Capacidad Útil en Kg (Calculada: Maples × 1.95)
+                            </label>
+                            <input type="number" id="formCapacidadUtilKg" class="form-input" placeholder="Ej: 877.5" min="0" step="0.01" value="0" readonly>
+                        </div>
+
+                        <!-- Factor 0.75 (NUEVO - auto-calculado) -->
+                        <div class="form-group full-width">
+                            <label for="formFactor075" style="color: var(--success); font-weight: 600;">
+                                Factor de Utilización (Calculado: Maples × 0.75)
+                            </label>
+                            <input type="number" id="formFactor075" class="form-input" placeholder="Se calcula automáticamente" min="0" step="0.01" value="0" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="submitFormBtn" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notificaciones -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Lógica de la aplicación -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos DOM
+            const connectionStatus = document.getElementById('connectionStatus');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const localWarningBanner = document.getElementById('localWarningBanner');
+            
+            const statTotal = document.getElementById('statTotal');
+            const statCapacidadKg = document.getElementById('statCapacidadKg');
+            const statCapacidadMaples = document.getElementById('statCapacidadMaples');
+            const statUltimoCambio = document.getElementById('statUltimoCambio');
+            const statUltimoCambioPor = document.getElementById('statUltimoCambioPor');
+            const sucursalStats = document.getElementById('sucursalStats');
+            
+            const filterPlaca = document.getElementById('filterPlaca');
+            const filterSucursal = document.getElementById('filterSucursal');
+            const filterCombustible = document.getElementById('filterCombustible');
+            const filterSistemaCamion = document.getElementById('filterSistemaCamion');
+            const filterEstadoServicio = document.getElementById('filterEstadoServicio');
+            
+            const camionesTable = document.getElementById('camionesTable');
+            const camionesTableBody = document.getElementById('camionesTableBody');
+            const tableLoading = document.getElementById('tableLoading');
+            const tableEmpty = document.getElementById('tableEmpty');
+            
+            const addCamionBtn = document.getElementById('addCamionBtn');
+            
+            const auditHeader = document.getElementById('auditHeader');
+            const auditChevron = document.getElementById('auditChevron');
+            const auditContent = document.getElementById('auditContent');
+            const auditList = document.getElementById('auditList');
+            
+            const camionModal = document.getElementById('camionModal');
+            const camionForm = document.getElementById('camionForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const formFilaId = document.getElementById('formFilaId');
+            
+            const formSucursal = document.getElementById('formSucursal');
+            const formPlaca = document.getElementById('formPlaca');
+            const formModificadoPor = document.getElementById('formModificadoPor');
+            const formModificadoPorEmail = document.getElementById('formModificadoPorEmail');
+            const formSistemaCamion = document.getElementById('formSistemaCamion');
+            const formEstadoServicio = document.getElementById('formEstadoServicio');
+            const formEstadoTrabajo = document.getElementById('formEstadoTrabajo');
+            const formCombustible = document.getElementById('formCombustible');
+            const formCostoFlete = document.getElementById('formCostoFlete');
+            const formCapacidadKg = document.getElementById('formCapacidadKg');
+            const formCapacidadMaples = document.getElementById('formCapacidadMaples');
+            const formCapacidadUtilKg = document.getElementById('formCapacidadUtilKg');
+            const formFactor075 = document.getElementById('formFactor075');
+            
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const cancelModalBtn = document.getElementById('cancelModalBtn');
+
+            const tabDashboard = document.getElementById('tabDashboard');
+            const tabFletes = document.getElementById('tabFletes');
+            const tabDashboardContent = document.getElementById('tabDashboardContent');
+            const tabFletesContent = document.getElementById('tabFletesContent');
+            const fletesTableBody = document.getElementById('fletesTableBody');
+            const fletesLoading = document.getElementById('fletesLoading');
+            const fletesEmpty = document.getElementById('fletesEmpty');
+            const flotaEnServicio = document.getElementById('flotaEnServicio');
+
+            const flotaFueraServicio = document.getElementById('flotaFueraServicio');
+            const flotaConsultar = document.getElementById('flotaConsultar');
+            
+            // Estado local de la aplicación
+            let camiones = [];
+            let appMode = 'local'; // 'sheets' o 'local'
+            let isModalEditing = false;
+            let renderedCount = 0;
+            const CHUNK_SIZE = 50;
+            
+            // Factores de conversión
+            const MAPLE_FACTOR = 1.95;
+            const FACTOR_075 = 0.75;
+
+            // Inicializar Lucide Icons
+            lucide.createIcons();
+
+            // ── Toasts / Notificaciones ──────────────────────────────────
+            function showToast(title, message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                let iconName = 'check-circle';
+                if (type === 'warning') iconName = 'alert-circle';
+                if (type === 'error') iconName = 'x-circle';
+                
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i data-lucide="${iconName}" style="width: 20px; height: 20px;"></i>
+                    </div>
+                    <div class="toast-content">
+                        <h4>${title}</h4>
+                        <p>${message}</p>
+                    </div>
+                    <button class="toast-close">
+                        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                    </button>
+                `;
+                
+                container.appendChild(toast);
+                lucide.createIcons({node: toast});
+                
+                // Mostrar con animación
+                setTimeout(() => toast.classList.add('show'), 50);
+                
+                // Evento cerrar
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                });
+                
+                // Auto-cerrar en 5 segundos
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 5000);
+            }
+
+            // ── Cargar Datos y Actualizar UI ──────────────────────────────
+            async function fetchStatus() {
+                try {
+                    const res = await fetch('/api/status');
+                    const status = await res.json();
+                    
+                    appMode = status.modo;
+                    
+                    // Actualizar indicadores
+                    if (appMode === 'sheets') {
+                        statusDot.className = 'status-dot active';
+                        statusText.textContent = 'Google Sheets Conectado';
+                        localWarningBanner.style.display = 'none';
+                    } else {
+                        statusDot.className = 'status-dot warning';
+                        statusText.textContent = 'Modo Local (Excel)';
+                        localWarningBanner.style.display = 'flex';
+                    }
+                    
+                    statUltimoCambio.textContent = status.ultimo_cambio || 'Ninguno';
+                    const por = status.ultimo_cambio_por || '';
+                    const email = status.ultimo_cambio_email || '';
+                    statUltimoCambioPor.textContent = por
+                        ? email ? `Por: ${por} (${email})` : `Por: ${por}`
+                        : 'Sin registros';
+                    if (status.ultimo_cambio) {
+                        statUltimoCambio.style.fontSize = '1rem';
+                    }
+                    
+                    // Badge de pendientes en el botón Recargar
+                    const badge = document.getElementById('pendingBadge');
+                    const n = status.pendientes_sincronizacion || 0;
+                    if (n > 0) {
+                        badge.textContent = n > 99 ? '99+' : n;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } catch (err) {
+                    console.error('Error fetching status:', err);
+                }
+            }
+
+            async function fetchCamiones() {
+                tableLoading.style.display = 'flex';
+                tableEmpty.style.display = 'none';
+                camionesTableBody.innerHTML = '';
+                
+                try {
+                    const res = await fetch('/api/camiones');
+                    if (!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.detail || `Error del servidor (${res.status})`);
+                    }
+                    camiones = await res.json();
+                    
+                    renderTable();
+                    calculateStats();
+                    return true;
+                } catch (err) {
+                    showToast('Error', 'No se pudieron cargar los camiones.', 'error');
+                    console.error(err);
+                    return false;
+                } finally {
+                    tableLoading.style.display = 'none';
+                }
+            }
+
+            async function fetchAuditoria() {
+                try {
+                    const res = await fetch('/api/auditoria');
+                    const auditorias = await res.json();
+                    
+                    auditList.innerHTML = '';
+                    if (auditorias.length === 0) {
+                        auditList.innerHTML = `<p style="color: var(--text-dimmed); text-align: center; padding: 1rem;">No hay operaciones registradas en el historial.</p>`;
+                        return;
+                    }
+                    
+                    auditorias.forEach(a => {
+                        const item = document.createElement('div');
+                        item.className = 'audit-item';
+                        
+                        let badgeClass = 'pendiente';
+                        if (a.estado === 'éxito') badgeClass = 'exito';
+                        if (a.estado === 'fallido') badgeClass = 'fallido';
+                        
+                        const valObj = JSON.parse(a.valores);
+                        const placaInfo = valObj.placa ? `Camión Placa ${valObj.placa}` : `Fila ID ${a.fila_id}`;
+                        const actionTitle = `${a.accion === 'crear' ? 'Registro' : 'Modificación'} - ${placaInfo}`;
+                        
+                        item.innerHTML = `
+                            <div class="audit-meta">
+                                <span class="audit-title">${actionTitle}</span>
+                                <span class="audit-time">${a.creado_en}</span>
+                            </div>
+                            <div>
+                                <span class="audit-badge ${badgeClass}">${a.estado}</span>
+                            </div>
+                        `;
+                        auditList.appendChild(item);
+                    });
+                } catch (err) {
+                    console.error('Error fetching audits:', err);
+                }
+            }
+
+            function calculateStats() {
+                statTotal.textContent = camiones.length;
+                
+                let totalKg = 0;
+                let totalMaples = 0;
+                let sucursales = {};
+                let enServicio = 0, fueraServicio = 0, consultar = 0;
+                
+                camiones.forEach(c => {
+                    totalKg += c.capacidad_util_kg || 0;
+                    totalMaples += c.capacidad_maples || 0;
+                    if (c.sucursal) {
+                        if (!sucursales[c.sucursal]) sucursales[c.sucursal] = 0;
+                        sucursales[c.sucursal]++;
+                    }
+                    const sv = (c.estado_servicio || 'EN SERVICIO').toUpperCase();
+                    if (sv === 'EN SERVICIO') enServicio++;
+                    else if (sv === 'FUERA DE SERVICIO') fueraServicio++;
+                    else if (sv === 'CONSULTAR') consultar++;
+                });
+                
+                statCapacidadKg.textContent = `${(totalKg/1000).toFixed(1)}k Kg`;
+                statCapacidadMaples.textContent = `${totalMaples.toLocaleString('es-BO')} Maples`;
+                
+                // Flota status KPIs
+                flotaEnServicio.textContent = enServicio;
+                flotaFueraServicio.textContent = fueraServicio;
+                flotaConsultar.textContent = consultar;
+                
+                // Tarjetas dinámicas por sucursal
+                const colors = ['green', 'orange', 'blue'];
+                const icons = ['building-2', 'store', 'warehouse'];
+                let i = 0;
+                sucursalStats.innerHTML = Object.entries(sucursales).map(([s, n]) => {
+                    const icon = icons[i % icons.length];
+                    const color = colors[i % colors.length]; i++;
+                    return `
+                        <div class="stat-card ${color}" style="padding:0.75rem 1rem;">
+                            <div class="stat-info">
+                                <p>${s}</p>
+                                <div class="value" style="font-size:1.15rem;">${n}</div>
+                                <div class="subtext">Camiones</div>
+                            </div>
+                            <div class="stat-icon" style="padding:0.4rem;">
+                                <i data-lucide="${icon}" style="width:18px;height:18px;"></i>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                sucursalStats.style.gridTemplateColumns = `repeat(${Math.min(Object.keys(sucursales).length, 3)}, 1fr)`;
+                lucide.createIcons({node: sucursalStats});
+            }
+
+            function getFilteredCamiones() {
+                const queryPlaca = filterPlaca.value.trim().toLowerCase();
+                const selSucursal = filterSucursal.value;
+                const selCombustible = filterCombustible.value;
+                const selSistema = filterSistemaCamion.value;
+                const selEstadoServicio = filterEstadoServicio.value;
+                return camiones.filter(c => {
+                    const matchesPlaca = c.placa.toLowerCase().includes(queryPlaca);
+                    const matchesSucursal = selSucursal === '' || c.sucursal === selSucursal;
+                    const matchesCombustible = selCombustible === '' || c.tipo_combustible === selCombustible;
+                    const matchesSistema = selSistema === '' || c.sistema_camion === selSistema;
+                    const matchesEstadoServicio = selEstadoServicio === '' || (c.estado_servicio || 'EN SERVICIO') === selEstadoServicio;
+                    return matchesPlaca && matchesSucursal && matchesCombustible && matchesSistema && matchesEstadoServicio;
+                });
+            }
+
+            function renderTable() {
+                camionesTableBody.innerHTML = '';
+                const loadMoreRow = document.getElementById('loadMoreRow');
+                if (loadMoreRow) loadMoreRow.remove();
+                
+                const filtered = getFilteredCamiones();
+                if (filtered.length === 0) {
+                    tableEmpty.style.display = 'flex';
+                    camionesTable.style.display = 'table';
+                    return;
+                }
+                
+                tableEmpty.style.display = 'none';
+                camionesTable.style.display = 'table';
+                
+                renderedCount = 0;
+                appendChunk(filtered, 0);
+            }
+
+            function appendChunk(filtered, start) {
+                const end = Math.min(start + CHUNK_SIZE, filtered.length);
+                let html = '';
+                for (let i = start; i < end; i++) {
+                    const c = filtered[i];
+                    const factorVal = ((c.capacidad_maples || 0) * 0.75).toFixed(2);
+                    const servicioClass = c.estado_servicio === 'EN SERVICIO' ? 'sincronizado' :
+                        c.estado_servicio === 'FUERA DE SERVICIO' ? 'error' : 'local';
+                    html += `
+                        <tr>
+                            <td style="font-weight: 500;color:var(--text-muted);text-align:center;">${i + 1}</td>
+                            <td><span class="placa-badge">${c.placa}</span></td>
+                            <td style="font-weight:500;">${c.sucursal}</td>
+                            <td><span class="sync-badge ${c.sistema_camion === 'SIN INFORMACIÓN' ? 'local' : 'sincronizado'}">${c.sistema_camion || 'SIN INFORMACIÓN'}</span></td>
+                            <td><span class="sync-badge ${servicioClass}">${c.estado_servicio || 'EN SERVICIO'}</span></td>
+                            <td>${c.estado_trabajo}</td>
+                            <td style="font-weight:500;">${c.tipo_combustible}</td>
+                            <td style="font-weight:600;text-align:right;">${c.costo_flete ? c.costo_flete.toFixed(2) : '0.00'}</td>
+                            <td style="text-align:right;">${c.capacidad_kg ? c.capacidad_kg.toLocaleString('es-BO') : '0'}</td>
+                            <td style="font-weight:600;color:var(--success);text-align:right;">${c.capacidad_maples ? c.capacidad_maples.toLocaleString('es-BO') : '0'}</td>
+                            <td style="font-weight:600;color:var(--primary);text-align:right;">${c.capacidad_util_kg ? c.capacidad_util_kg.toLocaleString('es-BO') : '0.00'}</td>
+                            <td style="font-weight:600;color:var(--success);text-align:right;">${factorVal}</td>
+                            <td style="text-align:center;">
+                                <button class="edit-action-btn" data-fila="${c.fila_id}" title="Editar">
+                                    <i data-lucide="edit-3" style="width:16px;height:16px;"></i>
+                                </button>
+                                <button class="delete-action-btn" data-fila="${c.fila_id}" data-placa="${c.placa}" title="Eliminar" style="margin-left:4px;background:none;border:none;color:var(--danger);cursor:pointer;">
+                                    <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+                camionesTableBody.insertAdjacentHTML('beforeend', html);
+                renderedCount = end;
+                
+                // Cargar más?
+                const existing = document.getElementById('loadMoreRow');
+                if (existing) existing.remove();
+                
+                if (end < filtered.length) {
+                    const wrap = document.querySelector('.table-scroll');
+                    const div = document.createElement('div');
+                    div.id = 'loadMoreRow';
+                    div.className = 'load-more-row';
+                    div.innerHTML = `
+                        <div class="counter">Mostrando ${end} de ${filtered.length} camiones</div>
+                        <button class="btn btn-secondary" id="loadMoreBtn">
+                            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
+                            Cargar más (${Math.min(CHUNK_SIZE, filtered.length - end)})
+                        </button>
+                    `;
+                    wrap.after(div);
+                    lucide.createIcons({node: div});
+                    document.getElementById('loadMoreBtn').addEventListener('click', () => {
+                        appendChunk(filtered, end);
+                    });
+                } else if (filtered.length > CHUNK_SIZE) {
+                    const wrap = document.querySelector('.table-scroll');
+                    const div = document.createElement('div');
+                    div.id = 'loadMoreRow';
+                    div.className = 'load-more-row';
+                    div.innerHTML = `<div class="counter" style="color:var(--success);">Mostrados todos los ${filtered.length} camiones</div>`;
+                    wrap.after(div);
+                }
+                
+                lucide.createIcons({node: camionesTableBody});
+                
+                // Registrar evento editar para todos los botones de este chunk
+                camionesTableBody.querySelectorAll('.edit-action-btn').forEach(btn => {
+                    if (!btn._listener) {
+                        btn._listener = true;
+                        btn.addEventListener('click', () => {
+                            const fila = parseInt(btn.getAttribute('data-fila'), 10);
+                            openEditModal(fila);
+                        });
+                    }
+                });
+                // Registrar evento eliminar
+                camionesTableBody.querySelectorAll('.delete-action-btn').forEach(btn => {
+                    if (!btn._delListener) {
+                        btn._delListener = true;
+                        btn.addEventListener('click', () => {
+                            const fila = parseInt(btn.getAttribute('data-fila'), 10);
+                            const placa = btn.getAttribute('data-placa');
+                            confirmDeleteCamion(fila, placa);
+                        });
+                    }
+                });
+            }
+
+            // ── Conversor Capacidad Maples <-> Kg ──────────────────────────
+            formCapacidadMaples.addEventListener('input', () => {
+                const maples = parseFloat(formCapacidadMaples.value) || 0;
+                formCapacidadUtilKg.value = Math.round(maples * MAPLE_FACTOR * 100) / 100;
+                formFactor075.value = Math.round(maples * FACTOR_075 * 100) / 100;
+            });
+
+
+            // ── Modales Operaciones ──────────────────────────────────────
+            function openAddModal() {
+                isModalEditing = false;
+                modalTitle.textContent = 'Registrar Nuevo Camión';
+                camionForm.reset();
+                formFilaId.value = '';
+                
+                // Habilitar campos
+                formPlaca.disabled = false;
+                formSucursal.disabled = false;
+                formModificadoPor.disabled = false;
+                formModificadoPorEmail.disabled = false;
+                formEstadoServicio.value = 'EN SERVICIO';
+
+                camionModal.classList.add('show');
+            }
+
+            function confirmDeleteCamion(filaId, placa) {
+                if (!confirm(`¿Está seguro de eliminar el camión ${placa}?\nEsta acción lo borrará de la base de datos y de Google Sheets.`)) return;
+                
+                // Optimistic removal: delete locally and re-render immediately
+                camiones = camiones.filter(c => c.fila_id !== filaId);
+                renderTable();
+                calculateStats();
+                showToast('Eliminado', `Camión ${placa} eliminado.`, 'success');
+                
+                fetch(`/api/camiones/${filaId}`, { method: 'DELETE' })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            fetchStatus();
+                            fetchAuditoria();
+                        } else {
+                            showToast('Error', data.detail || 'No se pudo eliminar en el servidor.', 'error');
+                            fetchCamiones();
+                        }
+                    })
+                    .catch(err => {
+                        showToast('Error', err.message, 'error');
+                        fetchCamiones();
+                    });
+            }
+
+            function openEditModal(filaId) {
+                const camion = camiones.find(c => c.fila_id === filaId);
+                if (!camion) return;
+                
+                isModalEditing = true;
+                modalTitle.textContent = `Editar Camión (Fila ${filaId})`;
+                formFilaId.value = filaId;
+                
+                formSucursal.value = camion.sucursal;
+                formPlaca.value = camion.placa;
+                formModificadoPor.value = camion.modificado_por || '';
+                formModificadoPorEmail.value = camion.modificado_por_email || '';
+                formSistemaCamion.value = camion.sistema_camion || 'SIN INFORMACIÓN';
+                formEstadoServicio.value = camion.estado_servicio || 'EN SERVICIO';
+                formEstadoTrabajo.value = camion.estado_trabajo;
+                formCombustible.value = camion.tipo_combustible;
+                formCostoFlete.value = camion.costo_flete || 0;
+                formCapacidadKg.value = camion.capacidad_kg || 0;
+                formCapacidadMaples.value = camion.capacidad_maples || 0;
+                formCapacidadUtilKg.value = camion.capacidad_util_kg || 0;
+                const maples = camion.capacidad_maples || 0;
+                formFactor075.value = Math.round(maples * FACTOR_075 * 100) / 100;
+                
+                // Deshabilitar campos clave para evitar inconsistencias con la cola
+                formPlaca.disabled = true;
+                formSucursal.disabled = true;
+                
+                camionModal.classList.add('show');
+            }
+
+            function closeModal() {
+                camionModal.classList.remove('show');
+                formModificadoPor.disabled = false;
+                formModificadoPorEmail.disabled = false;
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelModalBtn.addEventListener('click', closeModal);
+            addCamionBtn.addEventListener('click', openAddModal);
+
+            // Cerrar haciendo clic fuera
+            camionModal.addEventListener('click', (e) => {
+                if (e.target === camionModal) closeModal();
+            });
+
+            // ── Envío del Formulario (Submit) ────────────────────────────
+            camionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                function pick(v, d) { return v && v !== '' ? v : d; }
+                const maplesVal = parseInt(formCapacidadMaples.value, 10) || 0;
+                const payload = {
+                    estado_trabajo: pick(formEstadoTrabajo.value, 'Fijo'),
+                    tipo_combustible: pick(formCombustible.value, 'GAS-GASOLINA'),
+                    costo_flete: parseFloat(formCostoFlete.value) || 0,
+                    capacidad_kg: parseInt(formCapacidadKg.value, 10) || 0,
+                    capacidad_maples: maplesVal,
+                    capacidad_util_kg: parseFloat(formCapacidadUtilKg.value) || 0,
+                    sistema_camion: pick(formSistemaCamion.value, 'SIN INFORMACIÓN'),
+                    estado_servicio: pick(formEstadoServicio.value, 'EN SERVICIO'),
+                    modificado_por: formModificadoPor.value.trim(),
+                    modificado_por_email: formModificadoPorEmail.value.trim()
+                };
+                
+                if (!payload.modificado_por || !payload.modificado_por_email) {
+                    showToast('Campos requeridos', 'Debe ingresar su nombre y email.', 'warning');
+                    document.getElementById('submitFormBtn').disabled = false;
+                    document.getElementById('submitFormBtn').textContent = 'Guardar';
+                    return;
+                }
+
+                // Siempre enviar sucursal y placa (en edición, el backend solo actualiza si viene en el body)
+                payload.sucursal = formSucursal.value;
+                payload.placa = formPlaca.value.trim().toUpperCase();
+
+                const submitBtn = document.getElementById('submitFormBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Guardando...';
+
+                try {
+                    let url = '/api/camiones';
+                    let method = 'POST';
+                    
+                    if (isModalEditing) {
+                        const fila = formFilaId.value;
+                        url = `/api/camiones/${fila}`;
+                        method = 'PUT';
+                    }
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const resData = await response.json();
+
+                    if (response.ok && resData.success) {
+                        showToast(
+                            isModalEditing ? 'Modificado' : 'Registrado',
+                            resData.message,
+                            'success'
+                        );
+                        closeModal();
+                        
+                        // Recargar todo
+                        await fetchCamiones();
+                        await fetchStatus();
+                        await fetchAuditoria();
+                    } else {
+                        showToast(
+                            'Error en Registro',
+                            resData.detail || resData.message || 'Respuesta inesperada.',
+                            'error'
+                        );
+                    }
+                } catch (err) {
+                    showToast('Error de Conexión', err.message, 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Guardar';
+                }
+            });
+
+            // ── Exportar CSV ────────────────────────────────────────────
+            document.getElementById('exportCsvBtn').addEventListener('click', () => {
+                const filtered = getFilteredCamiones();
+                if (!filtered.length) {
+                    showToast('Sin datos', 'No hay camiones para exportar.', 'warning');
+                    return;
+                }
+                const headers = ['Nº','Placa','Sucursal','Sistema','Servicio','Estado Trabajo','Combustible','Flete (Bs)','Cap.KG','Maples','Cap.Útil Kg','F.0.75'];
+                const lines = [headers.join(',')];
+                filtered.forEach((c, i) => {
+                    const row = [
+                        i+1, c.placa, c.sucursal, c.sistema_camion, c.estado_servicio || 'EN SERVICIO',
+                        c.estado_trabajo, c.tipo_combustible, c.costo_flete || 0,
+                        c.capacidad_kg || 0, c.capacidad_maples || 0, c.capacidad_util_kg || 0,
+                        ((c.capacidad_maples || 0) * 0.75).toFixed(2)
+                    ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+                    lines.push(row);
+                });
+                const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `camiones_${new Date().toISOString().slice(0,10)}.csv`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                showToast('Exportado', `${filtered.length} camiones exportados a CSV.`, 'success');
+            });
+
+            // ── Exportar Excel ───────────────────────────────────────────
+            document.getElementById('exportExcelBtn').addEventListener('click', () => {
+                const filtered = getFilteredCamiones();
+                if (!filtered.length) {
+                    showToast('Sin datos', 'No hay camiones para exportar.', 'warning');
+                    return;
+                }
+                const params = new URLSearchParams();
+                if (filterPlaca.value.trim()) params.set('placa', filterPlaca.value.trim());
+                if (filterSucursal.value) params.set('sucursal', filterSucursal.value);
+                if (filterCombustible.value) params.set('tipo_combustible', filterCombustible.value);
+                if (filterSistemaCamion.value) params.set('sistema_camion', filterSistemaCamion.value);
+                if (filterEstadoServicio.value) params.set('estado_servicio', filterEstadoServicio.value);
+                const qs = params.toString();
+                const link = document.createElement('a');
+                link.href = '/api/camiones/export/xlsx' + (qs ? '?' + qs : '');
+                link.download = `camiones_${new Date().toISOString().slice(0,10)}.xlsx`;
+                link.click();
+                showToast('Exportado', `Camiones exportados a Excel con filtros aplicados.`, 'success');
+            });
+
+            // ── Recarga Local ───────────────────────────────────────────
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', async () => {
+                refreshBtn.disabled = true;
+                const ok = await fetchCamiones();
+                if (ok) {
+                    await fetchStatus();
+                    showToast('Actualizado', 'Datos locales recargados.', 'success');
+                }
+                refreshBtn.disabled = false;
+            });
+
+            // Agregar animación de rotación al cargar
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes spin-rotate {
+                    to { transform: rotate(360deg); }
+                }
+                .spin-animation {
+                    animation: spin-rotate 1s linear infinite;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // ── Tabs ────────────────────────────────────────────────────
+            function switchTab(tab) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                if (tab === 'dashboard') {
+                    tabDashboard.classList.add('active');
+                    tabDashboardContent.classList.add('active');
+                } else {
+                    tabFletes.classList.add('active');
+                    tabFletesContent.classList.add('active');
+                    loadFletes();
+                }
+            }
+
+            tabDashboard.addEventListener('click', () => switchTab('dashboard'));
+            tabFletes.addEventListener('click', () => switchTab('fletes'));
+
+            async function loadFletes() {
+                fletesLoading.style.display = 'flex';
+                fletesEmpty.style.display = 'none';
+                fletesTableBody.innerHTML = '';
+                try {
+                    const res = await fetch('/api/fletes');
+                    const data = await res.json();
+                    fletesLoading.style.display = 'none';
+                    if (!data || data.length === 0) {
+                        fletesEmpty.style.display = 'flex';
+                        return;
+                    }
+                    const fleteStats = document.getElementById('fleteStats');
+                    fleteStats.innerHTML = data.map(s => `
+                        <div class="stat-card orange">
+                            <div class="stat-info">
+                                <p>${s.sucursal}</p>
+                                <div class="value" style="font-size:1.6rem;">Bs ${s.promedio_flete.toLocaleString('es-BO')}</div>
+                                <div class="subtext">${s.total_camiones} camiones · Total Bs ${s.total_flete.toLocaleString('es-BO')}</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="truck" style="width:24px;height:24px;"></i>
+                            </div>
+                        </div>
+                    `).join('');
+                    lucide.createIcons({node: fleteStats});
+                    fletesTableBody.innerHTML = data.map(s => `
+                        <tr>
+                            <td style="font-weight:600;">${s.sucursal}</td>
+                            <td style="font-weight:600;color:var(--success);">Bs ${s.promedio_flete.toLocaleString('es-BO')}</td>
+                            <td>${s.total_camiones}</td>
+                            <td>Bs ${s.total_flete.toLocaleString('es-BO')}</td>
+                        </tr>
+                    `).join('');
+                } catch (err) {
+                    fletesLoading.style.display = 'none';
+                    fletesEmpty.style.display = 'flex';
+                    fletesEmpty.innerHTML = '<i data-lucide="alert-circle" style="width:48px;height:48px;"></i><p>Error al cargar datos de flete.</p>';
+                    console.error(err);
+                }
+            }
+
+            // ── Filtros Activos ──────────────────────────────────────────
+            filterPlaca.addEventListener('input', renderTable);
+            filterSucursal.addEventListener('change', renderTable);
+            filterCombustible.addEventListener('change', renderTable);
+            filterSistemaCamion.addEventListener('change', renderTable);
+            filterEstadoServicio.addEventListener('change', renderTable);
+
+            // ── Panel de Auditoría colapsable ───────────────────────────
+            auditHeader.addEventListener('click', () => {
+                auditContent.classList.toggle('show');
+                if (auditContent.classList.contains('show')) {
+                    auditChevron.style.transform = 'rotate(180deg)';
+                    fetchAuditoria();
+                } else {
+                    auditChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // ── Loop de actualización de estado automático (Tiempo Real) ──
+            // Consultamos el estado y la auditoría cada 10 segundos para ver si la cola asíncrona avanza.
+            setInterval(async () => {
+                try {
+                    await fetchStatus();
+                    // Si la auditoría está desplegada, la actualizamos
+                    if (auditContent.classList.contains('show')) {
+                        await fetchAuditoria();
+                    }
+                    // Si hay elementos pendientes en la UI, recargamos el listado para ver si cambiaron de estado
+                    const hasPending = camiones.some(c => c.estado_sincronizacion === 'pendiente_insercion' || c.estado_sincronizacion === 'pendiente_actualizacion');
+                    if (hasPending) {
+                        await fetchCamiones();
+                    }
+                } catch (err) {
+                    // Silencioso para no interrumpir el loop
+                }
+            }, 10000);
+
+            // ── Column Resize (draggable handles) ──────────────────────
+            const RESIZE_MIN = 55;
+            const RESIZE_MAX = 450;
+            function initColumnResize() {
+                const table = document.querySelector('table');
+                if (!table) return;
+                table.querySelectorAll('.resize-handle').forEach(h => h.remove());
+                let guide = document.getElementById('resize-guide-line');
+                if (!guide) {
+                    guide = document.createElement('div');
+                    guide.id = 'resize-guide-line';
+                    guide.className = 'resize-guide';
+                    document.body.appendChild(guide);
+                }
+                const headers = table.querySelectorAll('thead th');
+                headers.forEach(th => {
+                    const handle = document.createElement('div');
+                    handle.className = 'resize-handle';
+                    th.appendChild(handle);
+                    let startX, startWidth;
+                    function onMove(e) {
+                        const cx = e.clientX || e.touches?.[0]?.clientX;
+                        const dx = cx - startX;
+                        const newW = Math.min(RESIZE_MAX, Math.max(RESIZE_MIN, startWidth + dx));
+                        th.style.width = newW + 'px';
+                        const colIdx = Array.from(th.parentNode.children).indexOf(th);
+                        const col = table.querySelector(`colgroup col:nth-child(${colIdx+1})`);
+                        if (col) col.style.width = newW + 'px';
+                        guide.style.left = (cx - 1) + 'px';
+                        guide.style.display = 'block';
+                    }
+                    function onUp() {
+                        handle.classList.remove('resizing');
+                        guide.style.display = 'none';
+                        document.removeEventListener('mousemove', onMove);
+                        document.removeEventListener('mouseup', onUp);
+                        document.removeEventListener('touchmove', onMove);
+                        document.removeEventListener('touchend', onUp);
+                    }
+                    handle.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        startX = e.clientX;
+                        startWidth = th.offsetWidth;
+                        handle.classList.add('resizing');
+                        guide.style.display = 'block';
+                        guide.style.left = (e.clientX - 1) + 'px';
+                        document.addEventListener('mousemove', onMove);
+                        document.addEventListener('mouseup', onUp);
+                    });
+                    handle.addEventListener('touchstart', (e) => {
+                        startX = e.touches[0].clientX;
+                        startWidth = th.offsetWidth;
+                        handle.classList.add('resizing');
+                        document.addEventListener('touchmove', onMove);
+                        document.addEventListener('touchend', onUp);
+                    }, {passive: true});
+                });
+            }
+            // Re-init after each render
+            const origRender = renderTable;
+            renderTable = function() {
+                origRender.call(this);
+                initColumnResize();
+            };
+
+            // ── Carga Inicial ────────────────────────────────────────────
+            (async () => {
+                await fetchStatus();
+                await fetchCamiones();
+                await fetchAuditoria();
+            })();
+
+            // ── Instalación PWA ──────────────────────────────────────────
+            let deferredPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                const banner = document.createElement('div');
+                banner.id = 'install-banner-camiones';
+                banner.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#d81a1b;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;z-index:9999;box-shadow:0 8px 24px rgba(216,26,27,0.3);display:flex;align-items:center;gap:10px;font-family:var(--font-family-body,system-ui);';
+                banner.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Instalar Sofía Ltda';
+                banner.onclick = () => { deferredPrompt.prompt(); };
+                document.body.appendChild(banner);
+                deferredPrompt.userChoice.then(() => { banner.remove(); deferredPrompt = null; });
+            });
+            window.addEventListener('appinstalled', () => {
+                const b = document.getElementById('install-banner-camiones');
+                if (b) b.remove();
+            });
+        });
+    </script>
+</body>
+</html>

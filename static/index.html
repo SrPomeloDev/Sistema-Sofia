@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#d81a1b">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/icons/logo-192.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Sofía Ltda - Sistema Integrado</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-header {
+            padding: 2.5rem 1.5rem 1rem;
+            text-align: center;
+        }
+        .app-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .app-logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(216,26,27,0.2);
+        }
+        .app-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.02em;
+        }
+        .app-header p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.35rem;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .module-card {
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
+        }
+        .module-card:hover {
+            border-color: rgba(216, 26, 27, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -10px rgba(216, 26, 27, 0.15), 0 8px 16px -8px rgba(0,0,0,0.05);
+        }
+        .module-card .icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(216, 26, 27, 0.08);
+            color: #d81a1b;
+        }
+        .module-card h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .module-card p {
+            color: #475569;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .module-card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            background: rgba(34,197,94,0.12);
+            color: #16a34a;
+            align-self: flex-start;
+        }
+        .footer {
+            text-align: center;
+            padding: 2.5rem;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: auto;
+        }
+        @media (max-width: 640px) {
+            .module-grid { grid-template-columns: 1fr; padding: 1rem; }
+            .app-header h1 { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="app-logo">
+            <img src="/static/icons/logo-192.svg" alt="Sofía Ltda" width="48" height="48">
+            <h1>Servicios Logísticos</h1>
+        </div>
+        <p>Sistema Integrado de Gestión — Sofía Ltda.</p>
+    </header>
+    
+    <div class="module-grid">
+        <a href="/camiones" class="module-card">
+            <div class="icon"><i data-lucide="truck" style="width:24px;height:24px;"></i></div>
+            <h2>Sistema de Camiones Fijos</h2>
+            <p>Gestión de flota, sincronización con Google Sheets, KPIs por sucursal y control de fletes.</p>
+            <span class="badge"><i data-lucide="check" style="width:10px;height:10px;"></i> Activo</span>
+        </a>
+        
+        <!-- Placeholder for future modules -->
+        <div class="module-card" style="opacity:0.55; cursor:default; background: rgba(255,255,255,0.6);">
+            <div class="icon" style="background:rgba(100,116,139,0.08); color:#64748b;"><i data-lucide="plus" style="width:24px;height:24px;"></i></div>
+            <h2 style="color:#64748b;">Nuevo Módulo</h2>
+            <p style="color:#64748b;">Espacio disponible para futuros módulos del sistema integrado.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Sofía Ltda. &copy; 2026 &mdash; v1.0.0
+    </div>
+    
+    <script>
+        lucide.createIcons();
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+        }
+        // Install prompt handler
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show a small install banner
+            const banner = document.createElement('div');
+            banner.id = 'install-banner';
+            banner.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#d81a1b;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;z-index:9999;box-shadow:0 8px 24px rgba(216,26,27,0.3);display:flex;align-items:center;gap:10px;font-family:system-ui,sans-serif;';
+            banner.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Instalar Sofía Ltda';
+            banner.onclick = () => { deferredPrompt.prompt(); };
+            document.body.appendChild(banner);
+            deferredPrompt.userChoice.then(() => { banner.remove(); deferredPrompt = null; });
+        });
+        window.addEventListener('appinstalled', () => {
+            const b = document.getElementById('install-banner');
+            if (b) b.remove();
+        });
+    </script>
+</body>
+</html>

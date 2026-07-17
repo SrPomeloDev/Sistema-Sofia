@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+
+# Base de datos local
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema
+*.log
+Thumbs.db
+.DS_Store
+
+# Proyectos legacy
+update-sheet-app/
+start_server.py
+
+# Excel backups / temporales
+CAMIONES CBBA.xlsx
+CAMIONES LPZ.xlsx
+CAMIONES SCZ.xlsx
+
+# Reportes HTML viejos (extraídos de sheets)
+DB.html
+Hoja1.html
+LISTA CAMIONES 2024.html
