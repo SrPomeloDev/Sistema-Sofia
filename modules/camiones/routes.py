@@ -468,7 +468,7 @@ async def force_sync():
 
         camiones = []
         for obj in rows:
-            camiones.append({
+            entry = {
                 "fila_id": obj.get("fila_id", 0),
                 "nro": str(obj.get("nro", "")),
                 "placa": str(obj.get("placa", "")),
@@ -479,9 +479,12 @@ async def force_sync():
                 "capacidad_kg": int(obj.get("capacidad_kg", 0)),
                 "capacidad_maples": int(obj.get("capacidad_maples", 0)),
                 "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
-            })
+            }
+            entry["sistema_camion"] = obj.get("sistema_camion") or "SIN INFORMACIÓN"
+            entry["estado_servicio"] = obj.get("estado_servicio") or "EN SERVICIO"
+            camiones.append(entry)
 
-        # Preserve local fields not stored in the sheet
+        # Preserve local fields over sheet values for existing records
         camiones_local = {c.placa: c for c in await obtener_todos_camiones()}
         for c in camiones:
             placa = c["placa"]
@@ -489,9 +492,6 @@ async def force_sync():
                 local = camiones_local[placa]
                 c["sistema_camion"] = getattr(local, "sistema_camion", "SIN INFORMACIÓN")
                 c["estado_servicio"] = getattr(local, "estado_servicio", "EN SERVICIO")
-            else:
-                c["sistema_camion"] = "SIN INFORMACIÓN"
-                c["estado_servicio"] = "EN SERVICIO"
 
         await upsert_camiones_desde_sheets(camiones)
         return {"success": True, "message": f"Sincronizados/actualizados {len(camiones)} camiones."}
