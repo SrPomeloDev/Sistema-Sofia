@@ -1,9 +1,10 @@
+import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, Response
 from modules.camiones import router as camiones_router, init_module, shutdown_module
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,18 @@ app.include_router(camiones_router)
 @app.get("/")
 async def root():
     return FileResponse("static/index.html")
+
+@app.get("/sw.js")
+async def service_worker():
+    """Sirve el service worker con scope raíz para PWA en iOS/Android."""
+    sw_path = os.path.join("static", "sw.js")
+    with open(sw_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return Response(
+        content=content,
+        media_type="application/javascript",
+        headers={"Service-Worker-Allowed": "/"}
+    )
 
 @app.get("/favicon.ico")
 async def favicon():

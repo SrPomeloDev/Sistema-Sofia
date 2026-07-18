@@ -373,7 +373,7 @@
         
         // PWA Install Logic
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+            navigator.serviceWorker.register('/sw.js', {scope: '/'}).catch(() => {});
         }
         let deferredPrompt;
         const banner = document.getElementById('installBanner');
