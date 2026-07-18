@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Camiones | Sofía Ltda</title>
+    <meta name="description" content="Acceso al sistema de gestión de camiones — Sofía Ltda Bolivia">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           🎨 DESIGN SYSTEM — Sofía Ltda (Login Page)
+           ═══════════════════════════════════════════════════════════════
+           Para cambiar la paleta de colores, modifica SOLO estas variables.
+           ═══════════════════════════════════════════════════════════════ */
+        :root {
+            /* ── Paleta Primaria (Rojo Sofía) ─────────────────────────── */
+            --color-primary: #C41E24;
+            --color-primary-hover: #A01820;
+            --color-primary-light: #FEF2F2;
+            --color-primary-glow: rgba(196, 30, 36, 0.15);
+
+            /* ── Paleta Neutra ────────────────────────────────────────── */
+            --color-bg: #FFFFFF;
+            --color-surface: #FFFFFF;
+            --color-border: #E5E7EB;
+            --color-border-focus: #C41E24;
+            --color-text: #111827;
+            --color-text-secondary: #4B5563;
+            --color-text-muted: #9CA3AF;
+
+            /* ── Estados ──────────────────────────────────────────────── */
+            --color-error: #DC2626;
+            --color-error-bg: #FEF2F2;
+
+            /* ── Tipografía ───────────────────────────────────────────── */
+            --font-title: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            /* ── Bordes y Sombras ─────────────────────────────────────── */
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 8px;
+            --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+            --shadow-input-focus: 0 0 0 3px rgba(196, 30, 36, 0.12);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ── Reset ────────────────────────────────────────────────────── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ── Body — Layout Dividido ────────────────────────────────────── */
+        body {
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            background: var(--color-bg);
+        }
+
+        /* ── Panel Izquierdo — Branding ────────────────────────────────── */
+        .brand-panel {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 45%;
+            min-height: 100vh;
+            background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-hover) 60%, #7A1015 100%);
+            color: #FFFFFF;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+            animation: float-bg 20s ease-in-out infinite;
+        }
+
+        @keyframes float-bg {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5%, 3%); }
+        }
+
+        .brand-panel .brand-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .brand-panel .brand-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .brand-panel h2 {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
+        }
+
+        .brand-panel p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        .brand-panel .brand-features {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .brand-panel .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .brand-panel .feature-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.6);
+            flex-shrink: 0;
+        }
+
+        /* ── Panel Derecho — Formulario ────────────────────────────────── */
+        .form-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--color-bg);
+        }
+
+        .login-box {
+            width: 400px;
+            max-width: 100%;
+        }
+
+        .login-box .logo-mobile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-box .logo-mobile img {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(196, 30, 36, 0.2);
+        }
+
+        .login-box .logo-mobile span {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .login-box h1 {
+            font-family: var(--font-title);
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .login-box p.sub {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* ── Form Labels ─────────────────────────────────────────────── */
+        .login-box .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .login-box label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Inputs ──────────────────────────────────────────────────── */
+        .login-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            color: var(--color-text);
+            outline: none;
+            transition: var(--transition);
+            background: var(--color-bg);
+        }
+
+        .login-box input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .login-box input:focus {
+            border-color: var(--color-border-focus);
+            box-shadow: var(--shadow-input-focus);
+        }
+
+        /* ── Botón Submit ────────────────────────────────────────────── */
+        .login-box button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 16px rgba(196, 30, 36, 0.25);
+            margin-top: 0.5rem;
+        }
+
+        .login-box button:hover {
+            background: linear-gradient(135deg, var(--color-primary-hover) 0%, #7A1015 100%);
+            box-shadow: 0 6px 24px rgba(196, 30, 36, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .login-box button:active {
+            transform: translateY(0);
+        }
+
+        /* ── Mensajes de Estado ───────────────────────────────────────── */
+        .login-box .error {
+            color: var(--color-error);
+            font-size: 0.82rem;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.6rem;
+            background: var(--color-error-bg);
+            border-radius: var(--radius-sm);
+            display: none;
+            font-weight: 500;
+        }
+
+        .login-box .error.show {
+            display: block;
+        }
+
+        .login-box .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.82rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        .login-box .loading.show {
+            display: block;
+        }
+
+        /* ── Footer ──────────────────────────────────────────────────── */
+        .login-footer {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--color-text-muted);
+        }
+
+        /* ── Responsive — Panel visible en desktop ────────────────────── */
+        @media (min-width: 900px) {
+            .brand-panel {
+                display: flex;
+            }
+            .login-box .logo-mobile {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-box h1 {
+                font-size: 1.4rem;
+            }
+            .form-panel {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel Izquierdo — Branding (visible en desktop) -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <img src="/static/icons/logo-192.svg" alt="Sofía Ltda" class="brand-logo">
+            <h2>Sofía Ltda</h2>
+            <p>Sistema integral de gestión de flota y logística empresarial.</p>
+            <div class="brand-features">
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <span>Gestión de flota en tiempo real</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <span>Sincronización con Google Sheets</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <span>Control de fletes y KPIs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Derecho — Formulario -->
+    <div class="form-panel">
+        <div class="login-box">
+            <!-- Logo visible solo en mobile -->
+            <div class="logo-mobile">
+                <img src="/static/icons/logo-192.svg" alt="Sofía Ltda">
+                <span>Sofía Ltda</span>
+            </div>
+
+            <h1>Iniciar Sesión</h1>
+            <p class="sub">Accede al sistema de gestión de camiones</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" placeholder="Ingrese su usuario" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="Ingrese su contraseña" required>
+                </div>
+                <button type="submit">Ingresar</button>
+            </form>
+
+            <div class="error" id="errorMsg">Credenciales inválidas</div>
+            <div class="loading" id="loadingMsg">Verificando...</div>
+
+            <div class="login-footer">
+                Sofía Ltda &copy; 2026 — Sistema Corporativo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+            fetch('/api/check-auth?token=' + encodeURIComponent(token))
+                .then(r => r.json())
+                .then(d => { if (d.success) window.location.href = '/camiones'; })
+                .catch(() => {});
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const err = document.getElementById('errorMsg');
+            const load = document.getElementById('loadingMsg');
+            err.classList.remove('show');
+            load.classList.add('show');
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value,
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('auth_token', data.token);
+                    localStorage.setItem('auth_user', data.username);
+                    if (data.display_name) localStorage.setItem('auth_display_name', data.display_name);
+                    window.location.href = '/camiones';
+                } else {
+                    err.textContent = 'Usuario o contraseña incorrectos';
+                    err.classList.add('show');
+                }
+            } catch(e) {
+                err.textContent = 'Error de conexión: ' + e.message;
+                err.classList.add('show');
+            } finally {
+                load.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

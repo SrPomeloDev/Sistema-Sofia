@@ -45,3 +45,7 @@ async def favicon():
 @app.get("/camiones")
 async def camiones_dashboard():
     return FileResponse("static/camiones/index.html")
+
+@app.get("/camiones/login")
+async def camiones_login():
+    return FileResponse("static/camiones/login.html")

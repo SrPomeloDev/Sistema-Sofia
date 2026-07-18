@@ -45,6 +45,7 @@ from modules.camiones.services.sheets import sheets_client
 from modules.camiones.services.queue import UpdateQueue, QueueItem
 from modules.camiones.services.excel_parser import parse_excel_camiones
 from modules.camiones.services.bootstrap import bootstrap_sheets
+from modules.camiones.auth import verify_credentials, create_session, verify_session, destroy_session
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +128,33 @@ async def push_status():
 async def health():
     """Health check simple para monitoreo."""
     return {"status": "ok", "mode": "sheets" if sheets_client.enabled else "local"}
+
+# ── Auth ───────────────────────────────────────────────────────
+from pydantic import BaseModel
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+@router.post("/api/login")
+async def login(req: LoginRequest):
+    if verify_credentials(req.username, req.password):
+        token = create_session(req.username)
+        session = verify_session(token)
+        return {"success": True, "token": token, "username": req.username, "display_name": session["display_name"]}
+    return {"success": False, "message": "Credenciales inválidas"}
+
+@router.post("/api/logout")
+async def logout(token: str = ""):
+    destroy_session(token)
+    return {"success": True}
+
+@router.get("/api/check-auth")
+async def check_auth(token: str = ""):
+    session = verify_session(token)
+    if session:
+        return {"success": True, "username": session["username"], "display_name": session["display_name"]}
+    return {"success": False}
 
 @router.get("/api/status", response_model=SyncStatusResponse)
 async def get_status():

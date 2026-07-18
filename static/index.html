@@ -2,178 +2,395 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#d81a1b">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#C41E24">
+    <meta name="description" content="App Sofía Ltda">
     <link rel="manifest" href="/static/manifest.json">
     <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
     <link rel="apple-touch-icon" href="/static/icons/logo-192.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Sofía Ltda - Sistema Integrado</title>
+    <title>App Sofía</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #C41E24;
+            --primary-hover: #A01820;
+            --primary-light: #FEF2F2;
+            --bg-base: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border-light: #E5E7EB;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(196,30,36,0.08);
+            --shadow-float: 0 10px 30px rgba(196,30,36,0.15);
+            --font-title: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
+            font-family: var(--font-body);
+            background-color: #E5E7EB; /* Darker background for desktop to frame the app */
+            display: flex;
+            justify-content: center;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        .app-header {
-            padding: 2.5rem 1.5rem 1rem;
-            text-align: center;
-        }
-        .app-logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        .app-logo img {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(216,26,27,0.2);
-        }
-        .app-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1e293b;
-            letter-spacing: -0.02em;
-        }
-        .app-header p {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 0.35rem;
-        }
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            padding: 1.5rem;
-            max-width: 1000px;
-            margin: 0 auto;
+
+        /* Contenedor tipo App Móvil */
+        .app-container {
             width: 100%;
-        }
-        .module-card {
-            background: #ffffff;
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            border-radius: 1rem;
-            padding: 1.75rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 480px;
+            background-color: var(--bg-base);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-            position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
         }
-        .module-card:hover {
-            border-color: rgba(216, 26, 27, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px -10px rgba(216, 26, 27, 0.15), 0 8px 16px -8px rgba(0,0,0,0.05);
+
+        /* App Bar (Header Móvil) */
+        .app-bar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            padding: 3rem 1.5rem 1.5rem 1.5rem; /* Extra top padding for mobile status bar */
+            color: #FFFFFF;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            box-shadow: var(--shadow-float);
+            position: relative;
+            z-index: 10;
         }
-        .module-card .icon {
+
+        .app-bar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-logo {
             width: 48px;
             height: 48px;
+            background: #FFFFFF;
+            border-radius: var(--radius-md);
+            padding: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .app-user {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            background: rgba(216, 26, 27, 0.08);
-            color: #d81a1b;
+            backdrop-filter: blur(4px);
         }
+
+        .greeting h1 {
+            font-family: var(--font-title);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .greeting p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        /* Contenido Scrolleable */
+        .app-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            padding-bottom: calc(80px + var(--safe-area-bottom));
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tarjeta de Módulo (Botón gigante) */
+        .module-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            margin-bottom: 1rem;
+        }
+
+        .module-card:active {
+            transform: scale(0.97);
+            background: var(--primary-light);
+        }
+
+        .module-icon-wrap {
+            width: 56px;
+            height: 56px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .module-card h2 {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #0f172a;
+            font-family: var(--font-title);
+            font-size: 1.25rem;
+            font-weight: 700;
         }
+
         .module-card p {
-            color: #475569;
-            font-size: 0.875rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
-        .module-card .badge {
-            display: inline-flex;
+
+        .module-card .arrow-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            background: rgba(196,30,36,0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tarjeta Bloqueada */
+        .module-card.locked {
+            opacity: 0.6;
+        }
+        .module-card.locked .module-icon-wrap {
+            background: #F3F4F6;
+            color: var(--text-muted);
+        }
+        .module-card.locked .arrow-icon {
+            color: var(--text-muted);
+            background: #F3F4F6;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0 calc(0.75rem + var(--safe-area-bottom)) 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 0.25rem;
-            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.65rem;
             font-weight: 600;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            background: rgba(34,197,94,0.12);
-            color: #16a34a;
-            align-self: flex-start;
+            padding: 0.5rem;
         }
-        .footer {
-            text-align: center;
-            padding: 2.5rem;
-            color: #64748b;
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            transition: transform 0.2s;
+        }
+
+        .nav-item:active i {
+            transform: scale(0.8);
+        }
+
+        /* Install Prompt */
+        .install-banner {
+            margin: 1rem 1.5rem;
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .install-banner.show { display: flex; }
+        
+        .install-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: var(--font-body);
             font-size: 0.8rem;
-            margin-top: auto;
-        }
-        @media (max-width: 640px) {
-            .module-grid { grid-template-columns: 1fr; padding: 1rem; }
-            .app-header h1 { font-size: 1.35rem; }
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <header class="app-header">
-        <div class="app-logo">
-            <img src="/static/icons/logo-192.svg" alt="Sofía Ltda" width="48" height="48">
-            <h1>Servicios Logísticos</h1>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-bar">
+            <div class="app-bar-top">
+                <img src="/static/icons/logo-192.svg" alt="Sofía" class="app-logo">
+                <div class="app-user">
+                    <i data-lucide="user" style="width:20px;height:20px;color:white;"></i>
+                </div>
+            </div>
+            <div class="greeting">
+                <h1>Hola, Equipo Sofía</h1>
+                <p>¿Qué vamos a gestionar hoy?</p>
+            </div>
+        </header>
+
+        <!-- PWA Install Banner -->
+        <div id="installBanner" class="install-banner">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <i data-lucide="download" style="width:24px;height:24px;color:white;"></i>
+                <div style="font-size:0.8rem;">
+                    <strong style="display:block;font-size:0.9rem;">Instalar App</strong>
+                    Acceso rápido en inicio
+                </div>
+            </div>
+            <button class="install-btn" id="installBtn">Instalar</button>
         </div>
-        <p>Sistema Integrado de Gestión — Sofía Ltda.</p>
-    </header>
-    
-    <div class="module-grid">
-        <a href="/camiones" class="module-card">
-            <div class="icon"><i data-lucide="truck" style="width:24px;height:24px;"></i></div>
-            <h2>Sistema de Camiones Fijos</h2>
-            <p>Gestión de flota, sincronización con Google Sheets, KPIs por sucursal y control de fletes.</p>
-            <span class="badge"><i data-lucide="check" style="width:10px;height:10px;"></i> Activo</span>
-        </a>
-        
-        <!-- Placeholder for future modules -->
-        <div class="module-card" style="opacity:0.55; cursor:default; background: rgba(255,255,255,0.6);">
-            <div class="icon" style="background:rgba(100,116,139,0.08); color:#64748b;"><i data-lucide="plus" style="width:24px;height:24px;"></i></div>
-            <h2 style="color:#64748b;">Nuevo Módulo</h2>
-            <p style="color:#64748b;">Espacio disponible para futuros módulos del sistema integrado.</p>
+
+        <!-- Content -->
+        <div class="app-content">
+            <div class="section-title">
+                Módulos Activos
+            </div>
+
+            <!-- Botón Gigante de Camiones -->
+            <a href="/camiones" class="module-card">
+                <div class="module-icon-wrap">
+                    <i data-lucide="truck" style="width:28px;height:28px;"></i>
+                </div>
+                <div>
+                    <h2>Flota de Camiones</h2>
+                    <p>Gestión de camiones fijos, control de fletes y sincronización con Sheets.</p>
+                </div>
+                <div class="arrow-icon">
+                    <i data-lucide="chevron-right" style="width:20px;height:20px;"></i>
+                </div>
+            </a>
+
+            <div class="section-title" style="margin-top:2rem;">
+                Próximamente
+            </div>
+
+            <!-- Módulo bloqueado -->
+            <div class="module-card locked">
+                <div class="module-icon-wrap">
+                    <i data-lucide="package" style="width:28px;height:28px;"></i>
+                </div>
+                <div>
+                    <h2>Despachos</h2>
+                    <p>Módulo en desarrollo para el control de carga y descarga de productos.</p>
+                </div>
+                <div class="arrow-icon">
+                    <i data-lucide="lock" style="width:16px;height:16px;"></i>
+                </div>
+            </div>
         </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="/" class="nav-item active">
+                <i data-lucide="home" style="width:24px;height:24px;"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="/camiones" class="nav-item">
+                <i data-lucide="truck" style="width:24px;height:24px;"></i>
+                <span>Flota</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="bell" style="width:24px;height:24px;"></i>
+                <span>Alertas</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="menu" style="width:24px;height:24px;"></i>
+                <span>Menú</span>
+            </a>
+        </nav>
     </div>
 
-    <div class="footer">
-        Sofía Ltda. &copy; 2026 &mdash; v1.0.0
-    </div>
-    
     <script>
         lucide.createIcons();
-        // Register service worker for PWA
+        
+        // PWA Install Logic
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/static/sw.js').catch(() => {});
         }
-        // Install prompt handler
-        let deferredPrompt = null;
+        let deferredPrompt;
+        const banner = document.getElementById('installBanner');
+        const btn = document.getElementById('installBtn');
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Show a small install banner
-            const banner = document.createElement('div');
-            banner.id = 'install-banner';
-            banner.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#d81a1b;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;z-index:9999;box-shadow:0 8px 24px rgba(216,26,27,0.3);display:flex;align-items:center;gap:10px;font-family:system-ui,sans-serif;';
-            banner.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Instalar Sofía Ltda';
-            banner.onclick = () => { deferredPrompt.prompt(); };
-            document.body.appendChild(banner);
-            deferredPrompt.userChoice.then(() => { banner.remove(); deferredPrompt = null; });
+            banner.classList.add('show');
         });
+
+        btn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') banner.classList.remove('show');
+                deferredPrompt = null;
+            }
+        });
+
         window.addEventListener('appinstalled', () => {
-            const b = document.getElementById('install-banner');
-            if (b) b.remove();
+            banner.classList.remove('show');
         });
     </script>
 </body>
