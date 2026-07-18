@@ -41,14 +41,27 @@ async def root():
 
 @app.get("/sw.js")
 async def service_worker():
-    """Sirve el service worker con scope raíz para PWA en iOS/Android."""
     sw_path = os.path.join("static", "sw.js")
     with open(sw_path, "r", encoding="utf-8") as f:
         content = f.read()
     return Response(
         content=content,
         media_type="application/javascript",
-        headers={"Service-Worker-Allowed": "/"}
+        headers={
+            "Service-Worker-Allowed": "/",
+            "Cache-Control": "no-cache"
+        }
+    )
+
+@app.get("/manifest.json")
+async def manifest_route():
+    manifest_path = os.path.join("static", "manifest.json")
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return Response(
+        content=content,
+        media_type="application/manifest+json",
+        headers={"Access-Control-Allow-Origin": "*"}
     )
 
 @app.get("/favicon.ico")

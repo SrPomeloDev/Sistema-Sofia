@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Camiones - Sofía Ltda</title>
-    <link rel="manifest" href="/static/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/logo-180.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/logo-152.png">
@@ -15,6 +15,8 @@
     <meta name="apple-mobile-web-app-title" content="Sofía Ltda">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#d81a1b">
+    <link rel="mask-icon" href="/static/icons/logo.svg" color="#d81a1b">
+    <meta name="format-detection" content="telephone=no">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -108,6 +110,9 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 100vw;
             padding-bottom: 2rem;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -629,9 +634,17 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-lg);
-            overflow: hidden;
             box-shadow: var(--shadow-sm);
             position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+            border-radius: inherit;
         }
 
         table {
@@ -1157,15 +1170,6 @@
         }
 
         /* ═══════════════════════════════════════════════════════════════
-           TABLE SCROLL — Wrapper horizontal
-           ═══════════════════════════════════════════════════════════════ */
-        .table-scroll {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 2px;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
            RESPONSIVE — Breakpoints
            ═══════════════════════════════════════════════════════════════ */
         @media (max-width: 1024px) {
@@ -1194,7 +1198,7 @@
             .stat-info .subtext { font-size: 0.6rem; }
             #sucursalStats .stat-card { padding: 0.45rem 0.55rem; }
             #sucursalStats .stat-info .value { font-size: 0.8rem; }
-            .flota-mini-grid { gap: 0.35rem; }
+            .flota-mini-grid { grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
             .flota-mini-card { padding: 0.4rem 0.5rem; gap: 0.4rem; border-radius: 8px; }
             .flota-mini-icon { width: 24px; height: 24px; }
             .flota-mini-icon i { width: 14px !important; height: 14px !important; }
@@ -1232,48 +1236,76 @@
         }
 
         @media (max-width: 480px) {
-            header { padding: 0.3rem 0.5rem; }
-            .logo-section img { width: 24px; height: 24px; }
-            .logo-text h1 { font-size: 0.85rem; }
+            header { padding: 0.25rem 0.35rem; }
+            .logo-section img { width: 22px; height: 22px; }
+            .logo-text h1 { font-size: 0.78rem; }
             .logo-text p { display: none; }
-            .connection-status { font-size: 0.55rem; padding: 0.15rem 0.35rem; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.3rem; }
-            .flota-mini-grid { grid-template-columns: 1fr; gap: 0.3rem; }
-            .stat-card { padding: 0.4rem 0.5rem; }
-            .stat-info .value { font-size: 0.82rem; }
-            .stat-info p { font-size: 0.5rem; }
-            .stat-info .subtext { font-size: 0.55rem; }
-            .stat-icon { padding: 0.25rem; display: none; }
-            .stat-icon i { width: 12px !important; height: 12px !important; }
+            .connection-status { font-size: 0.5rem; padding: 0.1rem 0.3rem; gap: 0.15rem; }
+            .connection-status i { width: 10px !important; height: 10px !important; }
+            .header-right { gap: 0.25rem; }
+            #userDisplay { font-size: 0.6rem !important; }
+            .btn-ghost { font-size: 0.55rem !important; padding: 0.15rem 0.25rem !important; }
+            .btn-ghost i { width: 10px !important; height: 10px !important; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.25rem; }
+            .flota-mini-grid { grid-template-columns: 1fr; gap: 0.25rem; }
+            .stat-card { padding: 0.35rem 0.4rem; }
+            .stat-info .value { font-size: 0.78rem; }
+            .stat-info p { font-size: 0.48rem; margin-bottom: 0.1rem; }
+            .stat-info .subtext { font-size: 0.5rem; margin-top: 0.1rem; }
+            .stat-icon { padding: 0.2rem; }
+            .stat-icon i { width: 14px !important; height: 14px !important; }
             #sucursalStats { grid-template-columns: 1fr; }
-            .logo-section { gap: 0.25rem; }
+            .logo-section { gap: 0.2rem; }
             .btn span { display: none; }
             .btn i { margin: 0; }
-            main { padding: 0 0.35rem; gap: 0.35rem; }
-            .actions-panel { padding: 0.35rem; gap: 0.25rem; }
-            .buttons-group .btn { font-size: 0.65rem; padding: 0.3rem 0.3rem; min-width: auto; }
-            td, th { padding: 0.2rem 0.2rem; font-size: 0.55rem; }
-            .placa-badge { font-size: 0.6rem; padding: 0.05rem 0.2rem; }
-            .sync-badge { font-size: 0.45rem !important; padding: 0.05rem 0.15rem !important; }
-            .tab-nav { margin-top: 0.15rem; gap: 0.25rem; }
-            .tab-btn { font-size: 0.65rem; padding: 0.3rem 0.35rem !important; }
-            .tab-btn i { width: 14px !important; height: 14px !important; }
+            main { padding: 0 0.25rem; gap: 0.3rem; }
+            .actions-panel { padding: 0.3rem; gap: 0.2rem; border-radius: 8px; }
+            .search-input { padding: 0.3rem 0.4rem 0.3rem 1.5rem; font-size: 0.7rem; }
+            .select-filter { padding: 0.3rem 1.3rem 0.3rem 0.4rem; font-size: 0.7rem; }
+            .buttons-group { gap: 0.2rem; }
+            .buttons-group .btn { font-size: 0.6rem; padding: 0.25rem 0.25rem; min-width: auto; }
+            td, th { padding: 0.18rem 0.15rem; font-size: 0.5rem; }
+            .placa-badge { font-size: 0.55rem; padding: 0.04rem 0.15rem; letter-spacing: 0.02em; }
+            .sync-badge { font-size: 0.4rem !important; padding: 0.04rem 0.12rem !important; }
+            .table-container { border-radius: 6px; }
+            .table-scroll table { min-width: 480px; }
+            .table-scroll { padding-bottom: 1px; }
+            .tab-nav { margin-top: 0.1rem; padding: 0 0.3rem; gap: 0.2rem; }
+            .tab-btn { font-size: 0.6rem; padding: 0.25rem 0.3rem !important; }
+            .tab-btn i { width: 12px !important; height: 12px !important; }
             .tab-btn span { display: none; }
-            .audit-item { padding: 0.35rem 0.5rem; }
-            .audit-title { font-size: 0.7rem; }
-            .audit-time { font-size: 0.6rem; }
+            .audit-panel { padding: 0.5rem 0.6rem; }
+            .audit-item { padding: 0.3rem 0.4rem; gap: 0.15rem; }
+            .audit-title { font-size: 0.65rem; }
+            .audit-time { font-size: 0.55rem; }
+            .audit-badge { font-size: 0.55rem; padding: 0.1rem 0.3rem; }
+            .flota-mini-card { padding: 0.3rem 0.4rem; gap: 0.3rem; border-radius: 6px; }
+            .flota-mini-icon { width: 20px; height: 20px; }
+            .flota-mini-icon i { width: 11px !important; height: 11px !important; }
+            .flota-mini-info .label { font-size: 0.48rem; }
+            .flota-mini-info .number { font-size: 0.78rem; }
+            .modal-card { max-width: 100vw; margin: 0; border-radius: 12px; }
+            .modal-body { padding: 0.5rem; max-height: 90vh; }
+            .form-grid { gap: 0.35rem; }
+            .form-input { font-size: 0.72rem; padding: 0.35rem 0.4rem; }
+            .form-group label { font-size: 0.55rem; }
+            .modal-header { padding: 0.4rem 0.6rem; }
+            .modal-header h2 { font-size: 0.82rem; }
+            .modal-footer { padding: 0.4rem 0.6rem; flex-direction: column; }
+            .modal-footer .btn { width: 100%; }
+            .toast { font-size: 0.7rem; padding: 0.5rem 0.6rem; min-width: 200px; }
         }
     </style>
 </head>
 <body>
 
-    <nav style="display:flex;align-items:center;justify-content:center;padding:0.4rem 1.25rem;background:var(--primary-light);border-bottom:1px solid rgba(196,30,36,0.1);">
-        <div style="display:flex;align-items:center;justify-content:space-between;max-width:1480px;width:100%;">
-            <a href="/" style="display:flex;align-items:center;gap:0.4rem;color:var(--primary);text-decoration:none;font-size:0.75rem;font-weight:600;letter-spacing:0.02em;transition:var(--transition-fast);">
-                <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
-                Volver al Inicio
+    <nav style="display:flex;align-items:center;justify-content:center;padding:0.3rem 0.5rem;background:var(--primary-light);border-bottom:1px solid rgba(196,30,36,0.1);overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;max-width:1480px;width:100%;gap:0.5rem;">
+            <a href="/" style="display:flex;align-items:center;gap:0.3rem;color:var(--primary);text-decoration:none;font-size:0.72rem;font-weight:600;white-space:nowrap;flex-shrink:0;">
+                <i data-lucide="arrow-left" style="width:12px;height:12px;"></i>
+                <span class="nav-back-text">Volver</span>
             </a>
-            <span style="font-size:0.68rem;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;">Sistema de Camiones — Sofía Ltda</span>
+            <span style="font-size:0.6rem;color:var(--text-muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Camiones · Sofía</span>
         </div>
     </nav>
 
