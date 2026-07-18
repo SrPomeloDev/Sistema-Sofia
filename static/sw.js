@@ -1,12 +1,18 @@
-const CACHE = 'sofia-ltda-v3';
+const CACHE = 'sofia-ltda-v4';
 const STATIC_FILES = [
   '/',
   '/camiones',
+  '/camiones/login',
   '/static/manifest.json',
   '/static/icons/logo.svg',
   '/static/icons/logo-192.svg',
+  '/static/icons/logo-192.png',
+  '/static/icons/logo-180.png',
+  '/static/icons/logo-152.png',
+  '/static/icons/logo-512.png',
   '/static/icons/favicon.svg',
   '/static/camiones/index.html',
+  '/static/camiones/login.html',
 ];
 
 self.addEventListener('install', (event) => {

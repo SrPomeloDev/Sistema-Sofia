@@ -467,9 +467,13 @@ async def delete_camion(fila_id: int):
         
         auditoria_id = None
         if sheets_client.enabled:
+            vals = {"placa": camion.placa}
+            if camion.modificado_por:
+                vals["eliminado_por"] = camion.modificado_por
+                vals["modificado_por_email"] = camion.modificado_por_email or ""
             auditoria_id = await crear_registro_auditoria(
                 fila_id=fila_id, accion="eliminar",
-                valores=json.dumps({"placa": camion.placa, "eliminado_por": ""})
+                valores=json.dumps(vals)
             )
         
         return UpdateSheetResponse(
@@ -568,14 +572,31 @@ async def run_bootstrap():
 async def list_auditoria(limit: int = 20):
     """
     Obtiene los registros de auditoría recientes.
+    Incluye quién hizo el cambio (extraído del JSON valores) y
+    convierte la fecha a hora de Bolivia (UTC-4).
     """
+    from datetime import timezone as tz, timedelta
+    BOLIVIA_TZ = tz(timedelta(hours=-4))
+
     try:
         registros = await obtener_historial(limit=limit)
-        
+
         response_list = []
         for r in registros:
-            # Formatear fecha
-            creado_str = r.creado_en.strftime("%d/%m/%Y %H:%M:%S")
+            creado_bolivia = r.creado_en.astimezone(BOLIVIA_TZ)
+            creado_str = creado_bolivia.strftime("%d/%m/%Y %H:%M:%S")
+
+            # Extraer modificado_por y modificado_por_email del JSON valores
+            mpor = None
+            memail = None
+            try:
+                vals = json.loads(r.valores)
+                if isinstance(vals, dict):
+                    mpor = vals.get("modificado_por") or vals.get("eliminado_por") or None
+                    memail = vals.get("modificado_por_email") or None
+            except (json.JSONDecodeError, TypeError):
+                pass
+
             response_list.append(
                 AuditEntry(
                     id=r.id,
@@ -584,7 +605,9 @@ async def list_auditoria(limit: int = 20):
                     valores=r.valores,
                     estado=r.estado,
                     error=r.error,
-                    creado_en=creado_str
+                    creado_en=creado_str,
+                    modificado_por=mpor,
+                    modificado_por_email=memail
                 )
             )
         return response_list

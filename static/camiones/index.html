@@ -6,9 +6,14 @@
     <title>Gestión de Camiones - Sofía Ltda</title>
     <link rel="manifest" href="/static/manifest.json">
     <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
-    <link rel="apple-touch-icon" href="/static/icons/logo-192.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/logo-180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/logo-152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/static/icons/logo-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/static/icons/logo-512.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sofía Ltda">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#d81a1b">
     
     <!-- Google Fonts -->
@@ -1951,12 +1956,17 @@
                         
                         const valObj = JSON.parse(a.valores);
                         const placaInfo = valObj.placa ? `Camión Placa ${valObj.placa}` : `Fila ID ${a.fila_id}`;
-                        const actionTitle = `${a.accion === 'crear' ? 'Registro' : 'Modificación'} - ${placaInfo}`;
+                        const actionLabel = a.accion === 'crear' ? 'Registro' : a.accion === 'eliminar' ? 'Eliminación' : 'Modificación';
+                        const actionTitle = `${actionLabel} - ${placaInfo}`;
+                        
+                        const who = a.modificado_por || '';
+                        const whoEmail = a.modificado_por_email || '';
+                        const whoStr = who ? (whoEmail ? `${who} (${whoEmail})` : who) : '';
                         
                         item.innerHTML = `
                             <div class="audit-meta">
                                 <span class="audit-title">${actionTitle}</span>
-                                <span class="audit-time">${a.creado_en}</span>
+                                <span class="audit-time">${a.creado_en}${whoStr ? ' · ' + whoStr : ''}</span>
                             </div>
                             <div>
                                 <span class="audit-badge ${badgeClass}">${a.estado}</span>

@@ -67,6 +67,8 @@ class AuditEntry(BaseModel):
     estado: str  # "pendiente", "éxito", "fallido"
     error: str | None = None
     creado_en: str
+    modificado_por: str | None = None
+    modificado_por_email: str | None = None
 
     class Config:
         from_attributes = True

@@ -4,30 +4,26 @@
   "description": "Plataforma modular de gestión para Sofía Ltda",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#fdf2f2",
   "theme_color": "#d81a1b",
   "categories": ["business", "logistics", "productivity"],
   "orientation": "any",
   "lang": "es-BO",
   "scope": "/",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/static/icons/logo-192.svg",
+      "src": "/static/icons/logo-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/static/icons/logo.svg",
+      "src": "/static/icons/logo-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "/static/icons/logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "splash_pages": null
