@@ -22,14 +22,14 @@ Thumbs.db
 
 # Proyectos legacy
 update-sheet-app/
-start_server.py
 
-# Excel backups / temporales
+# Excel datos (no commiteados)
 CAMIONES CBBA.xlsx
 CAMIONES LPZ.xlsx
 CAMIONES SCZ.xlsx
+CAMIONES FIJOS NACIONAL HUEVO.xlsx
 
-# Reportes HTML viejos (extraídos de sheets)
+# Reportes HTML (extraídos de sheets para bootstrap)
 DB.html
 Hoja1.html
 LISTA CAMIONES 2024.html
