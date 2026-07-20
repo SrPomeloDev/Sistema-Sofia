@@ -27,67 +27,33 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* ═══════════════════════════════════════════════════════════════
-           🎨 DESIGN SYSTEM — Sofía Ltda (Dashboard)
-           ═══════════════════════════════════════════════════════════════
-           Para cambiar la paleta de colores, modifica SOLO estas variables.
-           Todo el diseño hereda de aquí. Cualquier IA puede rediseñar
-           la aplicación modificando este bloque.
-           ═══════════════════════════════════════════════════════════════ */
+        /* Design tokens: paleta azul/gris, tipografía y radios */
         :root {
-            /* ── Paleta Primaria (Rojo Sofía Bolivia) ─────────────────── */
-            --primary: #C41E24;
-            --primary-hover: #A01820;
-            --primary-dark: #7A1015;
-            --primary-light: #FEF2F2;
-            --primary-lighter: #FFF5F5;
-            --primary-glow: rgba(196, 30, 36, 0.15);
-
-            /* ── Superficies y Fondos ─────────────────────────────────── */
-            --bg-base: #F8F9FA;
+            --primary: #C1272D; /* Sofía red */
+            --primary-600: #E53935;
+            --primary-800: #B71C1C;
+            --primary-hover: rgba(193,39,45,0.9);
+            --bg-base: #FAFAFA;
             --bg-surface: #FFFFFF;
-            --bg-surface-glass: rgba(255, 255, 255, 0.92);
-            --bg-surface-opaque: #FFFFFF;
-            --bg-header: linear-gradient(135deg, #C41E24 0%, #A01820 100%);
-
-            /* ── Bordes ───────────────────────────────────────────────── */
-            --border-light: #E8E8ED;
-            --border-hover: rgba(196, 30, 36, 0.25);
-            --border-glow: rgba(196, 30, 36, 0.1);
-
-            /* ── Estados Semánticos ────────────────────────────────────── */
+            --bg-header: linear-gradient(135deg, #C1272D 0%, #B71C1C 100%);
+            --border-light: #E0E0E0;
+            --border-hover: rgba(193,39,45,0.12);
+            --text-main: #212121;
+            --text-muted: #757575;
+            --text-dimmed: #9E9E9E;
             --success: #059669;
-            --success-bg: rgba(5, 150, 105, 0.08);
-            --warning: #D97706;
-            --warning-bg: rgba(217, 119, 6, 0.08);
-            --danger: #DC2626;
-            --danger-bg: rgba(220, 38, 38, 0.08);
-            --local-mode: #D97706;
-
-            /* ── Texto ────────────────────────────────────────────────── */
-            --text-main: #111827;
-            --text-muted: #6B7280;
-            --text-dimmed: #9CA3AF;
-
-            /* ── Tipografía ───────────────────────────────────────────── */
+            --warning: #FF9800;
+            --danger: #C1272D;
             --font-family-title: 'Outfit', sans-serif;
             --font-family-body: 'Inter', sans-serif;
-
-            /* ── Bordes Redondeados ───────────────────────────────────── */
-            --radius-xl: 20px;
-            --radius-lg: 14px;
-            --radius-md: 10px;
+            --radius-xl: 18px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
             --radius-sm: 6px;
-
-            /* ── Sombras ──────────────────────────────────────────────── */
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --shadow-glow: 0 0 20px rgba(196, 30, 36, 0.08);
-
-            /* ── Transiciones ─────────────────────────────────────────── */
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease;
+            --shadow-sm: 0 1px 6px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-glow: 0 8px 30px rgba(193,39,45,0.06);
+            --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
         }
 
         /* ── Reset Global ─────────────────────────────────────────────── */
@@ -102,8 +68,10 @@
             font-family: var(--font-family-body);
             background-color: var(--bg-base);
             background-image:
-                radial-gradient(ellipse at 0% 0%, rgba(196, 30, 36, 0.04) 0%, transparent 50%),
-                radial-gradient(ellipse at 100% 0%, rgba(196, 30, 36, 0.03) 0%, transparent 50%);
+                radial-gradient(ellipse at 0% 0%, rgba(30, 58, 138, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 0%, rgba(30, 58, 138, 0.03) 0%, transparent 50%),
+                radial-gradient(rgba(30, 58, 138, 0.06) 1px, transparent 1px);
+            background-size: auto, auto, 24px 24px;
             background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
@@ -122,11 +90,11 @@
         ::-webkit-scrollbar { width: 7px; height: 7px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
-            background: rgba(196, 30, 36, 0.15);
+            background: rgba(30, 58, 138, 0.15);
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(196, 30, 36, 0.3);
+            background: rgba(30, 58, 138, 0.3);
         }
 
         /* ═══════════════════════════════════════════════════════════════
@@ -301,7 +269,7 @@
         .flota-mini-card:hover {
             border-color: var(--border-hover);
             box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .flota-mini-icon {
@@ -315,9 +283,9 @@
         }
 
         .flota-mini-icon i { width: 15px; height: 15px; }
-        .flota-mini-icon.success { background: var(--success-bg); color: var(--success); }
-        .flota-mini-icon.danger { background: var(--danger-bg); color: var(--danger); }
-        .flota-mini-icon.warning { background: var(--warning-bg); color: var(--warning); }
+        .flota-mini-icon.success { background: var(--success-bg); color: var(--success); box-shadow: 0 0 10px rgba(5,150,105,0.15); }
+        .flota-mini-icon.danger { background: var(--danger-bg); color: var(--danger); box-shadow: 0 0 10px rgba(220,38,38,0.15); }
+        .flota-mini-icon.warning { background: var(--warning-bg); color: var(--warning); box-shadow: 0 0 10px rgba(217,119,6,0.15); }
 
         .flota-mini-info { flex: 1; min-width: 0; line-height: 1.15; }
 
@@ -339,12 +307,142 @@
         .flota-mini-info .number.danger { color: var(--danger); }
         .flota-mini-info .number.warning { color: var(--warning); }
 
+        /* Status LED dot indicators */
+        .status-led {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .status-led.on { background: var(--success); box-shadow: 0 0 6px rgba(5,150,105,0.5); }
+        .status-led.off { background: var(--danger); box-shadow: 0 0 6px rgba(220,38,38,0.5); }
+        .status-led.warn { background: var(--warning); box-shadow: 0 0 6px rgba(217,119,6,0.5); }
+        .status-led.info { background: var(--primary); box-shadow: 0 0 6px rgba(196,30,36,0.3); }
+        .status-led.muted { background: var(--text-dimmed); }
+
         @media (max-width: 500px) {
             .flota-mini-card { padding: 0.4rem 0.55rem; gap: 0.35rem; }
             .flota-mini-icon { width: 22px; height: 22px; }
             .flota-mini-icon i { width: 12px; height: 12px; }
             .flota-mini-info .number { font-size: 0.8rem; }
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           KPI GRID — Tarjetas de indicadores clave mejoradas
+           ═══════════════════════════════════════════════════════════════ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.65rem;
+        }
+        .kpi-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 0.9rem 1rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+        }
+        .kpi-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .kpi-card.blue::before { background: var(--primary); }
+        .kpi-card.green::before { background: var(--success); }
+        .kpi-card.orange::before { background: var(--warning); }
+        .kpi-card.purple::before { background: #7C3AED; }
+        .kpi-card.cyan::before { background: #0891B2; }
+        .kpi-card.teal::before { background: #0D9488; }
+        .kpi-card.gray::before { background: var(--text-muted); }
+        .kpi-icon {
+            width: 40px; height: 40px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .kpi-card.blue .kpi-icon { color: var(--primary); background: var(--primary-light); }
+        .kpi-card.green .kpi-icon { color: var(--success); background: var(--success-bg); }
+        .kpi-card.orange .kpi-icon { color: var(--warning); background: var(--warning-bg); }
+        .kpi-card.purple .kpi-icon { color: #7C3AED; background: rgba(124,58,237,0.08); }
+        .kpi-card.cyan .kpi-icon { color: #0891B2; background: rgba(8,145,178,0.08); }
+        .kpi-card.teal .kpi-icon { color: #0D9488; background: rgba(13,148,136,0.08); }
+        .kpi-card.gray .kpi-icon { color: var(--text-muted); background: var(--bg-base); }
+        .kpi-info { flex: 1; min-width: 0; line-height: 1.2; }
+        .kpi-info p {
+            font-size: 0.68rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+            font-weight: 600; margin-bottom: 0.15rem;
+        }
+        .kpi-value {
+            font-family: var(--font-family-title);
+            font-size: 1.3rem; font-weight: 700;
+            color: var(--text-main);
+        }
+        .kpi-sub {
+            font-size: 0.68rem; color: var(--text-dimmed);
+            margin-top: 0.1rem;
+        }
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+            .kpi-card { padding: 0.6rem 0.7rem; gap: 0.5rem; }
+            .kpi-icon { width: 32px; height: 32px; }
+            .kpi-icon i { width: 16px !important; height: 16px !important; }
+            .kpi-value { font-size: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: 1fr 1fr; gap: 0.3rem; }
+            .kpi-card { padding: 0.4rem 0.5rem; border-radius: 8px; }
+            .kpi-icon { width: 26px; height: 26px; }
+            .kpi-icon i { width: 14px !important; height: 14px !important; }
+            .kpi-value { font-size: 0.85rem; }
+            .kpi-info p { font-size: 0.55rem; }
+            .kpi-sub { font-size: 0.55rem; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ALERTAS — Avisos inteligentes
+           ═══════════════════════════════════════════════════════════════ */
+        .alertas-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+        .alerta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            border-left: 4px solid;
+            box-shadow: var(--shadow-sm);
+        }
+        .alerta-item.warning {
+            background: var(--warning-bg);
+            border-color: var(--warning);
+            color: #92400E;
+        }
+        .alerta-item.info {
+            background: rgba(8,145,178,0.08);
+            border-color: #0891B2;
+            color: #155E75;
+        }
+        .alerta-item i { flex-shrink: 0; }
 
         /* ═══════════════════════════════════════════════════════════════
            LOAD MORE ROW
@@ -422,15 +520,33 @@
             background: transparent;
         }
 
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
         .stat-card:hover {
             border-color: var(--border-hover);
             box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
+        .stat-card:hover::after { opacity: 0.06; }
+
         .stat-card.blue::before { background: var(--primary); }
+        .stat-card.blue::after { background: var(--primary); }
         .stat-card.green::before { background: var(--success); }
+        .stat-card.green::after { background: var(--success); }
         .stat-card.orange::before { background: var(--warning); }
+        .stat-card.orange::after { background: var(--warning); }
 
         .stat-info p {
             font-size: 0.72rem;
@@ -610,6 +726,18 @@
             color: var(--primary);
         }
 
+        .btn-sm {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: var(--radius-sm);
+        }
+        .btn-danger {
+            background: #DC2626;
+            color: #FFFFFF;
+        }
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -648,11 +776,10 @@
         }
 
         table {
-            width: 100%;
+            min-width: 100%;
             border-collapse: collapse;
             text-align: left;
             font-size: 0.85rem;
-            table-layout: fixed;
         }
 
         thead {
@@ -723,23 +850,20 @@
             display: none;
         }
 
-        /* Column widths */
-        colgroup .col-nro { width: 48px; }
-        colgroup .col-placa { width: 130px; }
-        colgroup .col-sucursal { width: 110px; }
-        colgroup .col-sistema { width: 120px; }
-        colgroup .col-servicio { width: 130px; }
-        colgroup .col-estado { width: 100px; }
-        colgroup .col-combustible { width: 120px; }
-        colgroup .col-flete { width: 95px; }
-        colgroup .col-kg { width: 80px; }
-        colgroup .col-maples { width: 80px; }
-        colgroup .col-util { width: 95px; }
-        colgroup .col-factor { width: 80px; }
-        colgroup .col-accion { width: 80px; }
-
         tbody tr {
             border-bottom: 1px solid var(--border-light);
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        tbody tr::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: transparent;
             transition: var(--transition-fast);
         }
 
@@ -753,12 +877,14 @@
             background: var(--primary-light) !important;
         }
 
+        tbody tr:hover::before {
+            background: var(--primary);
+        }
+
         td {
             padding: 0.8rem 0.85rem;
-            color: var(--text-main);
+            border-bottom: 1px solid var(--border-light);
             vertical-align: middle;
-            overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
         }
 
@@ -857,6 +983,23 @@
             gap: 1rem;
         }
 
+        .table-placeholder p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        .table-placeholder i {
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .table-placeholder:hover i {
+            opacity: 0.7;
+            transform: scale(1.05);
+        }
+
         .spinner-large {
             width: 40px;
             height: 40px;
@@ -864,6 +1007,25 @@
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 0.9s linear infinite;
+        }
+
+        /* Skeleton loading animation */
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+        .skeleton-row {
+            display: flex;
+            padding: 0.8rem 0.85rem;
+            border-bottom: 1px solid var(--border-light);
+            gap: 0.85rem;
+        }
+        .skeleton-cell {
+            height: 14px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--border-light) 25%, transparent 50%, var(--border-light) 75%);
+            background-size: 200px 100%;
+            animation: shimmer 1.5s ease-in-out infinite;
         }
 
         @keyframes spin {
@@ -1295,6 +1457,55 @@
             .modal-footer .btn { width: 100%; }
             .toast { font-size: 0.7rem; padding: 0.5rem 0.6rem; min-width: 200px; }
         }
+
+        /* Mobile-first adjustments: KPI grid, table, bottom nav, FAB */
+        .kpi-grid { gap: 0.5rem; }
+        .kpi-card { border-radius: var(--radius-md); padding: 0.8rem; }
+        .kpi-card .kpi-value { font-size: 1.05rem; font-weight: 800; color: var(--text-main); }
+
+        /* Floating Action Button (FAB) for add actions */
+        .fab {
+            position: fixed; right: 16px; bottom: 76px; z-index: 1200;
+            width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--primary); color: #fff; box-shadow: var(--shadow-md); border: none; cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Bottom navigation for mobile */
+        .bottom-nav {
+            position: fixed; left: 0; right: 0; bottom: 0; height: 56px; background: #fff; border-top: 1px solid var(--border-light);
+            display: none; z-index: 1100; box-shadow: 0 -4px 18px rgba(0,0,0,0.04);
+        }
+        .bottom-nav .bn-item { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-size:11px; color:var(--text-muted); width:33.333%; height:100%; }
+        .bottom-nav .bn-item.active { color:var(--primary); }
+
+        /* Table adjustments: hide less relevant columns on small screens */
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .kpi-card .kpi-sub { font-size: 0.72rem; }
+
+            #camionesTable th:nth-child(3), #camionesTable td:nth-child(3),
+            #camionesTable th:nth-child(4), #camionesTable td:nth-child(4),
+            #camionesTable th:nth-child(5), #camionesTable td:nth-child(5),
+            #camionesTable th:nth-child(8), #camionesTable td:nth-child(8) {
+                display: none;
+            }
+            #camionesTable { font-size: 0.9rem; }
+            .tab-nav { display:none; }
+            .bottom-nav { display:flex; }
+            .fab { bottom: 70px; }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            #camionesTable { font-size: 0.95rem; }
+            .bottom-nav { display:flex; }
+        }
+
+        @media (min-width: 769px) {
+            .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+            .bottom-nav { display:none; }
+        }
     </style>
 </head>
 <body>
@@ -1339,9 +1550,9 @@
             <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
             <span>Dashboard</span>
         </button>
-        <button id="tabFletes" class="tab-btn" data-tab="fletes">
-            <i data-lucide="dollar-sign" style="width:18px;height:18px;"></i>
-            <span>Pago de Flete</span>
+        <button id="tabTarifas" class="tab-btn" data-tab="tarifas">
+            <i data-lucide="book-open" style="width:18px;height:18px;"></i>
+            <span>Tarifas</span>
         </button>
     </nav>
 
@@ -1369,8 +1580,8 @@
         .tab-btn.active { color: var(--primary); background: var(--bg-surface); border-color: var(--border-light); z-index: 10; box-shadow: 0 -4px 10px rgba(196, 30, 36, 0.05); }
         .tab-btn.active::before { background: var(--primary); }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 
     <!-- Contenedor Principal -->
@@ -1385,50 +1596,70 @@
             </div>
         </div>
 
-        <!-- Tarjetas de Estadísticas -->
-        <section class="stats-grid">
-            <!-- Total Camiones -->
-            <div class="stat-card blue">
-                <div class="stat-info">
+        <!-- KPI Cards Mejoradas -->
+        <section class="kpi-grid" id="kpiGrid">
+            <div class="kpi-card blue">
+                <div class="kpi-icon"><i data-lucide="truck" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
                     <p>Total Camiones</p>
-                    <div id="statTotal" class="value">-</div>
-                    <div id="statActiveCount" class="subtext">Fijos y temporales en flota</div>
-                </div>
-                <div class="stat-icon">
-                    <i data-lucide="gauge" style="width: 20px; height: 20px;"></i>
+                    <div class="kpi-value"><span id="kpiTotal">-</span></div>
+                    <div class="kpi-sub"><span id="kpiEnServicio">-</span> en servicio</div>
                 </div>
             </div>
-
-            <!-- Capacidad Kg -->
-            <div class="stat-card green">
-                <div class="stat-info">
-                    <p>Capacidad Total útil</p>
-                    <div id="statCapacidadKg" class="value">-</div>
-                    <div id="statCapacidadMaples" class="subtext">-</div>
-                </div>
-                <div class="stat-icon">
-                    <i data-lucide="layers" style="width: 20px; height: 20px;"></i>
+            <div class="kpi-card green">
+                <div class="kpi-icon"><i data-lucide="check-circle" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
+                    <p>En Servicio</p>
+                    <div class="kpi-value"><span id="kpiActivos">-</span></div>
+                    <div class="kpi-sub"><span id="kpiPorcentajeActivos">-</span>% de flota</div>
                 </div>
             </div>
-
-            <!-- Último Cambio -->
-            <div class="stat-card blue">
-                <div class="stat-info">
+            <div class="kpi-card orange">
+                <div class="kpi-icon"><i data-lucide="dollar-sign" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
+                    <p>Total Fletes</p>
+                    <div class="kpi-value"><span id="kpiTotalFlete">-</span></div>
+                    <div class="kpi-sub"><span id="kpiCamionesConFlete">-</span> camiones con precio</div>
+                </div>
+            </div>
+            <div class="kpi-card purple">
+                <div class="kpi-icon"><i data-lucide="bar-chart-3" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
+                    <p>Prom. Flete x Ruta</p>
+                    <div class="kpi-value"><span id="kpiPromedioFlete">-</span></div>
+                    <div class="kpi-sub" id="kpiPromedioFleteSub">promedio general</div>
+                </div>
+            </div>
+            <div class="kpi-card cyan">
+                <div class="kpi-icon"><i data-lucide="layers" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
+                    <p>Capacidad Total</p>
+                    <div class="kpi-value"><span id="kpiCapacidadMaples">-</span></div>
+                    <div class="kpi-sub"><span id="kpiCapacidadKg">-</span> kg útiles</div>
+                </div>
+            </div>
+            <div class="kpi-card teal">
+                <div class="kpi-icon"><i data-lucide="trending-up" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
+                    <p>Eficiencia</p>
+                    <div class="kpi-value"><span id="kpiEficiencia">-</span></div>
+                    <div class="kpi-sub" id="kpiEficienciaSub">viajes por camión</div>
+                </div>
+            </div>
+            <div class="kpi-card gray">
+                <div class="kpi-icon"><i data-lucide="clock" style="width:22px;height:22px;"></i></div>
+                <div class="kpi-info">
                     <p>Último Cambio</p>
-                    <div id="statUltimoCambio" class="value" style="font-size:1rem;">-</div>
-                    <div id="statUltimoCambioPor" class="subtext">-</div>
-                </div>
-                <div class="stat-icon">
-                    <i data-lucide="clock" style="width: 20px; height: 20px;"></i>
+                    <div class="kpi-value" style="font-size:0.9rem;"><span id="kpiUltimoCambio">-</span></div>
+                    <div class="kpi-sub" id="kpiUltimoCambioPor">-</div>
                 </div>
             </div>
-
         </section>
 
-        <!-- Tarjetas por Sucursal (dinámicas) -->
-        <section id="sucursalStats" class="stats-grid" style="margin-top:-0.5rem;"></section>
+        <!-- Alertas Inteligentes -->
+        <section id="alertasSection" class="alertas-grid" style="display:none;"></section>
 
-        <!-- KPIs Estado de Flota (EN SERVICIO / FUERA DE SERVICIO / CONSULTAR) -->
+        <!-- KPIs Estado de Flota -->
         <section class="flota-mini-grid" id="flotaStatusGrid">
             <div class="flota-mini-card">
                 <div class="flota-mini-icon success"><i data-lucide="check-circle" style="width:18px;height:18px;"></i></div>
@@ -1453,6 +1684,41 @@
             </div>
         </section>
 
+        <!-- Sucursal Stats (dinámicas) -->
+        <section id="sucursalStats" class="stats-grid"></section>
+
+        <!-- Promedios por Ruta (Dashboard) -->
+        <section class="table-container" id="promediosRutaSection" style="display:none;">
+            <div style="padding:1rem 1.15rem 0;font-family:var(--font-family-title);font-size:0.9rem;font-weight:600;display:flex;align-items:center;gap:0.5rem;color:var(--text-main);">
+                <i data-lucide="bar-chart-3" style="width:18px;height:18px;color:var(--primary);"></i>
+                Precios por Ruta
+                <span style="font-size:0.7rem;font-weight:400;color:var(--text-muted);font-family:var(--font-family-body);margin-left:auto;">
+                    <span style="color:var(--text-muted);">gestionar en pestaña Fletes</span>
+                </span>
+            </div>
+            <div class="table-scroll">
+            <table id="promediosRutaTable">
+                <colgroup>
+                    <col>
+                    <col style="width:130px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Ruta</th>
+                        <th>Precio (Bs)</th>
+                    </tr>
+                </thead>
+                <tbody id="promediosRutaBody"></tbody>
+            </table>
+            </div>
+            <div id="promediosRutaEmpty" class="table-placeholder" style="display:none;">
+                <i data-lucide="bar-chart-3" style="width:40px;height:40px;opacity:0.3;"></i>
+                <p>No hay datos de flete para calcular promedios por ruta.</p>
+            </div>
+        </section>
+
+
+
         <!-- Filtros y Acciones -->
         <section class="actions-panel">
             <div class="filters-group">
@@ -1470,21 +1736,14 @@
                     <option value="Santa Cruz">Santa Cruz</option>
                 </select>
 
-                <!-- Filtro Combustible -->
-                <select id="filterCombustible" class="select-filter">
-                    <option value="">Todos los Combustibles</option>
-                    <option value="GAS-GASOLINA">GAS-GASOLINA</option>
-                    <option value="GASOLINA">GASOLINA</option>
-                    <option value="DIESEL">DIESEL</option>
-                </select>
-
-                <!-- Filtro Sistema Camión (NUEVO) -->
+                <!-- Filtro Sistema Camión -->
                 <select id="filterSistemaCamion" class="select-filter">
                     <option value="">Todos los Sistemas</option>
                     <option value="SIN INFORMACIÓN">SIN INFORMACIÓN</option>
                     <option value="HIBRIDO">HIBRIDO</option>
                     <option value="SECOS">SECOS</option>
                     <option value="REFRIGERADO">REFRIGERADO</option>
+                    <option value="CONGELADO">CONGELADO</option>
                 </select>
 
                 <!-- Filtro Estado Servicio -->
@@ -1493,6 +1752,11 @@
                     <option value="EN SERVICIO">EN SERVICIO</option>
                     <option value="FUERA DE SERVICIO">FUERA DE SERVICIO</option>
                     <option value="CONSULTAR">CONSULTAR</option>
+                </select>
+
+                <!-- Filtro Ruta Madre -->
+                <select id="filterRutaMadre" class="select-filter">
+                    <option value="">Todas las Rutas Madre</option>
                 </select>
             </div>
 
@@ -1536,35 +1800,27 @@
             <div class="table-scroll">
             <table id="camionesTable">
                 <colgroup>
-                    <col class="col-nro">
-                    <col class="col-placa">
-                    <col class="col-sucursal">
-                    <col class="col-sistema">
-                    <col class="col-servicio">
-                    <col class="col-estado">
-                    <col class="col-combustible">
-                    <col class="col-flete">
-                    <col class="col-kg">
-                    <col class="col-maples">
-                    <col class="col-util">
-                    <col class="col-factor">
-                    <col class="col-accion">
+                    <col style="width:130px;">
+                    <col style="width:110px;">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col style="width:100px;">
+                    <col style="width:80px;">
+                    <col style="width:80px;">
                 </colgroup>
                 <thead>
                 <tr>
-                    <th>Nº</th>
                     <th>Placa</th>
                     <th>Sucursal</th>
                     <th>Sistema</th>
                     <th>Servicio</th>
-                    <th>Estado Trabajo</th>
-                    <th>Combustible</th>
+                    <th>Ruta Madre</th>
+                    <th>Ruta</th>
                     <th>Flete (Bs)</th>
-                    <th>Cap. KG</th>
-                    <th>Maples</th>
-                    <th>Cap. Útil Kg</th>
-                    <th>F. 0.75</th>
-                    <th style="text-align: center;">Acción</th>
+                    <th>Capacidad</th>
+                    <th style="text-align:center;">Acción</th>
                 </tr>
                 </thead>
                 <tbody id="camionesTableBody">
@@ -1603,30 +1859,156 @@
         
         </div><!-- fin tabDashboardContent -->
 
-        <!-- Tab Pago de Flete -->
-        <div id="tabFletesContent" class="tab-content">
-            <section class="stats-grid" id="fleteStats">
-                <!-- KPIs de flete -->
+        <!-- Tab Fletes por Ruta -->
+        <div id="tabTarifasContent" class="tab-content">
+            <section class="stats-grid" id="tarifasStats">
+                <div class="stat-card blue">
+                    <div class="stat-info">
+                        <p>Rutas con Precio</p>
+                        <div id="tarifasCount" class="value" style="font-size:1.8rem;">-</div>
+                        <div class="subtext">precios por ruta definidos</div>
+                    </div>
+                    <div class="stat-icon"><i data-lucide="bar-chart-3" style="width:22px;height:22px;"></i></div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-info">
+                        <p>Total Fletes (Bs)</p>
+                        <div id="promTotalFletes" class="value" style="font-size:1.3rem;">-</div>
+                        <div class="subtext" id="promTotalFletesSub">proyectado desde precios</div>
+                    </div>
+                    <div class="stat-icon"><i data-lucide="dollar-sign" style="width:22px;height:22px;"></i></div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-info">
+                        <p>Promedio General</p>
+                        <div id="promGeneralFlete" class="value" style="font-size:1.3rem;">-</div>
+                        <div class="subtext" id="promGeneralFleteSub">promedio de precios por ruta</div>
+                    </div>
+                    <div class="stat-icon"><i data-lucide="trending-up" style="width:22px;height:22px;"></i></div>
+                </div>
             </section>
-            <section class="table-container" style="margin-top:1.5rem;">
-                <table id="fletesTable">
+            <section class="actions-panel">
+                <div class="filters-group">
+                    <div class="search-wrapper">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="filterTarifaRuta" class="search-input" placeholder="Buscar por ruta...">
+                    </div>
+                </div>
+                <div class="buttons-group">
+                    <button id="agregarRutaPrecioBtn" class="btn btn-primary">
+                        <i data-lucide="plus" style="width:16px;height:16px;"></i>
+                        <span>Agregar Ruta</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Fletes por Ruta (editables) -->
+            <section class="table-container">
+                <div style="padding:1rem 1.15rem 0;font-family:var(--font-family-title);font-size:0.9rem;font-weight:600;display:flex;align-items:center;gap:0.5rem;color:var(--text-main);">
+                    <i data-lucide="route" style="width:18px;height:18px;color:var(--primary);"></i>
+                    Precios por Ruta
+                    <span style="font-size:0.7rem;font-weight:400;color:var(--text-muted);font-family:var(--font-family-body);margin-left:auto;">precios editables por ruta</span>
+                </div>
+                <div class="table-scroll">
+                <table id="tarifasFletesTable">
+                    <colgroup>
+                        <col style="width:45px;">
+                        <col>
+                        <col style="width:130px;">
+                        <col style="width:100px;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ruta</th>
+                            <th>Precio (Bs)</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tarifasFletesBody"></tbody>
+                </table>
+                </div>
+                <div id="tarifasFletesLoading" class="table-placeholder" style="display:flex;">
+                    <div class="spinner-large"></div>
+                    <p>Cargando precios por ruta...</p>
+                </div>
+                <div id="tarifasFletesEmpty" class="table-placeholder" style="display:none;">
+                    <i data-lucide="bar-chart-3" style="width:40px;height:40px;opacity:0.3;"></i>
+                    <p>No hay precios por ruta. Usa "Agregar Ruta" para crear uno.</p>
+                </div>
+            </section>
+
+            <!-- Promedios por Sucursal -->
+            <section class="table-container" style="margin-top:1rem;">
+                <div style="padding:1rem 1.15rem 0;font-family:var(--font-family-title);font-size:0.9rem;font-weight:600;display:flex;align-items:center;gap:0.5rem;color:var(--text-main);">
+                    <i data-lucide="building-2" style="width:18px;height:18px;color:var(--primary);"></i>
+                    Resumen por Sucursal
+                    <span style="font-size:0.7rem;font-weight:400;color:var(--text-muted);font-family:var(--font-family-body);margin-left:auto;">proyección desde precios por ruta</span>
+                </div>
+                <div class="table-scroll">
+                <table id="promSucTable">
+                    <colgroup>
+                        <col style="width:160px;">
+                        <col style="width:100px;">
+                        <col style="width:150px;">
+                        <col style="width:130px;">
+                        <col style="width:130px;">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>Sucursal</th>
-                            <th>Promedio Flete (Bs)</th>
-                            <th>Total Camiones</th>
+                            <th>Camiones</th>
                             <th>Total Flete (Bs)</th>
+                            <th>Promedio (Bs)</th>
+                            <th>Con Flete</th>
                         </tr>
                     </thead>
-                    <tbody id="fletesTableBody"></tbody>
+                    <tbody id="promSucBody"></tbody>
                 </table>
-                <div id="fletesLoading" class="table-placeholder" style="display:flex;">
-                    <div class="spinner-large"></div>
-                    <p>Cargando datos de flete...</p>
                 </div>
-                <div id="fletesEmpty" class="table-placeholder" style="display:none;">
-                    <i data-lucide="inbox" style="width: 48px; height: 48px;"></i>
-                    <p>No hay datos de flete disponibles.</p>
+                <div id="promSucEmpty" class="table-placeholder" style="display:none;">
+                    <i data-lucide="building-2" style="width:40px;height:40px;opacity:0.3;"></i>
+                    <p>No hay datos de sucursales.</p>
+                </div>
+            </section>
+
+            <!-- Tarifas de Referencia (desde Excel) -->
+            <section class="table-container" style="margin-top:1rem;">
+                <div style="padding:1rem 1.15rem 0;font-family:var(--font-family-title);font-size:0.9rem;font-weight:600;display:flex;align-items:center;gap:0.5rem;color:var(--text-main);">
+                    <i data-lucide="book-open" style="width:18px;height:18px;color:var(--primary);"></i>
+                    Tarifas de Referencia (Clasificaciones)
+                    <span style="font-size:0.7rem;font-weight:400;color:var(--text-muted);font-family:var(--font-family-body);margin-left:auto;">cargadas desde Excel master</span>
+                    <button id="cargarTarifasExcelBtn" class="btn-table-secondary" style="margin-left:8px;">
+                        <i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i>
+                        <span>Cargar Tarifas (Excel)</span>
+                    </button>
+                </div>
+                <div class="table-scroll">
+                <table id="tarifasTable">
+                    <colgroup>
+                        <col style="width:45px;">
+                        <col style="width:180px;">
+                        <col>
+                        <col style="width:150px;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Clasificación</th>
+                            <th>Tipo de Ruta</th>
+                            <th>Flete Final (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tarifasTableBody"></tbody>
+                </table>
+                </div>
+                <div id="tarifasLoading" class="table-placeholder" style="display:flex;">
+                    <div class="spinner-large"></div>
+                    <p>Cargando tarifas de referencia...</p>
+                </div>
+                <div id="tarifasEmpty" class="table-placeholder" style="display:none;">
+                    <i data-lucide="book-open" style="width:40px;height:40px;opacity:0.3;"></i>
+                    <p>No hay tarifas de referencia. Usa "Cargar Tarifas (Excel)" para importar.</p>
                 </div>
             </section>
         </div>
@@ -1679,6 +2061,7 @@
                                 <option value="HIBRIDO">HIBRIDO</option>
                                 <option value="SECOS">SECOS</option>
                                 <option value="REFRIGERADO">REFRIGERADO</option>
+                                <option value="CONGELADO">CONGELADO</option>
                             </select>
                         </div>
 
@@ -1699,6 +2082,7 @@
                                 <option value="">(sin información)</option>
                                 <option value="Fijo">Fijo</option>
                                 <option value="Temporal">Temporal</option>
+                                <option value="Apoyo">Apoyo</option>
                             </select>
                         </div>
 
@@ -1710,13 +2094,28 @@
                                 <option value="GAS-GASOLINA">GAS-GASOLINA</option>
                                 <option value="GASOLINA">GASOLINA</option>
                                 <option value="DIESEL">DIESEL</option>
+                                <option value="GAS">GAS</option>
                             </select>
                         </div>
 
-                        <!-- Costo Flete -->
+                        <!-- Ruta Madre (categoría) -->
                         <div class="form-group">
-                            <label for="formCostoFlete">Costo Flete (Bs/viaje)</label>
-                            <input type="number" id="formCostoFlete" class="form-input" placeholder="Ej: 620" min="0" step="0.01" value="0">
+                            <label for="formRutaMadre">Ruta Madre</label>
+                            <select id="formRutaMadre" class="form-input">
+                                <option value="">(seleccionar)</option>
+                            </select>
+                        </div>
+                        <!-- Ruta Hija (específica, se llena según Ruta Madre) -->
+                        <div class="form-group" id="formRutaHijaGroup" style="display:none;">
+                            <label for="formRutaHija">Ruta Hija</label>
+                            <select id="formRutaHija" class="form-input">
+                                <option value="">(seleccionar ruta hija)</option>
+                            </select>
+                        </div>
+                        <!-- Ruta manual (alternativa cuando la madre no tiene hijas en planilla) -->
+                        <div class="form-group" id="formRutaManualGroup" style="display:none;">
+                            <label for="formRutaManual">Ruta (especificar)</label>
+                            <input type="text" id="formRutaManual" class="form-input" placeholder="Ej: MS-010, Ruta 5, etc.">
                         </div>
 
                         <!-- Capacidad KG -->
@@ -1787,18 +2186,15 @@
             const statusText = document.getElementById('statusText');
             const localWarningBanner = document.getElementById('localWarningBanner');
             
-            const statTotal = document.getElementById('statTotal');
-            const statCapacidadKg = document.getElementById('statCapacidadKg');
-            const statCapacidadMaples = document.getElementById('statCapacidadMaples');
-            const statUltimoCambio = document.getElementById('statUltimoCambio');
-            const statUltimoCambioPor = document.getElementById('statUltimoCambioPor');
+            const kpiUltimoCambio = document.getElementById('kpiUltimoCambio');
+            const kpiUltimoCambioPor = document.getElementById('kpiUltimoCambioPor');
             const sucursalStats = document.getElementById('sucursalStats');
             
             const filterPlaca = document.getElementById('filterPlaca');
             const filterSucursal = document.getElementById('filterSucursal');
-            const filterCombustible = document.getElementById('filterCombustible');
             const filterSistemaCamion = document.getElementById('filterSistemaCamion');
             const filterEstadoServicio = document.getElementById('filterEstadoServicio');
+            const filterRutaMadre = document.getElementById('filterRutaMadre');
             
             const camionesTable = document.getElementById('camionesTable');
             const camionesTableBody = document.getElementById('camionesTableBody');
@@ -1823,7 +2219,9 @@
             const formEstadoServicio = document.getElementById('formEstadoServicio');
             const formEstadoTrabajo = document.getElementById('formEstadoTrabajo');
             const formCombustible = document.getElementById('formCombustible');
-            const formCostoFlete = document.getElementById('formCostoFlete');
+            const formRutaMadre = document.getElementById('formRutaMadre');
+            const formRutaHija = document.getElementById('formRutaHija');
+            const formRutaHijaGroup = document.getElementById('formRutaHijaGroup');
             const formCapacidadKg = document.getElementById('formCapacidadKg');
             const formCapacidadMaples = document.getElementById('formCapacidadMaples');
             const formCapacidadUtilKg = document.getElementById('formCapacidadUtilKg');
@@ -1833,19 +2231,21 @@
             const cancelModalBtn = document.getElementById('cancelModalBtn');
 
             const tabDashboard = document.getElementById('tabDashboard');
-            const tabFletes = document.getElementById('tabFletes');
             const tabDashboardContent = document.getElementById('tabDashboardContent');
-            const tabFletesContent = document.getElementById('tabFletesContent');
-            const fletesTableBody = document.getElementById('fletesTableBody');
-            const fletesLoading = document.getElementById('fletesLoading');
-            const fletesEmpty = document.getElementById('fletesEmpty');
             const flotaEnServicio = document.getElementById('flotaEnServicio');
 
             const flotaFueraServicio = document.getElementById('flotaFueraServicio');
             const flotaConsultar = document.getElementById('flotaConsultar');
+
+            // Tarifas tab
+            const tabTarifas = document.getElementById('tabTarifas');
+            const tabTarifasContent = document.getElementById('tabTarifasContent');
+            const filterTarifaRuta = document.getElementById('filterTarifaRuta');
+
             
             // Estado local de la aplicación
             let camiones = [];
+            let promediosRuta = [];
             let appMode = 'local'; // 'sheets' o 'local'
             let isModalEditing = false;
             let renderedCount = 0;
@@ -1922,15 +2322,15 @@
                         localWarningBanner.style.display = 'flex';
                     }
                     
-                    statUltimoCambio.textContent = status.ultimo_cambio || 'Ninguno';
+                    kpiUltimoCambio.textContent = status.ultimo_cambio || 'Ninguno';
                     const por = status.ultimo_cambio_por || '';
                     const email = status.ultimo_cambio_email || '';
                     if (por && email) {
-                        statUltimoCambioPor.innerHTML = `<span style="font-weight:600;">${por}</span> &lt;${email}&gt;`;
+                        kpiUltimoCambioPor.innerHTML = `<span style="font-weight:600;">${por}</span> &lt;${email}&gt;`;
                     } else if (por) {
-                        statUltimoCambioPor.textContent = por;
+                        kpiUltimoCambioPor.textContent = por;
                     } else {
-                        statUltimoCambioPor.textContent = 'Sin registros';
+                        kpiUltimoCambioPor.textContent = 'Sin registros';
                     }
                     
                     // Badge de pendientes en el botón Recargar
@@ -1959,6 +2359,7 @@
                         throw new Error(errData.detail || `Error del servidor (${res.status})`);
                     }
                     camiones = await res.json();
+                    await fetchPromediosRuta();
                     
                     renderTable();
                     calculateStats();
@@ -1970,6 +2371,20 @@
                 } finally {
                     tableLoading.style.display = 'none';
                 }
+            }
+
+            async function fetchPromediosRuta() {
+                try {
+                    const res = await fetch('/api/fletes/ruta');
+                    promediosRuta = await res.json();
+                } catch (err) {
+                    console.error('Error fetching promedios ruta:', err);
+                }
+            }
+
+            function getPromedioRuta(ruta) {
+                const p = promediosRuta.find(p => p.ruta === ruta);
+                return p ? p.promedio : null;
             }
 
             async function fetchAuditoria() {
@@ -2020,71 +2435,23 @@
             }
 
             function calculateStats() {
-                statTotal.textContent = camiones.length;
-                
-                let totalKg = 0;
-                let totalMaples = 0;
-                let sucursales = {};
-                let enServicio = 0, fueraServicio = 0, consultar = 0;
-                
-                camiones.forEach(c => {
-                    totalKg += c.capacidad_util_kg || 0;
-                    totalMaples += c.capacidad_maples || 0;
-                    if (c.sucursal) {
-                        if (!sucursales[c.sucursal]) sucursales[c.sucursal] = 0;
-                        sucursales[c.sucursal]++;
-                    }
-                    const sv = (c.estado_servicio || 'EN SERVICIO').toUpperCase();
-                    if (sv === 'EN SERVICIO') enServicio++;
-                    else if (sv === 'FUERA DE SERVICIO') fueraServicio++;
-                    else if (sv === 'CONSULTAR') consultar++;
-                });
-                
-                statCapacidadKg.textContent = `${(totalKg/1000).toFixed(1)}k Kg`;
-                statCapacidadMaples.textContent = `${totalMaples.toLocaleString('es-BO')} Maples`;
-                
-                // Flota status KPIs
-                flotaEnServicio.textContent = enServicio;
-                flotaFueraServicio.textContent = fueraServicio;
-                flotaConsultar.textContent = consultar;
-                
-                // Tarjetas dinámicas por sucursal
-                const colors = ['green', 'orange', 'blue'];
-                const icons = ['building-2', 'store', 'warehouse'];
-                let i = 0;
-                sucursalStats.innerHTML = Object.entries(sucursales).map(([s, n]) => {
-                    const icon = icons[i % icons.length];
-                    const color = colors[i % colors.length]; i++;
-                    return `
-                        <div class="stat-card ${color}" style="padding:0.75rem 1rem;">
-                            <div class="stat-info">
-                                <p>${s}</p>
-                                <div class="value" style="font-size:1.15rem;">${n}</div>
-                                <div class="subtext">Camiones</div>
-                            </div>
-                            <div class="stat-icon" style="padding:0.4rem;">
-                                <i data-lucide="${icon}" style="width:18px;height:18px;"></i>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                sucursalStats.style.gridTemplateColumns = `repeat(${Math.min(Object.keys(sucursales).length, 3)}, 1fr)`;
-                lucide.createIcons({node: sucursalStats});
+                // Simplified - flota KPIs and sucursal stats now handled by fetchDashboardStats -> renderKpis
+                fetchDashboardStats();
             }
 
             function getFilteredCamiones() {
                 const queryPlaca = filterPlaca.value.trim().toLowerCase();
                 const selSucursal = filterSucursal.value;
-                const selCombustible = filterCombustible.value;
                 const selSistema = filterSistemaCamion.value;
                 const selEstadoServicio = filterEstadoServicio.value;
+                const selRutaMadre = filterRutaMadre.value;
                 return camiones.filter(c => {
                     const matchesPlaca = c.placa.toLowerCase().includes(queryPlaca);
                     const matchesSucursal = selSucursal === '' || c.sucursal === selSucursal;
-                    const matchesCombustible = selCombustible === '' || c.tipo_combustible === selCombustible;
-                    const matchesSistema = selSistema === '' || c.sistema_camion === selSistema;
+                    const matchesSistema = selSistema === '' || (c.sistema_camion || 'SIN INFORMACIÓN') === selSistema;
                     const matchesEstadoServicio = selEstadoServicio === '' || (c.estado_servicio || 'EN SERVICIO') === selEstadoServicio;
-                    return matchesPlaca && matchesSucursal && matchesCombustible && matchesSistema && matchesEstadoServicio;
+                    const matchesRutaMadre = selRutaMadre === '' || (c.ruta_madre || '') === selRutaMadre;
+                    return matchesPlaca && matchesSucursal && matchesSistema && matchesEstadoServicio && matchesRutaMadre;
                 });
             }
 
@@ -2112,33 +2479,29 @@
                 let html = '';
                 for (let i = start; i < end; i++) {
                     const c = filtered[i];
-                    const factorVal = ((c.capacidad_maples || 0) * 0.75).toFixed(2);
+                    const servLED = c.estado_servicio === 'EN SERVICIO' ? 'on' :
+                        c.estado_servicio === 'FUERA DE SERVICIO' ? 'off' : 'warn';
                     const servicioClass = c.estado_servicio === 'EN SERVICIO' ? 'sincronizado' :
                         c.estado_servicio === 'FUERA DE SERVICIO' ? 'error' : 'local';
-                    html += `
-                        <tr>
-                            <td style="font-weight: 500;color:var(--text-muted);text-align:center;">${i + 1}</td>
-                            <td><span class="placa-badge">${c.placa}</span></td>
-                            <td style="font-weight:500;">${c.sucursal}</td>
-                            <td><span class="sync-badge ${c.sistema_camion === 'SIN INFORMACIÓN' ? 'local' : 'sincronizado'}">${c.sistema_camion || 'SIN INFORMACIÓN'}</span></td>
-                            <td><span class="sync-badge ${servicioClass}">${c.estado_servicio || 'EN SERVICIO'}</span></td>
-                            <td>${c.estado_trabajo}</td>
-                            <td style="font-weight:500;">${c.tipo_combustible}</td>
-                            <td style="font-weight:600;text-align:right;">${c.costo_flete ? c.costo_flete.toFixed(2) : '0.00'}</td>
-                            <td style="text-align:right;">${c.capacidad_kg ? c.capacidad_kg.toLocaleString('es-BO') : '0'}</td>
-                            <td style="font-weight:600;color:var(--success);text-align:right;">${c.capacidad_maples ? c.capacidad_maples.toLocaleString('es-BO') : '0'}</td>
-                            <td style="font-weight:600;color:var(--primary);text-align:right;">${c.capacidad_util_kg ? c.capacidad_util_kg.toLocaleString('es-BO') : '0.00'}</td>
-                            <td style="font-weight:600;color:var(--success);text-align:right;">${factorVal}</td>
-                            <td style="text-align:center;">
-                                <button class="edit-action-btn" data-fila="${c.fila_id}" title="Editar">
-                                    <i data-lucide="edit-3" style="width:16px;height:16px;"></i>
-                                </button>
-                                <button class="delete-action-btn" data-fila="${c.fila_id}" data-placa="${c.placa}" title="Eliminar" style="margin-left:4px;background:none;border:none;color:var(--danger);cursor:pointer;">
-                                    <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
+                    const sistLED = c.sistema_camion === 'REFRIGERADO' ? 'info' :
+                        c.sistema_camion === 'HIBRIDO' ? 'warn' :
+                        c.sistema_camion === 'SECOS' ? 'on' : 'muted';
+                    const rutaProm = getPromedioRuta(c.ruta || '');
+                    const fleteDisplay = rutaProm !== null ? rutaProm.toFixed(2) : '0.00';
+                    const fleteTitle = rutaProm !== null ? 'Precio ruta: ' + (c.ruta || 'local') : 'Sin precio de ruta';
+                    const capMaples = c.capacidad_maples ? c.capacidad_maples.toLocaleString('es-BO') : '0';
+                    const capKg = c.capacidad_util_kg ? c.capacidad_util_kg.toLocaleString('es-BO') : '0';
+                    html += '<tr>' +
+                        '<td><span class="placa-badge">' + c.placa + '</span></td>' +
+                        '<td style="font-weight:500;">' + c.sucursal + '</td>' +
+                        '<td><span class="sync-badge" style="display:inline-flex;align-items:center;gap:4px;background:transparent;border:none;padding:0;"><span class="status-led ' + sistLED + '"></span>' + (c.sistema_camion || 'SIN INFORMACIÓN') + '</span></td>' +
+                        '<td><span class="sync-badge ' + servicioClass + '" style="display:inline-flex;align-items:center;gap:4px;"><span class="status-led ' + servLED + '"></span>' + (c.estado_servicio || 'EN SERVICIO') + '</span></td>' +
+                        '<td style="font-weight:500;color:var(--primary-hover);">' + (c.ruta_madre || '-') + '</td>' +
+                        '<td style="font-weight:500;color:var(--text-main);">' + (c.ruta || 'local') + '</td>' +
+                        '<td style="font-weight:600;text-align:right;font-variant-numeric:tabular-nums;" title="' + fleteTitle + '">' + fleteDisplay + '</td>' +
+                        '<td style="font-weight:600;color:var(--success);text-align:right;font-variant-numeric:tabular-nums;" title="' + capKg + ' kg útiles">' + capMaples + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">map.</span></td>' +
+                        '<td style="text-align:center;white-space:nowrap;"><button class="edit-action-btn" data-fila="' + c.fila_id + '" title="Editar" style="background:none;border:none;color:var(--primary);cursor:pointer;padding:2px 4px;"><i data-lucide="edit-3" style="width:14px;height:14px;"></i></button><button class="delete-action-btn" data-fila="' + c.fila_id + '" data-placa="' + c.placa + '" title="Eliminar" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:2px 4px;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button></td>' +
+                        '</tr>';
                 }
                 camionesTableBody.insertAdjacentHTML('beforeend', html);
                 renderedCount = end;
@@ -2148,7 +2511,7 @@
                 if (existing) existing.remove();
                 
                 if (end < filtered.length) {
-                    const wrap = document.querySelector('.table-scroll');
+                    const wrap = camionesTable.closest('.table-scroll');
                     const div = document.createElement('div');
                     div.id = 'loadMoreRow';
                     div.className = 'load-more-row';
@@ -2165,7 +2528,7 @@
                         appendChunk(filtered, end);
                     });
                 } else if (filtered.length > CHUNK_SIZE) {
-                    const wrap = document.querySelector('.table-scroll');
+                    const wrap = camionesTable.closest('.table-scroll');
                     const div = document.createElement('div');
                     div.id = 'loadMoreRow';
                     div.className = 'load-more-row';
@@ -2196,6 +2559,86 @@
                         });
                     }
                 });
+            }
+
+            // ── Cascada Ruta Madre → Ruta Hija ────────────────────────
+            let rutasData = {};
+
+            async function loadRutasMadres() {
+                try {
+                    const res = await fetch('/api/rutas/madres');
+                    const madres = await res.json();
+                    // Rellenar form
+                    formRutaMadre.innerHTML = '<option value="">(seleccionar)</option>';
+                    for (const m of madres) {
+                        formRutaMadre.innerHTML += `<option value="${m}">${m}</option>`;
+                    }
+                    formRutaMadre.innerHTML += '<option value="local">Local</option>';
+                    formRutaMadre.innerHTML += '<option value="OTRO">Otro (especificar abajo)</option>';
+                    // Rellenar filtro
+                    filterRutaMadre.innerHTML = '<option value="">Todas las Rutas Madre</option>';
+                    for (const m of madres) {
+                        filterRutaMadre.innerHTML += `<option value="${m}">${m}</option>`;
+                    }
+                } catch (e) {
+                    console.error('Error cargando rutas madre:', e);
+                }
+            }
+
+            formRutaMadre.addEventListener('change', async () => {
+                const madre = formRutaMadre.value;
+                const hijaGroup = formRutaHijaGroup;
+                const hijaSelect = formRutaHija;
+                const manualGroup = document.getElementById('formRutaManualGroup');
+                const manualInput = document.getElementById('formRutaManual');
+                if (!madre || madre === 'local') {
+                    hijaGroup.style.display = 'none';
+                    manualGroup.style.display = 'none';
+                    return;
+                }
+                if (madre === 'OTRO') {
+                    hijaGroup.style.display = 'none';
+                    manualInput.value = '';
+                    manualGroup.style.display = 'block';
+                    return;
+                }
+                try {
+                    const res = await fetch(`/api/rutas/hijas?madre=${encodeURIComponent(madre)}`);
+                    const hijas = await res.json();
+                    rutasData[madre] = hijas;
+                    if (hijas.length > 0) {
+                        hijaSelect.innerHTML = '<option value="">(seleccionar ruta hija)</option>';
+                        for (const h of hijas) {
+                            hijaSelect.innerHTML += `<option value="${h.ruta_hija}" data-flete="${h.flete}">${h.ruta_hija}</option>`;
+                        }
+                        hijaGroup.style.display = 'block';
+                        manualGroup.style.display = 'none';
+                    } else {
+                        hijaGroup.style.display = 'none';
+                        manualInput.value = '';
+                        manualGroup.style.display = 'block';
+                    }
+                } catch (e) {
+                    console.error('Error cargando rutas hijas:', e);
+                }
+            });
+
+            formRutaHija.addEventListener('change', () => {
+                // no-op: flete se asigna por ruta, no por camión
+            });
+
+            // Seed rutas endpoint (por si necesita recargar)
+            async function seedRutas() {
+                try {
+                    const res = await fetch('/api/rutas/seed');
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Rutas', data.message, 'success');
+                        await loadRutasMadres();
+                    }
+                } catch (e) {
+                    console.error('Error seeding rutas:', e);
+                }
             }
 
             // ── Conversor Capacidad Maples <-> Kg ──────────────────────────
@@ -2269,8 +2712,39 @@
                 formSistemaCamion.value = camion.sistema_camion || 'SIN INFORMACIÓN';
                 formEstadoServicio.value = camion.estado_servicio || 'EN SERVICIO';
                 formEstadoTrabajo.value = camion.estado_trabajo;
+                // Ruta Madre/Hija
+                const madre = camion.ruta_madre || '';
+                const hijo = camion.ruta || '';
+                const manualInput = document.getElementById('formRutaManual');
+                const manualGroup = document.getElementById('formRutaManualGroup');
+                formRutaMadre.value = madre;
+                formRutaHija.value = hijo;
+                manualInput.value = hijo;
+                if (madre && madre !== 'local' && madre !== 'OTRO') {
+                    // Cargar hijas para esta madre
+                    fetch(`/api/rutas/hijas?madre=${encodeURIComponent(madre)}`)
+                        .then(r => r.json())
+                        .then(hijas => {
+                            rutasData[madre] = hijas;
+                            if (hijas.length > 0) {
+                                formRutaHija.innerHTML = '<option value="">(seleccionar ruta hija)</option>';
+                                for (const h of hijas) {
+                                    formRutaHija.innerHTML += `<option value="${h.ruta_hija}" data-flete="${h.flete}">${h.ruta_hija}</option>`;
+                                }
+                                formRutaHija.value = hijo;
+                                formRutaHijaGroup.style.display = 'block';
+                                manualGroup.style.display = 'none';
+                            } else {
+                                formRutaHijaGroup.style.display = 'none';
+                                manualGroup.style.display = 'block';
+                            }
+                        })
+                        .catch(() => {});
+                } else {
+                    formRutaHijaGroup.style.display = 'none';
+                    manualGroup.style.display = 'none';
+                }
                 formCombustible.value = camion.tipo_combustible;
-                formCostoFlete.value = camion.costo_flete || 0;
                 formCapacidadKg.value = camion.capacidad_kg || 0;
                 formCapacidadMaples.value = camion.capacidad_maples || 0;
                 formCapacidadUtilKg.value = camion.capacidad_util_kg || 0;
@@ -2303,10 +2777,15 @@
                 
                 function pick(v, d) { return v && v !== '' ? v : d; }
                 const maplesVal = parseInt(formCapacidadMaples.value, 10) || 0;
+                const madreVal = formRutaMadre.value;
+                const hijaVal = formRutaHija.value;
+                const manualVal = (document.getElementById('formRutaManual').value || '').trim();
+                const rutaFinal = hijaVal || manualVal || madreVal || 'local';
                 const payload = {
                     estado_trabajo: pick(formEstadoTrabajo.value, 'Fijo'),
+                    ruta: rutaFinal,
+                    ruta_madre: madreVal || '',
                     tipo_combustible: pick(formCombustible.value, 'GAS-GASOLINA'),
-                    costo_flete: parseFloat(formCostoFlete.value) || 0,
                     capacidad_kg: parseInt(formCapacidadKg.value, 10) || 0,
                     capacidad_maples: maplesVal,
                     capacidad_util_kg: parseFloat(formCapacidadUtilKg.value) || 0,
@@ -2382,14 +2861,16 @@
                     showToast('Sin datos', 'No hay camiones para exportar.', 'warning');
                     return;
                 }
-                const headers = ['Nº','Placa','Sucursal','Sistema','Servicio','Estado Trabajo','Combustible','Flete (Bs)','Cap.KG','Maples','Cap.Útil Kg','F.0.75'];
+                const headers = ['Placa','Sucursal','Sistema','Servicio','Ruta Madre','Ruta','Flete (Bs)','Capacidad (Maples)'];
                 const lines = [headers.join(',')];
                 filtered.forEach((c, i) => {
+                    const rutaProm = getPromedioRuta(c.ruta || '');
+                    const fleteDisplay = rutaProm !== null ? rutaProm.toFixed(2) : '0.00';
                     const row = [
-                        i+1, c.placa, c.sucursal, c.sistema_camion, c.estado_servicio || 'EN SERVICIO',
-                        c.estado_trabajo, c.tipo_combustible, c.costo_flete || 0,
-                        c.capacidad_kg || 0, c.capacidad_maples || 0, c.capacidad_util_kg || 0,
-                        ((c.capacidad_maples || 0) * 0.75).toFixed(2)
+                        c.placa, c.sucursal, c.sistema_camion || 'SIN INFORMACIÓN',
+                        c.estado_servicio || 'EN SERVICIO',
+                        c.ruta_madre || '', c.ruta || 'local', fleteDisplay,
+                        c.capacidad_maples || 0
                     ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
                     lines.push(row);
                 });
@@ -2412,7 +2893,6 @@
                 const params = new URLSearchParams();
                 if (filterPlaca.value.trim()) params.set('placa', filterPlaca.value.trim());
                 if (filterSucursal.value) params.set('sucursal', filterSucursal.value);
-                if (filterCombustible.value) params.set('tipo_combustible', filterCombustible.value);
                 if (filterSistemaCamion.value) params.set('sistema_camion', filterSistemaCamion.value);
                 if (filterEstadoServicio.value) params.set('estado_servicio', filterEstadoServicio.value);
                 const qs = params.toString();
@@ -2513,69 +2993,241 @@
                     tabDashboard.classList.add('active');
                     tabDashboardContent.classList.add('active');
                 } else {
-                    tabFletes.classList.add('active');
-                    tabFletesContent.classList.add('active');
-                    loadFletes();
+                    tabTarifas.classList.add('active');
+                    tabTarifasContent.classList.add('active');
+                    loadFletesRuta();
                 }
             }
 
             tabDashboard.addEventListener('click', () => switchTab('dashboard'));
-            tabFletes.addEventListener('click', () => switchTab('fletes'));
+            tabTarifas.addEventListener('click', () => switchTab('tarifas'));
 
-            async function loadFletes() {
+            // ── Precios por Ruta (tab Tarifas) ─────────────────────────────
+            async function loadFletesRuta() {
+                const fletesBody = document.getElementById('tarifasFletesBody');
+                const fletesLoading = document.getElementById('tarifasFletesLoading');
+                const fletesEmpty = document.getElementById('tarifasFletesEmpty');
+                const query = (document.getElementById('filterTarifaRuta').value || '').trim().toLowerCase();
                 fletesLoading.style.display = 'flex';
                 fletesEmpty.style.display = 'none';
-                fletesTableBody.innerHTML = '';
+                fletesBody.innerHTML = '';
                 try {
-                    const res = await fetch('/api/fletes');
-                    const data = await res.json();
+                    const statsRes = await fetch('/api/dashboard/stats');
+                    const stats = await statsRes.json();
+                    const promedios = stats.promedios_ruta || [];
+                    const k = stats.kpis;
+
+                    // Update KPIs
+                    document.getElementById('tarifasCount').textContent = promedios.length;
+                    document.getElementById('promTotalFletes').textContent = 'Bs ' + Number(k.total_flete).toLocaleString('es-BO', {minimumFractionDigits:2});
+                    document.getElementById('promTotalFletesSub').textContent = k.camiones_con_flete + ' camiones cubiertos';
+                    document.getElementById('promGeneralFlete').textContent = 'Bs ' + Number(k.promedio_flete_general).toFixed(2);
+                    document.getElementById('promGeneralFleteSub').textContent = k.camiones_con_flete + ' camiones con precio';
+
+                    // Filter
+                    let filtered = promedios;
+                    if (query) filtered = promedios.filter(p => p.ruta.toLowerCase().includes(query));
+
                     fletesLoading.style.display = 'none';
-                    if (!data || data.length === 0) {
+                    if (filtered.length === 0) {
                         fletesEmpty.style.display = 'flex';
                         return;
                     }
-                    const fleteStats = document.getElementById('fleteStats');
-                    fleteStats.innerHTML = data.map(s => `
-                        <div class="stat-card orange">
-                            <div class="stat-info">
-                                <p>${s.sucursal}</p>
-                                <div class="value" style="font-size:1.6rem;">Bs ${s.promedio_flete.toLocaleString('es-BO')}</div>
-                                <div class="subtext">${s.total_camiones} camiones · Total Bs ${s.total_flete.toLocaleString('es-BO')}</div>
-                            </div>
-                            <div class="stat-icon">
-                                <i data-lucide="truck" style="width:24px;height:24px;"></i>
-                            </div>
-                        </div>
-                    `).join('');
-                    lucide.createIcons({node: fleteStats});
-                    fletesTableBody.innerHTML = data.map(s => `
-                        <tr>
-                            <td style="font-weight:600;">${s.sucursal}</td>
-                            <td style="font-weight:600;color:var(--success);">Bs ${s.promedio_flete.toLocaleString('es-BO')}</td>
-                            <td>${s.total_camiones}</td>
-                            <td>Bs ${s.total_flete.toLocaleString('es-BO')}</td>
-                        </tr>
-                    `).join('');
+                    fletesBody.innerHTML = filtered.map((p, i) => {
+                        const avg = Number(p.promedio) || 0;
+                        return '<tr data-ruta="' + p.ruta + '">' +
+                            '<td style="text-align:center;color:var(--text-muted);font-weight:500;padding:0.8rem 0.85rem;">' + (i + 1) + '</td>' +
+                            '<td style="font-weight:500;padding:0.8rem 0.85rem;">' + p.ruta + '</td>' +
+                            '<td style="padding:0.8rem 0.85rem;"><input type="number" class="ruta-precio-input" value="' + avg.toFixed(2) + '" min="0" step="0.01" style="width:120px;padding:0.35rem 0.5rem;border:1px solid var(--border-light);border-radius:var(--radius-sm);font-weight:600;font-family:var(--font-family-body);text-align:right;"></td>' +
+                            '<td style="padding:0.8rem 0.85rem;"><button class="save-ruta-precio-btn btn btn-sm btn-primary" data-ruta="' + p.ruta + '"><i data-lucide="check" style="width:14px;height:14px;"></i></button><button class="delete-ruta-precio-btn btn btn-sm btn-danger" data-ruta="' + p.ruta + '" style="margin-left:4px;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button></td>' +
+                            '</tr>';
+                    }).join('');
+                    lucide.createIcons({node: fletesBody});
+
+                    // Render sucursal table
+                    const sucData = stats.resumen_sucursales || [];
+                    const sucBody = document.getElementById('promSucBody');
+                    const sucEmpty = document.getElementById('promSucEmpty');
+                    sucBody.innerHTML = '';
+                    if (sucData.length === 0) {
+                        sucEmpty.style.display = 'flex';
+                    } else {
+                        sucEmpty.style.display = 'none';
+                        sucBody.innerHTML = sucData.map(s => {
+                            const prom = Number(s.promedio) || 0;
+                            return '<tr>' +
+                                '<td style="font-weight:600;padding:0.8rem 0.85rem;">' + s.sucursal + '</td>' +
+                                '<td style="text-align:center;padding:0.8rem 0.85rem;">' + s.cantidad + '</td>' +
+                                '<td style="font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:0.8rem 0.85rem;">Bs ' + Number(s.total_flete).toLocaleString('es-BO', {minimumFractionDigits:2}) + '</td>' +
+                                '<td style="font-weight:700;color:var(--success);text-align:right;font-variant-numeric:tabular-nums;padding:0.8rem 0.85rem;">Bs ' + prom.toFixed(2) + '</td>' +
+                                '<td style="text-align:center;padding:0.8rem 0.85rem;">' + s.camiones_con_flete + '</td>' +
+                                '</tr>';
+                        }).join('');
+                    }
+
+                    // Load tarifas de referencia
+                    try {
+                        const tarifasRes = await fetch('/api/tarifas');
+                        if (tarifasRes.ok) {
+                            const tarifasDataAll = await tarifasRes.json();
+                            const tarifasBody = document.getElementById('tarifasTableBody');
+                            const tarifasLoad = document.getElementById('tarifasLoading');
+                            const tarifasEmp = document.getElementById('tarifasEmpty');
+                            tarifasLoad.style.display = 'none';
+                            if (!tarifasDataAll || tarifasDataAll.length === 0) {
+                                tarifasEmp.style.display = 'flex';
+                            } else {
+                                tarifasEmp.style.display = 'none';
+                                tarifasBody.innerHTML = tarifasDataAll.map((t, i) =>
+                                    '<tr><td style="text-align:center;color:var(--text-muted);font-weight:500;padding:0.8rem 0.85rem;">' + (i + 1) + '</td>' +
+                                    '<td style="padding:0.8rem 0.85rem;"><span class="sync-badge sincronizado" style="display:inline-flex;align-items:center;gap:4px;"><span class="status-led info"></span>' + t.clasificacion + '</span></td>' +
+                                    '<td style="font-size:0.82rem;padding:0.8rem 0.85rem;">' + t.tipo_ruta + '</td>' +
+                                    '<td style="font-weight:700;text-align:right;color:var(--success);font-variant-numeric:tabular-nums;padding:0.8rem 0.85rem;">Bs ' + Number(t.flete_final).toFixed(2) + '</td></tr>'
+                                ).join('');
+                            }
+                        }
+                    } catch(e) { /* tarifas de referencia no disponibles */ }
+
+                    return true;
                 } catch (err) {
+                    console.error(err);
                     fletesLoading.style.display = 'none';
                     fletesEmpty.style.display = 'flex';
-                    fletesEmpty.innerHTML = '<i data-lucide="alert-circle" style="width:48px;height:48px;"></i><p>Error al cargar datos de flete.</p>';
-                    console.error(err);
+                    fletesEmpty.innerHTML = '<i data-lucide="alert-circle" style="width:48px;height:48px;opacity:0.5;"></i><p>Error al cargar datos.</p>';
+                    return false;
                 }
             }
+
+            const cargarTarifasBtn = document.getElementById('cargarTarifasExcelBtn');
+            if (cargarTarifasBtn) cargarTarifasBtn.addEventListener('click', async () => {
+                const btn = document.getElementById('cargarTarifasExcelBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader" style="width:16px;height:16px;" class="spin-animation"></i><span>Cargando...</span>';
+                try {
+                    const res = await fetch('/api/tarifas/load', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Tarifas cargadas', data.message, 'success');
+                        await loadFletesRuta();
+                    } else {
+                        showToast('Error', data.detail || 'Error al cargar tarifas', 'error');
+                    }
+                } catch (err) {
+                    showToast('Error', err.message, 'error');
+                }
+                btn.innerHTML = '<i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i><span>Cargar Tarifas (Excel)</span>';
+                btn.disabled = false;
+                lucide.createIcons({node: btn});
+            });
+
+            // ── Guardar precio de ruta (delegación de eventos) ────────
+            document.getElementById('tarifasFletesBody').addEventListener('click', async (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const ruta = btn.dataset.ruta;
+                if (!ruta) return;
+
+                if (btn.classList.contains('save-ruta-precio-btn')) {
+                    const tr = btn.closest('tr');
+                    const input = tr.querySelector('.ruta-precio-input');
+                    const precio = parseFloat(input.value);
+                    if (!precio || precio <= 0) {
+                        showToast('Error', 'El precio debe ser mayor a 0.', 'warning');
+                        return;
+                    }
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="loader" style="width:14px;height:14px;" class="spin-animation"></i>';
+                    lucide.createIcons({node: btn});
+                    try {
+                        const res = await fetch('/api/fletes/ruta/' + encodeURIComponent(ruta), {
+                            method: 'PUT',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({promedio: precio}),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            showToast('Actualizado', data.message, 'success');
+                            await loadFletesRuta();
+                            await fetchPromediosRuta();
+                            await fetchDashboardStats();
+                        } else {
+                            showToast('Error', data.detail || 'Error al guardar', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Error', err.message, 'error');
+                    }
+                    btn.disabled = false;
+                    btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i>';
+                    lucide.createIcons({node: btn});
+                }
+
+                if (btn.classList.contains('delete-ruta-precio-btn')) {
+                    if (!confirm('¿Eliminar precio de la ruta "' + ruta + '"?')) return;
+                    btn.disabled = true;
+                    try {
+                        const res = await fetch('/api/fletes/ruta/' + encodeURIComponent(ruta), { method: 'DELETE' });
+                        const data = await res.json();
+                        if (data.success) {
+                            showToast('Eliminado', data.message, 'success');
+                            await loadFletesRuta();
+                            await fetchPromediosRuta();
+                            await fetchDashboardStats();
+                        } else {
+                            showToast('Error', data.detail || 'Error al eliminar', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Error', err.message, 'error');
+                    }
+                    btn.disabled = false;
+                }
+            });
+
+            // ── Agregar nueva ruta con precio ─────────────────────────
+            document.getElementById('agregarRutaPrecioBtn').addEventListener('click', () => {
+                const ruta = prompt('Nombre de la nueva ruta:');
+                if (!ruta || !ruta.trim()) return;
+                const precio = parseFloat(prompt('Precio de flete para "' + ruta + '" (Bs):'));
+                if (!precio || precio <= 0) {
+                    showToast('Error', 'Debe ingresar un precio válido.', 'warning');
+                    return;
+                }
+                fetch('/api/fletes/ruta?ruta=' + encodeURIComponent(ruta.trim()), {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({promedio: precio}),
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Creado', data.message, 'success');
+                        loadFletesRuta();
+                        fetchPromediosRuta();
+                        fetchDashboardStats();
+                    } else {
+                        showToast('Error', data.detail || 'Error al crear', 'error');
+                    }
+                })
+                .catch(err => showToast('Error', err.message, 'error'));
+            });
+
+            document.getElementById('filterTarifaRuta').addEventListener('input', loadFletesRuta);
+
+            document.getElementById('filterTarifaRuta').addEventListener('input', loadFletesRuta);
 
             // ── Filtros Activos ──────────────────────────────────────────
             filterPlaca.addEventListener('input', renderTable);
             filterSucursal.addEventListener('change', renderTable);
-            filterCombustible.addEventListener('change', renderTable);
             filterSistemaCamion.addEventListener('change', renderTable);
             filterEstadoServicio.addEventListener('change', renderTable);
+            filterRutaMadre.addEventListener('change', renderTable);
 
             // ── Loop de actualización de estado automático (Tiempo Real) ──
             setInterval(async () => {
                 try {
                     await fetchStatus();
                     await fetchAuditoria();
+                    await fetchPromediosRuta();
+                    await fetchDashboardStats();
                     // Si hay elementos pendientes en la UI, recargamos el listado para ver si cambiaron de estado
                     const hasPending = camiones.some(c => c.estado_sincronizacion === 'pendiente_insercion' || c.estado_sincronizacion === 'pendiente_actualizacion');
                     if (hasPending) {
@@ -2651,11 +3303,124 @@
                 initColumnResize();
             };
 
+            // ── Dashboard Stats ──────────────────────────────────────────
+            async function fetchDashboardStats() {
+                try {
+                    const res = await fetch('/api/dashboard/stats');
+                    const data = await res.json();
+                    renderKpis(data);
+                    renderAlertas(data.alertas);
+                    renderPromediosRutaDashboard(data.promedios_ruta);
+                    const fc = document.getElementById('footerCount');
+                    if (fc) fc.textContent = (data.kpis.total_camiones || 0) + ' camiones';
+                    return data;
+                } catch (err) {
+                    console.error('Error fetching dashboard stats:', err);
+                }
+            }
+
+            function renderKpis(data) {
+                const k = data.kpis;
+                document.getElementById('kpiTotal').textContent = k.total_camiones;
+                document.getElementById('kpiEnServicio').textContent = k.en_servicio;
+                const pct = k.total_camiones > 0 ? ((k.en_servicio / k.total_camiones) * 100).toFixed(0) : 0;
+                document.getElementById('kpiActivos').textContent = k.en_servicio;
+                document.getElementById('kpiPorcentajeActivos').textContent = pct;
+                document.getElementById('kpiTotalFlete').textContent = 'Bs ' + Number(k.total_flete).toLocaleString('es-BO', {minimumFractionDigits:2});
+                document.getElementById('kpiCamionesConFlete').textContent = k.camiones_con_flete + ' de ' + k.total_camiones;
+
+                // Promedio general de flete
+                document.getElementById('kpiPromedioFlete').textContent = 'Bs ' + Number(k.promedio_flete_general).toFixed(2);
+                const promedios = data.promedios_ruta || [];
+                document.getElementById('kpiPromedioFleteSub').textContent = promedios.length + ' rutas activas';
+
+                document.getElementById('kpiCapacidadMaples').textContent = Number(k.total_capacidad_maples).toLocaleString('es-BO');
+                document.getElementById('kpiCapacidadKg').textContent = Number(k.total_capacidad_kg / 1000).toFixed(1) + 'k kg';
+                document.getElementById('kpiEficiencia').textContent = k.promedio_flete_general > 0 ? 'Bs ' + Number(k.promedio_flete_general).toFixed(0) : 'Bs 0';
+                document.getElementById('kpiEficienciaSub').textContent = k.camiones_con_flete + ' camiones con precio';
+
+                // Flota KPIs
+                document.getElementById('flotaEnServicio').textContent = k.en_servicio;
+                document.getElementById('flotaFueraServicio').textContent = k.fuera_servicio;
+                document.getElementById('flotaConsultar').textContent = k.consultar;
+
+                // Sucursal stats from resumen_sucursales
+                const sucStats = document.getElementById('sucursalStats');
+                const sucData = data.resumen_sucursales || [];
+                const colors = ['green', 'orange', 'blue'];
+                const icons = ['building-2', 'store', 'warehouse'];
+                let i = 0;
+                sucStats.innerHTML = sucData.map(s => {
+                    const icon = icons[i % icons.length];
+                    const color = colors[i % colors.length]; i++;
+                    return '<div class="stat-card ' + color + '" style="padding:0.75rem 1rem;">' +
+                        '<div class="stat-info"><p>' + s.sucursal + '</p><div class="value" style="font-size:1.15rem;">' + s.cantidad + '</div>' +
+                        '<div class="subtext">' + s.camiones_con_flete + ' con flete · Prom Bs ' + Number(s.promedio).toFixed(0) + '</div></div>' +
+                        '<div class="stat-icon" style="padding:0.4rem;"><i data-lucide="' + icon + '" style="width:18px;height:18px;"></i></div></div>';
+                }).join('');
+                sucStats.style.gridTemplateColumns = 'repeat(' + Math.min(sucData.length, 3) + ', 1fr)';
+                lucide.createIcons({node: sucStats});
+            }
+
+            function renderAlertas(alertas) {
+                const section = document.getElementById('alertasSection');
+                if (!alertas || alertas.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
+                section.style.display = 'flex';
+                section.innerHTML = alertas.map(a => {
+                    const icon = a.tipo === 'warning' ? 'alert-triangle' : 'info';
+                    return '<div class="alerta-item ' + a.tipo + '"><i data-lucide="' + icon + '" style="width:16px;height:16px;"></i>' + a.mensaje + '</div>';
+                }).join('');
+                lucide.createIcons({node: section});
+            }
+
+            function renderPromediosRutaDashboard(promedios) {
+                const section = document.getElementById('promediosRutaSection');
+                const body = document.getElementById('promediosRutaBody');
+                const empty = document.getElementById('promediosRutaEmpty');
+                body.innerHTML = '';
+                if (!promedios || promedios.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
+                section.style.display = 'block';
+                empty.style.display = 'none';
+                body.innerHTML = promedios.map(r => {
+                    const avg = Number(r.promedio) || 0;
+                    return '<tr>' +
+                        '<td style="font-weight:500;padding:0.8rem 0.85rem;">' + r.ruta + '</td>' +
+                        '<td style="padding:0.8rem 0.85rem;font-weight:700;color:var(--success);font-variant-numeric:tabular-nums;text-align:right;">Bs ' + avg.toFixed(2) + '</td>' +
+                        '</tr>';
+                }).join('');
+            }
+
             // ── Carga Inicial ────────────────────────────────────────────
             (async () => {
                 await fetchStatus();
                 await fetchCamiones();
+                await fetchDashboardStats();
+                await loadFletesRuta();
                 await fetchAuditoria();
+                await fetchPromediosRuta();
+                await loadRutasMadres();
+            })();
+
+            // Inicializar iconos y shortcuts móviles
+            try { lucide.createIcons(); } catch(e){}
+            // FAB y Bottom Nav behavior
+            (function(){
+                const fab = document.getElementById('fabAddCamion');
+                if (fab) fab.addEventListener('click', () => { const b = document.getElementById('addCamionBtn'); if (b) b.click(); });
+                const bnDashboard = document.getElementById('bnDashboard');
+                const bnTarifas = document.getElementById('bnTarifas');
+                const bnCamiones = document.getElementById('bnCamiones');
+                const tabDash = document.getElementById('tabDashboard');
+                const tabTar = document.getElementById('tabTarifas');
+                if (bnDashboard) bnDashboard.addEventListener('click', () => { if (tabDash) tabDash.click(); });
+                if (bnTarifas) bnTarifas.addEventListener('click', () => { if (tabTar) tabTar.click(); });
+                if (bnCamiones) bnCamiones.addEventListener('click', () => { const btn = document.getElementById('tabDashboard'); if (btn) btn.click(); window.scrollTo({top: document.getElementById('camionesTable')?.offsetTop - 120 || 0, behavior:'smooth'}); });
             })();
 
             // ── Service Worker ──────────────────────────────────────────
@@ -2684,6 +3449,46 @@
                 if (b) b.remove();
             });
         });
+    </script>
+
+    <!-- Footer -->
+        <!-- Floating Action Button -->
+        <button class="fab" id="fabAddCamion" title="Registrar">
+            <i data-lucide="plus" style="width:20px;height:20px;color:#fff;"></i>
+        </button>
+
+        <!-- Bottom Navigation (mobile) -->
+        <div class="bottom-nav" role="navigation" aria-label="Navegación inferior">
+            <button class="bn-item" data-target="dashboard" id="bnDashboard">
+                <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="bn-item" data-target="tarifas" id="bnTarifas">
+                <i data-lucide="book-open" style="width:18px;height:18px;"></i>
+                <span>Tarifas</span>
+            </button>
+            <button class="bn-item" data-target="camiones" id="bnCamiones">
+                <i data-lucide="truck" style="width:18px;height:18px;"></i>
+                <span>Camiones</span>
+            </button>
+        </div>
+
+    <footer style="max-width:1480px;width:100%;margin:2rem auto 0;padding:1.5rem 1.25rem 1rem;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+        <div style="font-size:0.7rem;color:var(--text-dimmed);">
+            &copy; 2026 Sof&iacute;a Ltda &mdash; Gesti&oacute;n de Camiones
+        </div>
+        <div style="font-size:0.65rem;color:var(--text-dimmed);display:flex;align-items:center;gap:0.5rem;">
+            <span>Datos sincronizados</span>
+            <span class="status-led on" style="width:6px;height:6px;display:inline-block;"></span>
+            <span id="footerCount">-</span>
+        </div>
+    </footer>
+    <script>
+        // Update footer count
+        setTimeout(() => {
+            const fc = document.getElementById('footerCount');
+            if (fc && typeof camiones !== 'undefined' && camiones.length) fc.textContent = camiones.length + ' camiones';
+        }, 500);
     </script>
 </body>
 </html>
