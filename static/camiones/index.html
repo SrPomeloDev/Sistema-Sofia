@@ -1464,12 +1464,7 @@
         .kpi-card .kpi-value { font-size: 1.05rem; font-weight: 800; color: var(--text-main); }
 
         /* Floating Action Button (FAB) for add actions */
-        .fab {
-            position: fixed; right: 16px; bottom: 76px; z-index: 1200;
-            width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            background: var(--primary); color: #fff; box-shadow: var(--shadow-md); border: none; cursor: pointer;
-            font-size: 20px;
-        }
+        /* FAB removed - using primary actions in header */
 
         /* Bottom navigation for mobile */
         .bottom-nav {
@@ -1493,7 +1488,7 @@
             #camionesTable { font-size: 0.9rem; }
             .tab-nav { display:none; }
             .bottom-nav { display:flex; }
-            .fab { bottom: 70px; }
+            /* fab removed */
         }
 
         @media (min-width: 481px) and (max-width: 768px) {
@@ -2476,7 +2471,7 @@
 
             function appendChunk(filtered, start) {
                 const end = Math.min(start + CHUNK_SIZE, filtered.length);
-                let html = '';
+                const frag = document.createDocumentFragment();
                 for (let i = start; i < end; i++) {
                     const c = filtered[i];
                     const servLED = c.estado_servicio === 'EN SERVICIO' ? 'on' :
@@ -2491,25 +2486,126 @@
                     const fleteTitle = rutaProm !== null ? 'Precio ruta: ' + (c.ruta || 'local') : 'Sin precio de ruta';
                     const capMaples = c.capacidad_maples ? c.capacidad_maples.toLocaleString('es-BO') : '0';
                     const capKg = c.capacidad_util_kg ? c.capacidad_util_kg.toLocaleString('es-BO') : '0';
-                    html += '<tr>' +
-                        '<td><span class="placa-badge">' + c.placa + '</span></td>' +
-                        '<td style="font-weight:500;">' + c.sucursal + '</td>' +
-                        '<td><span class="sync-badge" style="display:inline-flex;align-items:center;gap:4px;background:transparent;border:none;padding:0;"><span class="status-led ' + sistLED + '"></span>' + (c.sistema_camion || 'SIN INFORMACIÓN') + '</span></td>' +
-                        '<td><span class="sync-badge ' + servicioClass + '" style="display:inline-flex;align-items:center;gap:4px;"><span class="status-led ' + servLED + '"></span>' + (c.estado_servicio || 'EN SERVICIO') + '</span></td>' +
-                        '<td style="font-weight:500;color:var(--primary-hover);">' + (c.ruta_madre || '-') + '</td>' +
-                        '<td style="font-weight:500;color:var(--text-main);">' + (c.ruta || 'local') + '</td>' +
-                        '<td style="font-weight:600;text-align:right;font-variant-numeric:tabular-nums;" title="' + fleteTitle + '">' + fleteDisplay + '</td>' +
-                        '<td style="font-weight:600;color:var(--success);text-align:right;font-variant-numeric:tabular-nums;" title="' + capKg + ' kg útiles">' + capMaples + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">map.</span></td>' +
-                        '<td style="text-align:center;white-space:nowrap;"><button class="edit-action-btn" data-fila="' + c.fila_id + '" title="Editar" style="background:none;border:none;color:var(--primary);cursor:pointer;padding:2px 4px;"><i data-lucide="edit-3" style="width:14px;height:14px;"></i></button><button class="delete-action-btn" data-fila="' + c.fila_id + '" data-placa="' + c.placa + '" title="Eliminar" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:2px 4px;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button></td>' +
-                        '</tr>';
+
+                    const tr = document.createElement('tr');
+
+                    // Placa
+                    const tdPlaca = document.createElement('td');
+                    const spanPlaca = document.createElement('span');
+                    spanPlaca.className = 'placa-badge';
+                    spanPlaca.textContent = c.placa || '';
+                    tdPlaca.appendChild(spanPlaca);
+                    tr.appendChild(tdPlaca);
+
+                    // Sucursal
+                    const tdSucursal = document.createElement('td');
+                    tdSucursal.style.fontWeight = '500';
+                    tdSucursal.textContent = c.sucursal || '';
+                    tr.appendChild(tdSucursal);
+
+                    // Sistema
+                    const tdSistema = document.createElement('td');
+                    const spanSistema = document.createElement('span');
+                    spanSistema.className = 'sync-badge';
+                    spanSistema.style.display = 'inline-flex';
+                    spanSistema.style.alignItems = 'center';
+                    spanSistema.style.gap = '4px';
+                    spanSistema.style.background = 'transparent';
+                    spanSistema.style.border = 'none';
+                    spanSistema.style.padding = '0';
+                    const dotSistema = document.createElement('span');
+                    dotSistema.className = 'status-led ' + sistLED;
+                    spanSistema.appendChild(dotSistema);
+                    spanSistema.appendChild(document.createTextNode(' ' + (c.sistema_camion || 'SIN INFORMACIÓN')));
+                    tdSistema.appendChild(spanSistema);
+                    tr.appendChild(tdSistema);
+
+                    // Servicio
+                    const tdServicio = document.createElement('td');
+                    const spanServicio = document.createElement('span');
+                    spanServicio.className = 'sync-badge ' + servicioClass;
+                    spanServicio.style.display = 'inline-flex';
+                    spanServicio.style.alignItems = 'center';
+                    spanServicio.style.gap = '4px';
+                    const dotServ = document.createElement('span');
+                    dotServ.className = 'status-led ' + servLED;
+                    spanServicio.appendChild(dotServ);
+                    spanServicio.appendChild(document.createTextNode(' ' + (c.estado_servicio || 'EN SERVICIO')));
+                    tdServicio.appendChild(spanServicio);
+                    tr.appendChild(tdServicio);
+
+                    // Ruta madre
+                    const tdMadre = document.createElement('td');
+                    tdMadre.style.fontWeight = '500';
+                    tdMadre.style.color = 'var(--primary-hover)';
+                    tdMadre.textContent = c.ruta_madre || '-';
+                    tr.appendChild(tdMadre);
+
+                    // Ruta
+                    const tdRuta = document.createElement('td');
+                    tdRuta.style.fontWeight = '500';
+                    tdRuta.style.color = 'var(--text-main)';
+                    tdRuta.textContent = c.ruta || 'local';
+                    tr.appendChild(tdRuta);
+
+                    // Flete
+                    const tdFlete = document.createElement('td');
+                    tdFlete.style.fontWeight = '600';
+                    tdFlete.style.textAlign = 'right';
+                    tdFlete.style.fontVariantNumeric = 'tabular-nums';
+                    tdFlete.title = fleteTitle;
+                    tdFlete.textContent = fleteDisplay;
+                    tr.appendChild(tdFlete);
+
+                    // Capacidad
+                    const tdCap = document.createElement('td');
+                    tdCap.style.fontWeight = '600';
+                    tdCap.style.color = 'var(--success)';
+                    tdCap.style.textAlign = 'right';
+                    tdCap.style.fontVariantNumeric = 'tabular-nums';
+                    tdCap.title = capKg + ' kg útiles';
+                    tdCap.innerHTML = capMaples + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">map.</span>';
+                    tr.appendChild(tdCap);
+
+                    // Acciones
+                    const tdAcc = document.createElement('td');
+                    tdAcc.style.textAlign = 'center';
+                    tdAcc.style.whiteSpace = 'nowrap';
+                    const btnEdit = document.createElement('button');
+                    btnEdit.className = 'edit-action-btn';
+                    btnEdit.setAttribute('data-fila', c.fila_id);
+                    btnEdit.title = 'Editar';
+                    btnEdit.style.background = 'none';
+                    btnEdit.style.border = 'none';
+                    btnEdit.style.color = 'var(--primary)';
+                    btnEdit.style.cursor = 'pointer';
+                    btnEdit.style.padding = '2px 4px';
+                    btnEdit.innerHTML = '<i data-lucide="edit-3" style="width:14px;height:14px;"></i>';
+                    const btnDel = document.createElement('button');
+                    btnDel.className = 'delete-action-btn';
+                    btnDel.setAttribute('data-fila', c.fila_id);
+                    btnDel.setAttribute('data-placa', c.placa || '');
+                    btnDel.title = 'Eliminar';
+                    btnDel.style.background = 'none';
+                    btnDel.style.border = 'none';
+                    btnDel.style.color = 'var(--danger)';
+                    btnDel.style.cursor = 'pointer';
+                    btnDel.style.padding = '2px 4px';
+                    btnDel.innerHTML = '<i data-lucide="trash-2" style="width:14px;height:14px;"></i>';
+                    tdAcc.appendChild(btnEdit);
+                    tdAcc.appendChild(btnDel);
+                    tr.appendChild(tdAcc);
+
+                    frag.appendChild(tr);
                 }
-                camionesTableBody.insertAdjacentHTML('beforeend', html);
+
+                camionesTableBody.appendChild(frag);
                 renderedCount = end;
-                
+
                 // Cargar más?
                 const existing = document.getElementById('loadMoreRow');
                 if (existing) existing.remove();
-                
+
                 if (end < filtered.length) {
                     const wrap = camionesTable.closest('.table-scroll');
                     const div = document.createElement('div');
@@ -2535,9 +2631,9 @@
                     div.innerHTML = `<div class="counter" style="color:var(--success);">Mostrados todos los ${filtered.length} camiones</div>`;
                     wrap.after(div);
                 }
-                
+
                 lucide.createIcons({node: camionesTableBody});
-                
+
                 // Registrar evento editar para todos los botones de este chunk
                 camionesTableBody.querySelectorAll('.edit-action-btn').forEach(btn => {
                     if (!btn._listener) {
@@ -3407,21 +3503,8 @@
                 await loadRutasMadres();
             })();
 
-            // Inicializar iconos y shortcuts móviles
+            // Inicializar iconos
             try { lucide.createIcons(); } catch(e){}
-            // FAB y Bottom Nav behavior
-            (function(){
-                const fab = document.getElementById('fabAddCamion');
-                if (fab) fab.addEventListener('click', () => { const b = document.getElementById('addCamionBtn'); if (b) b.click(); });
-                const bnDashboard = document.getElementById('bnDashboard');
-                const bnTarifas = document.getElementById('bnTarifas');
-                const bnCamiones = document.getElementById('bnCamiones');
-                const tabDash = document.getElementById('tabDashboard');
-                const tabTar = document.getElementById('tabTarifas');
-                if (bnDashboard) bnDashboard.addEventListener('click', () => { if (tabDash) tabDash.click(); });
-                if (bnTarifas) bnTarifas.addEventListener('click', () => { if (tabTar) tabTar.click(); });
-                if (bnCamiones) bnCamiones.addEventListener('click', () => { const btn = document.getElementById('tabDashboard'); if (btn) btn.click(); window.scrollTo({top: document.getElementById('camionesTable')?.offsetTop - 120 || 0, behavior:'smooth'}); });
-            })();
 
             // ── Service Worker ──────────────────────────────────────────
             if ('serviceWorker' in navigator) {
@@ -3452,26 +3535,7 @@
     </script>
 
     <!-- Footer -->
-        <!-- Floating Action Button -->
-        <button class="fab" id="fabAddCamion" title="Registrar">
-            <i data-lucide="plus" style="width:20px;height:20px;color:#fff;"></i>
-        </button>
-
-        <!-- Bottom Navigation (mobile) -->
-        <div class="bottom-nav" role="navigation" aria-label="Navegación inferior">
-            <button class="bn-item" data-target="dashboard" id="bnDashboard">
-                <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
-                <span>Dashboard</span>
-            </button>
-            <button class="bn-item" data-target="tarifas" id="bnTarifas">
-                <i data-lucide="book-open" style="width:18px;height:18px;"></i>
-                <span>Tarifas</span>
-            </button>
-            <button class="bn-item" data-target="camiones" id="bnCamiones">
-                <i data-lucide="truck" style="width:18px;height:18px;"></i>
-                <span>Camiones</span>
-            </button>
-        </div>
+        <!-- Bottom Navigation (mobile) kept out for now; primary actions in header -->
 
     <footer style="max-width:1480px;width:100%;margin:2rem auto 0;padding:1.5rem 1.25rem 1rem;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
         <div style="font-size:0.7rem;color:var(--text-dimmed);">
