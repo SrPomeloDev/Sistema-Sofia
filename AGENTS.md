@@ -74,17 +74,17 @@ Solo sincroniza si `local_count < sheet_count`. Si local ya tiene >= que el shee
 
 ## Endpoints clave (desde dashboard)
 
-| Ruta | Método | Uso |
-|------|--------|-----|
-| `/api/camiones` | GET | Lista todos |
-| `/api/camiones` | POST | Crear (11 vals, encola append) |
-| `/api/camiones/{fila_id}` | PUT | Editar (11 vals, encola update) |
-| `/api/camiones/{fila_id}` | DELETE | Eliminar + shift fila_ids |
-| `/api/sync` | POST | Forzar sync desde sheets |
-| `/api/push-to-sheets` | POST | Push local→sheets (background) |
-| `/api/push-status` | GET | Estado del push actual |
-| `/api/status` | GET | KPIs, counts, pending sync |
-| `/api/fletes` | GET | Promedio flete por sucursal |
+| Ruta                        | Método | Uso                             |
+| --------------------------- | ------- | ------------------------------- |
+| `/api/camiones`           | GET     | Lista todos                     |
+| `/api/camiones`           | POST    | Crear (11 vals, encola append)  |
+| `/api/camiones/{fila_id}` | PUT     | Editar (11 vals, encola update) |
+| `/api/camiones/{fila_id}` | DELETE  | Eliminar + shift fila_ids       |
+| `/api/sync`               | POST    | Forzar sync desde sheets        |
+| `/api/push-to-sheets`     | POST    | Push local→sheets (background) |
+| `/api/push-status`        | GET     | Estado del push actual          |
+| `/api/status`             | GET     | KPIs, counts, pending sync      |
+| `/api/fletes`             | GET     | Promedio flete por sucursal     |
 
 ## Convenciones
 
