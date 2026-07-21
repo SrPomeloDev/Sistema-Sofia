@@ -88,3 +88,38 @@ class FletePromedioResponse(BaseModel):
     promedio_flete: float
     total_camiones: int
     total_flete: float
+
+# ── Esquemas para Tarifas de Rutas ────────────────────────────────────
+
+class RutaTarifaCreate(BaseModel):
+    ruta: str = Field(..., min_length=1, description="Nombre de la ruta")
+    precio: float = Field(0.0, ge=0.0, description="Precio en Bs")
+    sucursal: str | None = Field(None, description="Sucursal opcional")
+    descripcion: str | None = Field(None, description="Descripción de la ruta")
+
+class RutaTarifaUpdate(BaseModel):
+    ruta: str = Field(..., min_length=1, description="Nombre de la ruta")
+    precio: float = Field(0.0, ge=0.0, description="Precio en Bs")
+    sucursal: str | None = Field(None, description="Sucursal opcional")
+    descripcion: str | None = Field(None, description="Descripción de la ruta")
+
+class RutaTarifaResponse(BaseModel):
+    id: int
+    ruta: str
+    precio: float
+    sucursal: str | None
+    descripcion: str | None
+    creado_en: datetime | None = None
+
+    class Config:
+        from_attributes = True
+
+class RutaTarifasListResponse(BaseModel):
+    success: bool
+    data: list[RutaTarifaResponse] = []
+    total: int = 0
+
+class RutaTarifaOperationResponse(BaseModel):
+    success: bool
+    message: str
+    data: RutaTarifaResponse | None = None

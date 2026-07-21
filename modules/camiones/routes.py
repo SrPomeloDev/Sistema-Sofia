@@ -18,7 +18,12 @@ from modules.camiones.models import (
     UpdateSheetResponse,
     AuditEntry,
     SyncStatusResponse,
-    FletePromedioResponse
+    FletePromedioResponse,
+    RutaTarifaCreate,
+    RutaTarifaUpdate,
+    RutaTarifaResponse,
+    RutaTarifasListResponse,
+    RutaTarifaOperationResponse
 )
 from modules.camiones.db.database import (
     init_db,
@@ -39,7 +44,13 @@ from modules.camiones.db.database import (
     obtener_total_camiones_count,
     obtener_ultimo_cambio,
     obtener_camiones_por_sucursal,
-    obtener_promedio_flete_por_sucursal
+    obtener_promedio_flete_por_sucursal,
+    obtener_rutas_tarifas,
+    obtener_ruta_tarifa_por_nombre,
+    crear_ruta_tarifa,
+    actualizar_ruta_tarifa,
+    eliminar_ruta_tarifa,
+    contar_rutas_tarifas
 )
 from modules.camiones.services.sheets import sheets_client
 from modules.camiones.services.queue import UpdateQueue, QueueItem
@@ -615,3 +626,115 @@ async def list_auditoria(limit: int = 20):
         logger.error("Error al listar auditoría: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
+# ─── Endpoints para Rutas Tarifas ────────────────────────────────────
+
+@router.get("/api/fletes/rutas")
+async def list_rutas_tarifas(offset: int = 0, limit: int = 10):
+    """
+    Lista las tarifas de rutas con paginación.
+    """
+    try:
+        rutas = await obtener_rutas_tarifas(offset=offset, limit=limit)
+        total = await contar_rutas_tarifas()
+        
+        data = [
+            RutaTarifaResponse(
+                id=r.id,
+                ruta=r.ruta,
+                precio=r.precio,
+                sucursal=r.sucursal,
+                descripcion=r.descripcion,
+                creado_en=r.creado_en
+            )
+            for r in rutas
+        ]
+        
+        return data
+    except Exception as e:
+        logger.error("Error al listar rutas tarifas: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/fletes/ruta")
+async def create_ruta_tarifa(payload: RutaTarifaCreate):
+    """
+    Crea una nueva tarifa de ruta.
+    """
+    try:
+        # Verificar si ya existe
+        existente = await obtener_ruta_tarifa_por_nombre(payload.ruta)
+        if existente:
+            raise HTTPException(status_code=409, detail=f"La ruta '{payload.ruta}' ya existe.")
+        
+        registro = await crear_ruta_tarifa(
+            ruta=payload.ruta,
+            precio=payload.precio,
+            sucursal=payload.sucursal,
+            descripcion=payload.descripcion
+        )
+        
+        return {
+            "success": True,
+            "message": f"Ruta '{payload.ruta}' creada exitosamente.",
+            "data": RutaTarifaResponse(
+                id=registro.id,
+                ruta=registro.ruta,
+                precio=registro.precio,
+                sucursal=registro.sucursal,
+                descripcion=registro.descripcion,
+                creado_en=registro.creado_en
+            )
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Error al crear ruta tarifa: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/api/fletes/ruta")
+async def update_ruta_tarifa(payload: RutaTarifaUpdate):
+    """
+    Actualiza una tarifa de ruta existente o crea una nueva.
+    """
+    try:
+        registro = await actualizar_ruta_tarifa(
+            ruta=payload.ruta,
+            precio=payload.precio,
+            sucursal=payload.sucursal,
+            descripcion=payload.descripcion
+        )
+        
+        return {
+            "success": True,
+            "message": f"Ruta '{payload.ruta}' actualizada.",
+            "data": RutaTarifaResponse(
+                id=registro.id,
+                ruta=registro.ruta,
+                precio=registro.precio,
+                sucursal=registro.sucursal,
+                descripcion=registro.descripcion,
+                creado_en=registro.creado_en
+            )
+        }
+    except Exception as e:
+        logger.error("Error al actualizar ruta tarifa: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/api/fletes/ruta/{ruta}")
+async def delete_ruta_tarifa(ruta: str):
+    """
+    Elimina una tarifa de ruta.
+    """
+    try:
+        existe = await eliminar_ruta_tarifa(ruta)
+        if not existe:
+            raise HTTPException(status_code=404, detail=f"La ruta '{ruta}' no existe.")
+        
+        return {
+            "success": True,
+            "message": f"Ruta '{ruta}' eliminada."
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Error al eliminar ruta tarifa: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))

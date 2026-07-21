@@ -76,6 +76,29 @@ class Auditoria(Base):
         default=lambda: datetime.now(timezone.utc),
     )
 
+class RutaTarifa(Base):
+    """
+    Tabla de tarifas por rutas (para la sección de Pago de Flete).
+    """
+    __tablename__ = "rutas_tarifas"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    ruta: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
+    precio: Mapped[float] = mapped_column(Float, default=0.0)
+    sucursal: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    descripcion: Mapped[str | None] = mapped_column(Text, nullable=True)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
+
 # Inicialización
 async def init_db():
     """
@@ -415,3 +438,79 @@ async def obtener_historial(limit: int = 50) -> list[Auditoria]:
         )
         result = await session.execute(stmt)
         return list(result.scalars().all())
+
+# CRUD de Rutas Tarifas
+async def obtener_rutas_tarifas(offset: int = 0, limit: int = 10) -> list[RutaTarifa]:
+    """Obtiene tarifas paginadas."""
+    async with async_session_factory() as session:
+        stmt = select(RutaTarifa).order_by(RutaTarifa.creado_en.desc()).offset(offset).limit(limit)
+        result = await session.execute(stmt)
+        return list(result.scalars().all())
+
+async def obtener_ruta_tarifa_por_nombre(ruta: str) -> RutaTarifa | None:
+    """Obtiene una tarifa por nombre de ruta."""
+    async with async_session_factory() as session:
+        stmt = select(RutaTarifa).where(RutaTarifa.ruta == ruta)
+        result = await session.execute(stmt)
+        return result.scalar_one_or_none()
+
+async def crear_ruta_tarifa(ruta: str, precio: float, sucursal: str | None = None, descripcion: str | None = None) -> RutaTarifa:
+    """Crea una nueva tarifa de ruta."""
+    async with async_session_factory() as session:
+        registro = RutaTarifa(
+            ruta=ruta,
+            precio=precio,
+            sucursal=sucursal,
+            descripcion=descripcion,
+        )
+        session.add(registro)
+        await session.commit()
+        await session.refresh(registro)
+        return registro
+
+async def actualizar_ruta_tarifa(ruta: str, precio: float, sucursal: str | None = None, descripcion: str | None = None) -> RutaTarifa | None:
+    """Actualiza una tarifa existente o crea una nueva si no existe."""
+    async with async_session_factory() as session:
+        stmt = select(RutaTarifa).where(RutaTarifa.ruta == ruta)
+        result = await session.execute(stmt)
+        registro = result.scalar_one_or_none()
+        
+        if registro:
+            registro.precio = precio
+            if sucursal is not None:
+                registro.sucursal = sucursal
+            if descripcion is not None:
+                registro.descripcion = descripcion
+            registro.actualizado_en = datetime.now(timezone.utc)
+        else:
+            registro = RutaTarifa(
+                ruta=ruta,
+                precio=precio,
+                sucursal=sucursal,
+                descripcion=descripcion,
+            )
+            session.add(registro)
+        
+        await session.commit()
+        await session.refresh(registro)
+        return registro
+
+async def eliminar_ruta_tarifa(ruta: str) -> bool:
+    """Elimina una tarifa por nombre de ruta."""
+    async with async_session_factory() as session:
+        stmt = select(RutaTarifa).where(RutaTarifa.ruta == ruta)
+        result = await session.execute(stmt)
+        registro = result.scalar_one_or_none()
+        
+        if registro:
+            await session.delete(registro)
+            await session.commit()
+            return True
+        return False
+
+async def contar_rutas_tarifas() -> int:
+    """Cuenta el total de tarifas registradas."""
+    async with async_session_factory() as session:
+        stmt = select(func.count()).select_from(RutaTarifa)
+        result = await session.execute(stmt)
+        return result.scalar() or 0
