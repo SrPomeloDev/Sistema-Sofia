@@ -1334,12 +1334,12 @@
     </header>
 
     <!-- Navbar Tabs -->
-    <nav class="tab-nav">
-        <button id="tabDashboard" class="tab-btn active" data-tab="dashboard">
+    <nav class="tab-nav" role="tablist" aria-label="Navegación principal">
+        <button id="tabDashboard" class="tab-btn active" data-tab="dashboard" role="tab" aria-controls="tabDashboardContent" aria-selected="true" tabindex="0">
             <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
             <span>Dashboard</span>
         </button>
-        <button id="tabFletes" class="tab-btn" data-tab="fletes">
+        <button id="tabFletes" class="tab-btn" data-tab="fletes" role="tab" aria-controls="tabFletesContent" aria-selected="false" tabindex="-1">
             <i data-lucide="dollar-sign" style="width:18px;height:18px;"></i>
             <span>Pago de Flete</span>
         </button>
@@ -1371,6 +1371,23 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile bottom navigation (visible on small viewports) */
+        .mobile-bottom-nav { display: none; position: fixed; left: 0; right: 0; bottom: 0; gap: 0.5rem; padding: 0.5rem 0.6rem; justify-content: space-around; align-items: center; z-index:120; border-top: 1px solid var(--border-light); background: linear-gradient(180deg, rgba(255,255,255,0.98), var(--bg-surface)); box-shadow: 0 -6px 20px rgba(0,0,0,0.06); }
+        .mobile-bottom-nav .mobile-tab-btn { flex: 1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:6px 8px; border-radius:10px; background:transparent; border:none; color:var(--text-muted); font-weight:600; font-size:0.78rem; }
+        .mobile-bottom-nav .mobile-tab-btn i { width:18px; height:18px; }
+        .mobile-bottom-nav .mobile-tab-btn.active { color:var(--primary); background:var(--primary-light); box-shadow: var(--shadow-sm); }
+
+        @media (max-width: 820px) {
+            .mobile-bottom-nav { display: flex; }
+            /* hide top tab-nav on small screens to reduce clutter; keep accessible via JS toggles */
+            .tab-nav { display: none; }
+            /* Reduce visible columns in the main table on mobile for readability */
+            table thead th:nth-child(3), table thead th:nth-child(4), table thead th:nth-child(5), table thead th:nth-child(6), table thead th:nth-child(7), table thead th:nth-child(9), table thead th:nth-child(10), table thead th:nth-child(11), table thead th:nth-child(12) { display: none; }
+            table tbody td:nth-child(3), table tbody td:nth-child(4), table tbody td:nth-child(5), table tbody td:nth-child(6), table tbody td:nth-child(7), table tbody td:nth-child(9), table tbody td:nth-child(10), table tbody td:nth-child(11), table tbody td:nth-child(12) { display: none; }
+            /* center action column and ensure clickable area */
+            table tbody td:nth-child(13) { text-align: center; }
+        }
     </style>
 
     <!-- Contenedor Principal -->
@@ -1603,32 +1620,255 @@
         
         </div><!-- fin tabDashboardContent -->
 
-        <!-- Tab Pago de Flete -->
+        <!-- Tab Pago de Flete (REDISEÑO: Tarifas editable mobile-first) -->
         <div id="tabFletesContent" class="tab-content">
-            <section class="stats-grid" id="fleteStats">
-                <!-- KPIs de flete -->
-            </section>
-            <section class="table-container" style="margin-top:1.5rem;">
-                <table id="fletesTable">
-                    <thead>
-                        <tr>
-                            <th>Sucursal</th>
-                            <th>Promedio Flete (Bs)</th>
-                            <th>Total Camiones</th>
-                            <th>Total Flete (Bs)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fletesTableBody"></tbody>
-                </table>
-                <div id="fletesLoading" class="table-placeholder" style="display:flex;">
-                    <div class="spinner-large"></div>
-                    <p>Cargando datos de flete...</p>
+            <!-- KPIs por sucursal (se mantienen) -->
+            <section class="stats-grid" id="fleteStats" aria-hidden="false"></section>
+
+            <!-- Tarifa list + edición inline -->
+            <section style="margin-top:1rem;">
+                <div class="actions-panel" style="align-items:flex-start;">
+                    <div style="flex:1;min-width:0;">
+                        <h3 style="margin:0 0 0.5rem 0;font-weight:700;font-family:var(--font-family-title);">Tarifas por Ruta</h3>
+                        <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">Edición rápida: toca el icono lápiz para editar el precio inline. En móvil las filas se muestran como tarjetas.</p>
+                    </div>
+                    <div class="buttons-group" style="align-self:flex-end;">
+                        <button id="addRutaBtn" class="btn btn-primary" title="Agregar Ruta">
+                            <i data-lucide="plus-circle" style="width:16px;height:16px"></i>
+                            <span>Agregar Ruta</span>
+                        </button>
+                        <button id="reloadTarifasBtn" class="btn btn-secondary" title="Recargar tarifas">
+                            <i data-lucide="rotate-cw" style="width:16px;height:16px"></i>
+                            <span>Recargar</span>
+                        </button>
+                    </div>
                 </div>
-                <div id="fletesEmpty" class="table-placeholder" style="display:none;">
-                    <i data-lucide="inbox" style="width: 48px; height: 48px;"></i>
-                    <p>No hay datos de flete disponibles.</p>
+
+                <div id="tarifasContainer" style="margin-top:0.75rem; display:grid; gap:0.6rem;"></div>
+
+                <div id="tarifasLoadMore" style="text-align:center; margin-top:0.6rem; display:none;">
+                    <button id="tarifasLoadMoreBtn" class="btn btn-secondary">Cargar más</button>
                 </div>
+
+                <!-- Modal Agregar Ruta -->
+                <div id="addRutaModal" class="modal-overlay" aria-hidden="true">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h2 id="addRutaTitle">Agregar Nueva Ruta</h2>
+                            <button id="closeAddRutaModal" class="close-btn"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="newRutaNombre">Nombre de Ruta *</label>
+                                    <input id="newRutaNombre" class="form-input" placeholder="Ej: SLP - Cochabamba" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newRutaPrecio">Precio (Bs) *</label>
+                                    <input id="newRutaPrecio" type="number" class="form-input" min="0" step="0.01" value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newRutaSucursal">Sucursal</label>
+                                    <select id="newRutaSucursal" class="form-input">
+                                        <option value="">(general)</option>
+                                        <option value="La Paz">La Paz</option>
+                                        <option value="Cochabamba">Cochabamba</option>
+                                        <option value="Santa Cruz">Santa Cruz</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelAddRuta" class="btn btn-secondary">Cancelar</button>
+                            <button id="submitAddRuta" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+
             </section>
+
+            <style>
+                /* Tarifas list styles (cards) */
+                #tarifasContainer { grid-template-columns: repeat(2, 1fr); }
+                @media (max-width: 820px) { #tarifasContainer { grid-template-columns: 1fr; } }
+                .tarifa-card { background: var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:0.8rem; display:flex; justify-content:space-between; align-items:center; gap:0.6rem; box-shadow:var(--shadow-sm); }
+                .tarifa-info { min-width:0; }
+                .tarifa-info .ruta { font-weight:700; font-size:0.95rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+                .tarifa-info .meta { font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem; }
+                .tarifa-actions { display:flex; gap:0.45rem; align-items:center; }
+                .tarifa-price { font-weight:800; font-family:var(--font-family-title); font-size:1rem; color:var(--primary-hover); min-width:110px; text-align:right; }
+                .tarifa-edit-input { width:110px; padding:0.35rem 0.5rem; border-radius:8px; border:1px solid var(--border-light); }
+                .tarifa-save-group { display:flex; gap:0.4rem; }
+            </style>
+
+            <script>
+                // Tarifas state
+                let tarifas = [];
+                let tarifasOffset = 0;
+                const TARIFAS_PAGE = 10;
+
+                async function loadTarifas(reset = true) {
+                    const container = document.getElementById('tarifasContainer');
+                    const loadMoreWrap = document.getElementById('tarifasLoadMore');
+                    if (reset) {
+                        tarifas = [];
+                        tarifasOffset = 0;
+                        container.innerHTML = '';
+                    }
+                    // show loading placeholder
+                    const loadingCard = document.createElement('div');
+                    loadingCard.className = 'tarifa-card';
+                    loadingCard.innerHTML = '<div class="tarifa-info"><div class="ruta">Cargando...</div></div><div class="tarifa-actions"><div class="spinner-large" style="width:26px;height:26px;border-width:3px;border-top-color:var(--primary);"></div></div>';
+                    container.appendChild(loadingCard);
+                    try {
+                        const res = await fetch('/api/fletes/rutas?offset=' + tarifasOffset + '&limit=' + TARIFAS_PAGE);
+                        const data = await res.json();
+                        container.removeChild(loadingCard);
+                        if (!data || !Array.isArray(data) || data.length === 0) {
+                            if (reset) {
+                                container.innerHTML = '<div class="table-placeholder" style="padding:1rem;">No hay tarifas registradas.</div>';
+                                loadMoreWrap.style.display = 'none';
+                            }
+                            return;
+                        }
+                        tarifas = tarifas.concat(data);
+                        tarifasOffset += data.length;
+                        renderTarifasChunk(data);
+                        // show load more if page full
+                        if (data.length === TARIFAS_PAGE) {
+                            loadMoreWrap.style.display = 'block';
+                        } else {
+                            loadMoreWrap.style.display = 'none';
+                        }
+                    } catch (err) {
+                        try { container.removeChild(loadingCard); } catch(e){}
+                        container.innerHTML = '<div class="table-placeholder">Error al cargar tarifas.</div>';
+                        loadMoreWrap.style.display = 'none';
+                        console.error(err);
+                    }
+                }
+
+                function renderTarifasChunk(chunk) {
+                    const container = document.getElementById('tarifasContainer');
+                    const html = chunk.map(r => {
+                        const precio = (typeof r.precio === 'number') ? r.precio.toFixed(2) : (r.precio || 'Sin asignar');
+                        const suc = r.sucursal ? `<span style="color:var(--text-muted);font-size:0.78rem;">${r.sucursal}</span>` : '';
+                        return `
+                            <div class="tarifa-card" data-ruta="${escapeHtml(r.ruta || '')}">
+                                <div class="tarifa-info">
+                                    <div class="ruta">${escapeHtml(r.ruta)}</div>
+                                    <div class="meta">${suc} ${r.descripcion ? '· ' + escapeHtml(r.descripcion) : ''}</div>
+                                </div>
+                                <div class="tarifa-actions">
+                                    <div class="tarifa-price" data-precio>${precio}</div>
+                                    <div class="tarifa-controls">
+                                        <button class="btn btn-secondary btn-edit-tarifa" title="Editar"><i data-lucide="edit-3" style="width:16px;height:16px"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    container.insertAdjacentHTML('beforeend', html);
+                    // activate icons and listeners
+                    lucide.createIcons({node: container});
+                    container.querySelectorAll('.btn-edit-tarifa').forEach(btn => {
+                        if (btn._bound) return; btn._bound = true;
+                        btn.addEventListener('click', () => startEditTarifa(btn.closest('.tarifa-card')));
+                    });
+                }
+
+                function escapeHtml(s){ if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+                function startEditTarifa(card) {
+                    const ruta = card.getAttribute('data-ruta');
+                    const precioEl = card.querySelector('[data-precio]');
+                    const current = precioEl.textContent === 'Sin asignar' ? '' : precioEl.textContent.replace(/[^0-9.,-]/g,'').replace(',','.') ;
+
+                    // replace price with input and save/cancel
+                    const controls = card.querySelector('.tarifa-actions');
+                    controls.style.minWidth = '200px';
+                    controls.innerHTML = `
+                        <input class="tarifa-edit-input" type="number" step="0.01" min="0" value="${current}">
+                        <div class="tarifa-save-group">
+                            <button class="btn btn-primary btn-save-tarifa">Guardar</button>
+                            <button class="btn btn-secondary btn-cancel-tarifa">Cancelar</button>
+                        </div>
+                    `;
+                    const input = controls.querySelector('.tarifa-edit-input');
+                    input.focus(); input.select();
+
+                    controls.querySelector('.btn-cancel-tarifa').addEventListener('click', () => {
+                        controls.innerHTML = `<div class="tarifa-price" data-precio>${precioEl.textContent}</div><div class="tarifa-controls"><button class="btn btn-secondary btn-edit-tarifa" title="Editar"><i data-lucide="edit-3" style="width:16px;height:16px"></i></button></div>`;
+                        lucide.createIcons({node: controls});
+                        controls.querySelector('.btn-edit-tarifa').addEventListener('click', () => startEditTarifa(card));
+                    });
+
+                    controls.querySelector('.btn-save-tarifa').addEventListener('click', async () => {
+                        const val = parseFloat(input.value) || 0;
+                        // optimistic UI
+                        precioEl.textContent = val.toFixed(2);
+                        controls.innerHTML = `<div class="tarifa-price" data-precio>${val.toFixed(2)}</div><div class="tarifa-controls"><button class="btn btn-secondary btn-edit-tarifa" title="Editar"><i data-lucide="edit-3" style="width:16px;height:16px"></i></button></div>`;
+                        lucide.createIcons({node: controls});
+
+                        try {
+                            const res = await fetch('/api/fletes/ruta', { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ ruta, precio: val }) });
+                            const data = await res.json();
+                            if (res.ok && data.success) {
+                                showToast('Precio actualizado', `Ruta ${ruta} → Bs ${val.toFixed(2)}`, 'success');
+                            } else {
+                                showToast('Error', data.detail || 'No se pudo actualizar la tarifa.', 'error');
+                                await loadTarifas(true);
+                            }
+                        } catch (err) {
+                            showToast('Error conexión', err.message || 'Error al guardar', 'error');
+                            await loadTarifas(true);
+                        }
+                    });
+                }
+
+                // Add Ruta modal handlers
+                document.getElementById('addRutaBtn').addEventListener('click', () => {
+                    const m = document.getElementById('addRutaModal'); m.classList.add('show'); m.setAttribute('aria-hidden','false');
+                });
+                document.getElementById('closeAddRutaModal').addEventListener('click', () => {
+                    const m = document.getElementById('addRutaModal'); m.classList.remove('show'); m.setAttribute('aria-hidden','true');
+                });
+                document.getElementById('cancelAddRuta').addEventListener('click', () => {
+                    const m = document.getElementById('addRutaModal'); m.classList.remove('show'); m.setAttribute('aria-hidden','true');
+                });
+                document.getElementById('submitAddRuta').addEventListener('click', async () => {
+                    const nombre = document.getElementById('newRutaNombre').value.trim();
+                    const precio = parseFloat(document.getElementById('newRutaPrecio').value) || 0;
+                    const suc = document.getElementById('newRutaSucursal').value || null;
+                    if (!nombre) { showToast('Ingrese ruta', 'El nombre de la ruta es requerido.', 'warning'); return; }
+                    document.getElementById('submitAddRuta').disabled = true;
+                    try {
+                        const res = await fetch('/api/fletes/ruta', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ ruta: nombre, precio, sucursal: suc }) });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            showToast('Ruta creada', `Ruta ${nombre} agregada.`, 'success');
+                            const m = document.getElementById('addRutaModal'); m.classList.remove('show'); m.setAttribute('aria-hidden','true');
+                            // reload tarifas
+                            await loadTarifas(true);
+                        } else {
+                            showToast('Error', data.detail || 'No se pudo crear la ruta', 'error');
+                        }
+                    } catch (err) {
+                        showToast('Error conexión', err.message || 'Error al crear ruta', 'error');
+                    } finally { document.getElementById('submitAddRuta').disabled = false; }
+                });
+
+                // Load more
+                document.getElementById('tarifasLoadMoreBtn').addEventListener('click', () => loadTarifas(false));
+                document.getElementById('reloadTarifasBtn').addEventListener('click', () => loadTarifas(true));
+
+                // ensure tarifas are loaded when tab visible
+                (function(){
+                    document.addEventListener('DOMContentLoaded', () => {
+                        // no-op
+                    });
+                })();
+            </script>
         </div>
     </main>
 
@@ -2507,16 +2747,39 @@
 
             // ── Tabs ────────────────────────────────────────────────────
             function switchTab(tab) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                // deactivate all tabs and set aria
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                    b.setAttribute('tabindex', '-1');
+                });
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                if (tab === 'dashboard') {
-                    tabDashboard.classList.add('active');
-                    tabDashboardContent.classList.add('active');
-                } else {
-                    tabFletes.classList.add('active');
-                    tabFletesContent.classList.add('active');
-                    loadFletes();
+
+                // activate target tab and content
+                const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+                const content = document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}Content`);
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-selected', 'true');
+                    btn.setAttribute('tabindex', '0');
+                    try { btn.focus({preventScroll:true}); } catch(e) {}
                 }
+                if (content) content.classList.add('active');
+
+                // load data for fletes/tarifas when necessary
+                if (tab === 'fletes') {
+                    if (typeof loadFletes === 'function') loadFletes();
+                    if (typeof loadTarifas === 'function') loadTarifas(true);
+                }
+
+                // persist active tab
+                try { localStorage.setItem('camiones_active_tab', tab); } catch(e) {}
+
+                // update mobile bottom nav active state
+                document.querySelectorAll('.mobile-tab-btn').forEach(m => m.classList.toggle('active', m.dataset.tab === tab));
+
+                // ensure icons rendered
+                try { lucide.createIcons({node: document.body}); } catch(e) {}
             }
 
             tabDashboard.addEventListener('click', () => switchTab('dashboard'));
@@ -2684,6 +2947,48 @@
                 if (b) b.remove();
             });
         });
+    </script>
+    </script>
+    <!-- Mobile bottom navigation (small devices) -->
+    <nav class="mobile-bottom-nav" role="navigation" aria-label="Navegación inferior">
+        <button class="mobile-tab-btn active" data-tab="dashboard" aria-label="Inicio">
+            <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i>
+            <span>Inicio</span>
+        </button>
+        <button class="mobile-tab-btn" data-tab="fletes" aria-label="Fletes">
+            <i data-lucide="dollar-sign" style="width:18px;height:18px;"></i>
+            <span>Fletes</span>
+        </button>
+    </nav>
+
+    <script>
+        (function(){
+            // restore active tab from localStorage
+            const active = localStorage.getItem('camiones_active_tab') || 'dashboard';
+            if (typeof switchTab === 'function') switchTab(active);
+
+            // mobile bottom nav handlers
+            document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === active);
+                btn.addEventListener('click', (e) => {
+                    const tab = btn.dataset.tab;
+                    if (typeof switchTab === 'function') switchTab(tab);
+                    document.querySelectorAll('.mobile-tab-btn').forEach(m => m.classList.toggle('active', m === btn));
+                });
+            });
+
+            // show/hide mobile nav based on viewport
+            function toggleMobileNav(){
+                const nav = document.querySelector('.mobile-bottom-nav');
+                if (!nav) return;
+                nav.style.display = window.innerWidth < 820 ? 'flex' : 'none';
+            }
+            toggleMobileNav();
+            window.addEventListener('resize', toggleMobileNav);
+
+            // render icons in mobile nav
+            try { lucide.createIcons({node: document.querySelector('.mobile-bottom-nav')}); } catch(e){}
+        })();
     </script>
 </body>
 </html>
