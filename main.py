@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Iniciando aplicación principal...")
-    await camiones_init()
     await rutas_init()
+    await camiones_init()
     yield
     await camiones_shutdown()
     await rutas_shutdown()

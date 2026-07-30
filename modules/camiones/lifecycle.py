@@ -237,12 +237,18 @@ async def init_module():
     logger.info("Iniciando módulo Camiones...")
     
     await init_db()
-    poblados = await poblar_ruta_madre_desde_ruta()
-    if poblados:
-        logger.info("Ruta madre poblada desde ruta para %d camiones", poblados)
-    asig = await asignar_rutas_desde_madres()
-    if asig:
-        logger.info("Rutas auto-asignadas a %d camiones desde ruta_madre", asig)
+    try:
+        poblados = await poblar_ruta_madre_desde_ruta()
+        if poblados:
+            logger.info("Ruta madre poblada desde ruta para %d camiones", poblados)
+    except Exception as e:
+        logger.warning("No se pudo poblar ruta_madre (el módulo Rutas se inicializa después): %s", e)
+    try:
+        asig = await asignar_rutas_desde_madres()
+        if asig:
+            logger.info("Rutas auto-asignadas a %d camiones desde ruta_madre", asig)
+    except Exception as e:
+        logger.warning("No se pudo asignar rutas desde madres: %s", e)
     
     total_locales = await obtener_total_camiones_count()
     await sheets_client.initialize()
