@@ -138,6 +138,24 @@ _push_task = None
 
 BATCH_SIZE = 10
 
+async def _limpiar_filas_extra(data_rows: int):
+    """Limpia filas del sheet más allá de data_rows (que empiezan en row 2)."""
+    try:
+        from modules.camiones.services.sheets import _col_letter
+        ws = sheets_client._worksheet
+        if not ws:
+            return
+        total_ws = await asyncio.to_thread(lambda: ws.row_count)
+        if total_ws > data_rows + 1:
+            col_fin = _col_letter(10)
+            await asyncio.to_thread(
+                ws.batch_clear,
+                [f"A{data_rows + 2}:{col_fin}{total_ws}"]
+            )
+            logger.info("Filas extra limpiadas: %d a %d", data_rows + 2, total_ws)
+    except Exception as e:
+        logger.warning("No se pudieron limpiar filas extra: %s", e)
+
 async def inicializar_sheets_con_local():
     """Sube datos locales a Google Sheets en batches concurrentes."""
     logger.info("Iniciando push a Google Sheets...")
@@ -182,10 +200,12 @@ async def inicializar_sheets_con_local():
     result = await sheets_client.set_all_rows(HEADERS_LIST, rows)
     if result.get("success"):
         logger.info("Push completado en 1 request: %d filas.", len(rows))
+        await _limpiar_filas_extra(len(rows))
         return
 
-    # Fallback: actualizar fila por fila SIN limpiar el sheet primero
-    logger.info("setAll no disponible, actualizando filas existentes...")
+    # Fallback: limpiar filas extra primero, luego actualizar fila por fila
+    logger.info("setAll no disponible, limpiando y actualizando filas existentes...")
+    await _limpiar_filas_extra(len(rows))
     total = len(rows)
     for start in range(0, total, BATCH_SIZE):
         batch = rows[start:start + BATCH_SIZE]
