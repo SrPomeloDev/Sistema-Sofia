@@ -56,18 +56,23 @@ class GoogleSheetsClient:
         if settings.oauth_client_secret and settings.sheet_id and settings.sheet_name:
             try:
                 import gspread as _gspread
-                import json as _json
+                import json as _json, os as _os, tempfile as _tf
                 cr = settings.oauth_client_secret
-                # Si la variable es un JSON inline, parsearlo; si no, es ruta a archivo
+                # Si es JSON inline → escribir a archivo temporal
                 if cr.startswith("{"):
-                    creds_dict = _json.loads(cr)
-                    auth_info = _json.loads(settings.authorized_user_json) if settings.authorized_user_json else None
-                    if auth_info:
-                        from google.oauth2.credentials import Credentials as _Creds
-                        creds = _Creds.from_authorized_user_info(auth_info)
-                        gc = await asyncio.to_thread(_gspread.authorize, creds)
-                    else:
-                        gc = await asyncio.to_thread(_gspread.oauth_from_dict, creds_dict)
+                    creds_path = _os.path.join(_tf.gettempdir(), "gspread_client_secret.json")
+                    with open(creds_path, "w") as f:
+                        f.write(cr)
+                    auth_path = None
+                    if settings.authorized_user_json:
+                        auth_path = _os.path.join(_tf.gettempdir(), "gspread_authorized_user.json")
+                        with open(auth_path, "w") as f:
+                            f.write(settings.authorized_user_json)
+                    gc = await asyncio.to_thread(
+                        _gspread.oauth,
+                        credentials_filename=creds_path,
+                        authorized_user_filename=auth_path or "authorized_user.json"
+                    )
                 else:
                     gc = await asyncio.to_thread(
                         _gspread.oauth,
