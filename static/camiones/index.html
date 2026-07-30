@@ -1380,13 +1380,42 @@
 
         @media (max-width: 820px) {
             .mobile-bottom-nav { display: flex; }
-            /* hide top tab-nav on small screens to reduce clutter; keep accessible via JS toggles */
+            main { padding-bottom: 4.5rem; }
             .tab-nav { display: none; }
-            /* Reduce visible columns in the main table on mobile for readability */
-            table thead th:nth-child(3), table thead th:nth-child(4), table thead th:nth-child(5), table thead th:nth-child(6), table thead th:nth-child(7), table thead th:nth-child(8), table thead th:nth-child(12), table thead th:nth-child(13), table thead th:nth-child(14), table thead th:nth-child(15) { display: none; }
-            table tbody td:nth-child(3), table tbody td:nth-child(4), table tbody td:nth-child(5), table tbody td:nth-child(6), table tbody td:nth-child(7), table tbody td:nth-child(8), table tbody td:nth-child(12), table tbody td:nth-child(13), table tbody td:nth-child(14), table tbody td:nth-child(15) { display: none; }
-            /* center action column and ensure clickable area */
-            table tbody td:nth-child(16) { text-align: center; }
+            /* Show only essential: N°, Placa, Flete, Maples, Cap.Útil, Acción */
+            table thead th:nth-child(3),
+            table thead th:nth-child(4),
+            table thead th:nth-child(5),
+            table thead th:nth-child(6),
+            table thead th:nth-child(7),
+            table thead th:nth-child(9),
+            table thead th:nth-child(12) { display: none; }
+            table tbody td:nth-child(3),
+            table tbody td:nth-child(4),
+            table tbody td:nth-child(5),
+            table tbody td:nth-child(6),
+            table tbody td:nth-child(7),
+            table tbody td:nth-child(9),
+            table tbody td:nth-child(12) { display: none; }
+            /* bigger tap targets for action buttons */
+            .edit-action-btn,
+            .delete-action-btn {
+                padding: 0.5rem 0.6rem;
+                min-width: 44px;
+                min-height: 44px;
+                background: transparent;
+                border: none;
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .edit-action-btn:active,
+            .delete-action-btn:active {
+                background: var(--primary-lighter);
+                transform: scale(0.92);
+            }
+            tbody tr { min-height: 44px; }
         }
     </style>
 
