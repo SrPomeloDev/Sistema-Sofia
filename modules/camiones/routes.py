@@ -497,7 +497,7 @@ async def delete_camion(fila_id: int):
     
     sheets_ok = True
     sheets_error = ""
-    # 2. Intentar borrar en Sheets por placa (más robusto que por fila_id)
+    # 2. Intentar borrar en Sheets por placa
     if sheets_client.enabled:
         try:
             result = await sheets_client.delete_by_placa(camion.placa)
@@ -509,9 +509,14 @@ async def delete_camion(fila_id: int):
                         row.fila_id -= 1
                     await session.commit()
             else:
-                sheets_ok = False
-                sheets_error = result.get("error", "error desconocido")
-                logger.error("Delete en Sheets falló (local ya eliminado): %s", sheets_error)
+                err_msg = result.get("error", "")
+                # Si la placa no existe en sheets, no es error crítico
+                if "no encontrada" in err_msg.lower():
+                    logger.info("Placa %s no encontrada en sheets (omitido): %s", camion.placa, err_msg)
+                else:
+                    sheets_ok = False
+                    sheets_error = err_msg
+                    logger.error("Delete en Sheets falló (local ya eliminado): %s", err_msg)
         except Exception as e:
             sheets_ok = False
             sheets_error = str(e)
