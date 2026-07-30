@@ -23,6 +23,11 @@ Thumbs.db
 # Proyectos legacy
 update-sheet-app/
 
+# OAuth tokens (nunca commitear)
+authorized_user.json
+
+# Excel datos (no commiteados)
+
 # Excel datos (no commiteados)
 CAMIONES CBBA.xlsx
 CAMIONES LPZ.xlsx

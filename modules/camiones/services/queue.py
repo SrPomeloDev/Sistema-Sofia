@@ -5,7 +5,7 @@ queue.py — Rate Limiter y Cola Asíncrona para escrituras asíncronas en Googl
 import asyncio
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class TokenBucketRateLimiter:
         self.window_size = window_size
         self.tokens = float(max_tokens)
         self._refill_rate = max_tokens / window_size
-        self._last_refill = datetime.utcnow()
+        self._last_refill = datetime.now(timezone.utc)
         self._lock = asyncio.Lock()
 
     async def acquire(self):
@@ -50,7 +50,7 @@ class TokenBucketRateLimiter:
             await asyncio.sleep(0.1)
 
     def _refill(self):
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         elapsed = (now - self._last_refill).total_seconds()
         self.tokens = min(self.max_tokens, self.tokens + elapsed * self._refill_rate)
         self._last_refill = now

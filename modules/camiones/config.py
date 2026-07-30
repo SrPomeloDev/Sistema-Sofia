@@ -20,10 +20,14 @@ class Settings:
     apps_script_url: str = os.getenv("APPS_SCRIPT_URL", "")
     apps_script_token: str = os.getenv("APPS_SCRIPT_TOKEN", "")
 
-    # Google Sheets (fallback)
+    # Google Sheets (fallback with service account)
     google_credentials_json: str = os.getenv("GOOGLE_CREDENTIALS_JSON", "")
     sheet_id: str = os.getenv("SHEET_ID", "")
     sheet_name: str = os.getenv("SHEET_NAME", "")
+    # OAuth 2.0 user (alternativa: path al client_secret.json o JSON inline)
+    oauth_client_secret: str = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
+    # En Railway: contenido de authorized_user.json como string JSON
+    authorized_user_json: str = os.getenv("GOOGLE_AUTHORIZED_USER_JSON", "")
 
     # Base de datos
     database_url: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./auditoria.db")

@@ -186,7 +186,8 @@ async def bootstrap_sheets(force_write: bool = False):
         "Nº", "Nº placa", "Estado de trabajo",
         "Tipo de combustible", "Costo flete (Bs/viaje)", "Sucursal",
         "Capacidad en KG", "Capacidad de carga útil en maples",
-        "Capacidad de carga útil en Kg", "Sistema Camión"
+        "Capacidad de carga útil en Kg", "Sistema Camión",
+        "Estado Servicio",
     ]
     payload_headers = {
         "action": "writeHeaders",
@@ -197,37 +198,38 @@ async def bootstrap_sheets(force_write: bool = False):
         await client.post(settings.apps_script_url, json=payload_headers)
         logger.info("Encabezados escritos")
 
-    # Escribir datos
-    for idx, item in enumerate(merged):
-        nro_suc = {}  # per-sucursal counter
-        suc = item.get("sucursal", "La Paz")
-        nro_suc[suc] = nro_suc.get(suc, 0) + 1
-        fila = idx + 2  # fila 2 en adelante
-        values = [
-            str(nro_suc[suc]),
-            item["placa"],
-            "Fijo",
-            "GAS-GASOLINA",
-            "0",
-            suc,
-            str(item.get("capacidad_kg", 0)),
-            str(item.get("capacidad_maples", 0)),
-            str(item.get("capacidad_util_kg", 0.0)),
-            item.get("sistema_camion", "SIN INFORMACIÓN"),
-        ]
-        payload = {
-            "action": "append",
-            "values": values,
-            "token": settings.apps_script_token
-        }
-        try:
-            resp = await client.post(settings.apps_script_url, json=payload)
-            if resp.status_code != 200:
-                logger.error("Error fila %d (%s): %s", fila, item["placa"], resp.text[:200])
-        except Exception as e:
-            logger.error("Error fila %d (%s): %s", fila, item["placa"], e)
-        if (idx + 1) % 10 == 0:
-            logger.info("Procesados %d/%d", idx + 1, len(merged))
+        # Escribir datos
+        nro_suc = {}
+        for idx, item in enumerate(merged):
+            suc = item.get("sucursal", "La Paz")
+            nro_suc[suc] = nro_suc.get(suc, 0) + 1
+            fila = idx + 2
+            values = [
+                str(nro_suc[suc]),
+                item["placa"],
+                "Fijo",
+                "GAS-GASOLINA",
+                "0",
+                suc,
+                str(item.get("capacidad_kg", 0)),
+                str(item.get("capacidad_maples", 0)),
+                str(item.get("capacidad_util_kg", 0.0)),
+                item.get("sistema_camion", "SIN INFORMACIÓN"),
+                item.get("estado_servicio", "EN SERVICIO"),
+            ]
+            payload = {
+                "action": "append",
+                "values": values,
+                "token": settings.apps_script_token
+            }
+            try:
+                resp = await client.post(settings.apps_script_url, json=payload)
+                if resp.status_code != 200:
+                    logger.error("Error fila %d (%s): %s", fila, item["placa"], resp.text[:200])
+            except Exception as e:
+                logger.error("Error fila %d (%s): %s", fila, item["placa"], e)
+            if (idx + 1) % 10 == 0:
+                logger.info("Procesados %d/%d", idx + 1, len(merged))
 
     logger.info("Bootstrap completado: %d camiones escritos", len(merged))
     return merged

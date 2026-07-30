@@ -4,6 +4,7 @@ lifecycle.py — Inicialización y shutdown del módulo Camiones.
 
 import logging
 import asyncio
+import os
 
 from modules.camiones.db.database import (
     init_db,
@@ -13,6 +14,8 @@ from modules.camiones.db.database import (
     guardar_camiones_bulk,
     CamionDb,
     async_session_factory,
+    asignar_rutas_desde_madres,
+    poblar_ruta_madre_desde_ruta,
 )
 from modules.camiones.config import settings
 from modules.camiones.services.sheets import sheets_client
@@ -52,6 +55,7 @@ async def sincronizar_desde_sheets():
             placa = str(obj.get("placa", "")).strip()
             if not placa:
                 continue
+            ruta_val = str(obj.get("ruta", "")).strip()
             entry = {
                 "fila_id": obj.get("fila_id", 0),
                 "nro": str(obj.get("nro", "")),
@@ -64,6 +68,8 @@ async def sincronizar_desde_sheets():
                 "capacidad_maples": int(obj.get("capacidad_maples", 0)),
                 "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
             }
+            if ruta_val:
+                entry["ruta"] = ruta_val
             if placa in existentes_local:
                 entry["sistema_camion"] = existentes_local[placa].sistema_camion
                 entry["estado_servicio"] = existentes_local[placa].estado_servicio
@@ -77,7 +83,7 @@ async def sincronizar_desde_sheets():
         for idx, row in enumerate(rows[1:], start=2):
             if not row or not any(row):
                 continue
-            padded = row + [""] * (10 - len(row))
+            padded = row + [""] * max(0, 11 - len(row))
             placa = str(padded[1]).strip()
             if not placa:
                 continue
@@ -114,6 +120,17 @@ async def sincronizar_desde_sheets():
     if camiones_sincronizados:
         await upsert_camiones_desde_sheets(camiones_sincronizados)
         logger.info("Sincronizados %d camiones desde Google Sheets a SQLite (upsert)", len(camiones_sincronizados))
+        # Eliminar locales que ya no están en sheets
+        placas_en_sheets = {c["placa"] for c in camiones_sincronizados}
+        from modules.camiones.db.database import async_session_factory as local_session, CamionDb
+        from sqlalchemy import select, delete
+        async with local_session() as session:
+            todos_locales = await session.execute(select(CamionDb.placa, CamionDb.fila_id))
+            for placa, fid in todos_locales:
+                if placa not in placas_en_sheets:
+                    await session.execute(delete(CamionDb).where(CamionDb.fila_id == fid))
+                    logger.info("Eliminado localmente camión %s (fila %s) que ya no está en sheets", placa, fid)
+            await session.commit()
         return True
     return False
 
@@ -194,51 +211,21 @@ async def push_to_sheets_background():
 
 async def auto_sync_loop():
     """
-    Cada SYNC_INTERVAL segundos trae los cambios de Google Sheets a SQLite.
-    Solo sincroniza si el sheet tiene MAS datos que local (evita corromper datos limpios).
+    Cada SYNC_INTERVAL segundos: si hay datos locales, hace push a Sheets.
+    NO hace pull de Sheets para evitar re-insertar camiones borrados localmente.
+    El pull manual se hace con el botón Sync o POST /api/sync.
     """
+    global _push_task
     while True:
         await asyncio.sleep(SYNC_INTERVAL)
         if not sheets_client.enabled:
             continue
         try:
-            result = await sheets_client.read_all_rows()
-            if not result.get("success"):
-                continue
-            rows = result.get("data", [])
-            if not rows:
-                continue
             n_locales = await obtener_total_camiones_count()
-            if n_locales > 0 and n_locales >= len(rows):
-                logger.debug("Auto-sync: local (%d) >= sheets (%d). Saltando sync.", n_locales, len(rows))
+            if n_locales == 0:
                 continue
-            camiones = []
-            existentes_local = {c.placa: c for c in await obtener_todos_camiones()}
-            for obj in rows:
-                placa = str(obj.get("placa", "")).strip()
-                if not placa:
-                    continue
-                entry = {
-                    "fila_id": obj.get("fila_id", 0),
-                    "nro": str(obj.get("nro", "")),
-                    "placa": placa,
-                    "estado_trabajo": str(obj.get("estado_trabajo", "Fijo")),
-                    "tipo_combustible": str(obj.get("tipo_combustible", "GAS-GASOLINA")),
-                    "costo_flete": float(obj.get("costo_flete", 0)),
-                    "sucursal": str(obj.get("sucursal", "")),
-                    "capacidad_kg": int(obj.get("capacidad_kg", 0)),
-                    "capacidad_maples": int(obj.get("capacidad_maples", 0)),
-                    "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
-                }
-                if placa in existentes_local:
-                    entry["sistema_camion"] = existentes_local[placa].sistema_camion
-                    entry["estado_servicio"] = existentes_local[placa].estado_servicio
-                else:
-                    entry["sistema_camion"] = obj.get("sistema_camion") or "SIN INFORMACIÓN"
-                    entry["estado_servicio"] = obj.get("estado_servicio") or "EN SERVICIO"
-                camiones.append(entry)
-            await upsert_camiones_desde_sheets(camiones)
-            logger.debug("Auto-sync completado: %d camiones upsertados", len(camiones))
+            if _push_task is None or _push_task.done():
+                _push_task = asyncio.create_task(push_to_sheets_background())
         except asyncio.CancelledError:
             break
         except Exception as e:
@@ -250,6 +237,12 @@ async def init_module():
     logger.info("Iniciando módulo Camiones...")
     
     await init_db()
+    poblados = await poblar_ruta_madre_desde_ruta()
+    if poblados:
+        logger.info("Ruta madre poblada desde ruta para %d camiones", poblados)
+    asig = await asignar_rutas_desde_madres()
+    if asig:
+        logger.info("Rutas auto-asignadas a %d camiones desde ruta_madre", asig)
     
     total_locales = await obtener_total_camiones_count()
     await sheets_client.initialize()
@@ -267,6 +260,8 @@ async def init_module():
                     total_locales = n_sheet
                 else:
                     excel_path = settings.bootstrap_excel
+                    if not os.path.exists(excel_path):
+                        excel_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", excel_path)
                     logger.info("SQLite y sheets vacíos. Importando desde Excel: %s", excel_path)
                     records = parse_excel_camiones(excel_path)
                     if records:
@@ -289,18 +284,9 @@ async def init_module():
             logger.warning("Sync/push inicial falló (no crítico): %s", e)
     
     await update_queue.start()
-    
-    auto_sync_task = asyncio.create_task(auto_sync_loop())
-    logger.info("Módulo Camiones listo.")
+    logger.info("Módulo Camiones listo (auto-sync desactivado, solo manual).")
 
 async def shutdown_module():
     """Called during app shutdown"""
-    global auto_sync_task
-    if auto_sync_task:
-        auto_sync_task.cancel()
-        try:
-            await auto_sync_task
-        except asyncio.CancelledError:
-            pass
     await update_queue.stop()
     logger.info("Módulo Camiones detenido.")

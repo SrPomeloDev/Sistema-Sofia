@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - camiones_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./data/auditoria.db
+      - APPS_SCRIPT_URL=${APPS_SCRIPT_URL:-}
+      - APPS_SCRIPT_TOKEN=${APPS_SCRIPT_TOKEN:-}
+    restart: unless-stopped
+
+volumes:
+  camiones_data:

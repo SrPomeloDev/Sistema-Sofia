@@ -11,6 +11,10 @@ const STATIC_FILES = [
   '/static/icons/favicon.svg',
   '/static/camiones/index.html',
   '/static/camiones/login.html',
+  '/rutas',
+  '/rutas/login',
+  '/static/rutas/index.html',
+  '/static/rutas/login.html',
 ];
 
 self.addEventListener('install', (event) => {

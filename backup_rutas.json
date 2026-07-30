@@ -1,0 +1,2546 @@
+[
+  {
+    "fila_id": 2,
+    "placa": "5641-SNY",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 3,
+    "placa": "4990-TUE",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 4,
+    "placa": "4286-EKD",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 5,
+    "placa": "1818-BDF",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 6,
+    "placa": "148-SBX",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 7,
+    "placa": "5654-GAH",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 8,
+    "placa": "4115-YLE",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 9,
+    "placa": "2041-PSE",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 10,
+    "placa": "3759-FEU",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 11,
+    "placa": "6295-TUB",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 12,
+    "placa": "5594-YZS",
+    "ruta": "RUTAS NOCTURNAS",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 13,
+    "placa": "2367-XPT",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 14,
+    "placa": "2559-HXP",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 15,
+    "placa": "928-GXG",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 16,
+    "placa": "2435-NKA",
+    "ruta": "RUTAS NOCTURNAS",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 17,
+    "placa": "1096-UCR",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 18,
+    "placa": "1541-FTS",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 19,
+    "placa": "5314-SAI",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 20,
+    "placa": "4734-EHL",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 21,
+    "placa": "3130-FPX",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 22,
+    "placa": "6017-UHG",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 23,
+    "placa": "111-PPL",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 24,
+    "placa": "2486-YTB",
+    "ruta": "COPABOL",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 25,
+    "placa": "2486-ZDE",
+    "ruta": "COPABOL",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 26,
+    "placa": "4257-FHU",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 27,
+    "placa": "3125-XAA",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 28,
+    "placa": "092-NHR",
+    "ruta": "MAYORISTA MIX",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 29,
+    "placa": "113-ACB",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 30,
+    "placa": "047-CAN",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 31,
+    "placa": "3044-LYX",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 32,
+    "placa": "5683-XKI",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 33,
+    "placa": "1085-NBI",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 34,
+    "placa": "456-DZH",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 35,
+    "placa": "2539-EYR",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 36,
+    "placa": "5234-BSS",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 37,
+    "placa": "2497-ERU",
+    "ruta": "COPABOL",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 38,
+    "placa": "1346-RXA",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 39,
+    "placa": "4113-LYG",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 40,
+    "placa": "2329-ILU",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 41,
+    "placa": "021-PPU",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 42,
+    "placa": "5163-FTA",
+    "ruta": "RUTAS NOCTURNAS",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 43,
+    "placa": "2508-BYS",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 44,
+    "placa": "3589-RIA",
+    "ruta": "PODIUM",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 45,
+    "placa": "4826-FID",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 46,
+    "placa": "3033-YPL",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 47,
+    "placa": "1345-PGU",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 48,
+    "placa": "4543-NST",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 49,
+    "placa": "5185-UAX",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 50,
+    "placa": "6238-NDB",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 51,
+    "placa": "1092-PCA",
+    "ruta": "MAYORISTA MIX",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 52,
+    "placa": "4480-TFE",
+    "ruta": "PODIUM",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 53,
+    "placa": "4480-XED",
+    "ruta": "PODIUM",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 54,
+    "placa": "5309-ZLP",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 55,
+    "placa": "2160-ZHE",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 56,
+    "placa": "1716-ZYR",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 57,
+    "placa": "3583-YAT",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 58,
+    "placa": "3051-ARY",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 59,
+    "placa": "801-TCS",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 60,
+    "placa": "3031-GBI",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 61,
+    "placa": "5172-XIP",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 62,
+    "placa": "2903-AIX",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 63,
+    "placa": "5594-YYN",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 64,
+    "placa": "5585-IXT",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 65,
+    "placa": "073-ULU",
+    "ruta": "MAYORISTA MIX",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 66,
+    "placa": "3093-GRX",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 67,
+    "placa": "4797-LNI",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 68,
+    "placa": "4504-GRU",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 69,
+    "placa": "6281-CSC",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 70,
+    "placa": "4220-XPF",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 71,
+    "placa": "4706-BNG",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 72,
+    "placa": "6264-ZBC",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 73,
+    "placa": "5707-UGS",
+    "ruta": "PODIUM",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 74,
+    "placa": "1052-SNP",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 75,
+    "placa": "5189-DKC",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 76,
+    "placa": "3165-TDF",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 77,
+    "placa": "4480-TEB",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 78,
+    "placa": "3470-AFX",
+    "ruta": "PODIUM",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 79,
+    "placa": "088-HCI",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 80,
+    "placa": "1331-ARH",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 81,
+    "placa": "1412-HUT",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 82,
+    "placa": "5351-YXC",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 83,
+    "placa": "4500-PNH",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 84,
+    "placa": "2173-PGF",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 85,
+    "placa": "2094-NSP",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 86,
+    "placa": "4528-YXL",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 87,
+    "placa": "5704-LBL",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 88,
+    "placa": "5224-GPE",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 89,
+    "placa": "3865-DSK",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 90,
+    "placa": "5293-BXR",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 91,
+    "placa": "3118-DTF",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 92,
+    "placa": "1144-YUB",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 93,
+    "placa": "2709-YLB",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 94,
+    "placa": "4475-CIH",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 95,
+    "placa": "5210-BBF",
+    "ruta": "RUTAS NOCTURNAS",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 96,
+    "placa": "3986-FNN",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 97,
+    "placa": "3986-CAR",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 98,
+    "placa": "4536-TBN",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 99,
+    "placa": "3452-ALK",
+    "ruta": "NOCTURNO CERDO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 100,
+    "placa": "2431-LRC",
+    "ruta": "EL ALTO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 101,
+    "placa": "5995-CPT",
+    "ruta": "COPABOL",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 102,
+    "placa": "5211-LKH",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 103,
+    "placa": "209-NGD",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 104,
+    "placa": "5288-DDY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 105,
+    "placa": "5253-ZSF",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 106,
+    "placa": "5228-YLA",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 107,
+    "placa": "4528-TLF",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 108,
+    "placa": "927-THU",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 109,
+    "placa": "1832-TKR",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 110,
+    "placa": "5614-ZNX",
+    "ruta": "HUEVO",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 111,
+    "placa": "2503-ZEP",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 112,
+    "placa": "3146-TGD",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 113,
+    "placa": "3167-NDT",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 114,
+    "placa": "860-ENB",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 115,
+    "placa": "4701-PEY",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 116,
+    "placa": "6326-DAC",
+    "ruta": "MAYORISTA",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 117,
+    "placa": "5292-NGC",
+    "ruta": "LA PAZ",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 118,
+    "placa": "798-YTP",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 119,
+    "placa": "863-UKK",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 120,
+    "placa": "2472-NPF",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 121,
+    "placa": "4450-LYN",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 122,
+    "placa": "4556-HDI",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 123,
+    "placa": "4538-CGI",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 124,
+    "placa": "4686-TYT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 125,
+    "placa": "3140-FPH",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 126,
+    "placa": "2222-HSR",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 127,
+    "placa": "4126-UBL",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 128,
+    "placa": "410-ARD",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 129,
+    "placa": "4464-IEE",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 130,
+    "placa": "4720-UPA",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 131,
+    "placa": "5726-TYD",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 132,
+    "placa": "793-XIP",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 133,
+    "placa": "5162-SXI",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 134,
+    "placa": "2987-FDP",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 135,
+    "placa": "4528-XYL",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 136,
+    "placa": "2382-ZRD",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 137,
+    "placa": "2616-ZAE",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 138,
+    "placa": "4790-FYR",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 139,
+    "placa": "2916-ZAE",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 140,
+    "placa": "5362-GNH",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 141,
+    "placa": "4534-CGY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 142,
+    "placa": "2353-ZPY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 143,
+    "placa": "4796-DSF",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 144,
+    "placa": "5577-LRL",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 145,
+    "placa": "4821-IHG",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 146,
+    "placa": "5285-KKC",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 147,
+    "placa": "2352-ZPY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 148,
+    "placa": "4552-GTT",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 149,
+    "placa": "5272-HID",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 150,
+    "placa": "5265-HFI",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 151,
+    "placa": "4818-XNL",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 152,
+    "placa": "5249-GAC",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 153,
+    "placa": "4551-GAB",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 154,
+    "placa": "2514-GFY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 155,
+    "placa": "5172-TRG",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 156,
+    "placa": "5648-RLG",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 157,
+    "placa": "6334-CKE",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 158,
+    "placa": "1096-LPY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 159,
+    "placa": "4281-DZU",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 160,
+    "placa": "118-RFB",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 161,
+    "placa": "801-ELI",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 162,
+    "placa": "1092-RFL",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 163,
+    "placa": "1118-RFB",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 164,
+    "placa": "1248-GYH",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 165,
+    "placa": "1432-BYS",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 166,
+    "placa": "4053-RAH",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 167,
+    "placa": "4471-DBU",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 168,
+    "placa": "4703-TUS",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 169,
+    "placa": "4749-KYU",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 170,
+    "placa": "5589-UDK",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 171,
+    "placa": "5707-ZNR",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 172,
+    "placa": "5989-FSF",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 173,
+    "placa": "4453-KNL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 174,
+    "placa": "4162-UBL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 175,
+    "placa": "3025-ERE",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 176,
+    "placa": "1084-DYG",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 177,
+    "placa": "6461-SEL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 178,
+    "placa": "1212-SIN",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 179,
+    "placa": "258-HFT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 180,
+    "placa": "4265-UYX",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 181,
+    "placa": "5292-SSL",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 182,
+    "placa": "4839-YHF",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 183,
+    "placa": "4530-TNY",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 184,
+    "placa": "5585-ERY",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 185,
+    "placa": "4740-ADR",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 186,
+    "placa": "5165-TFR",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 187,
+    "placa": "5201-UDF",
+    "ruta": "",
+    "ruta_madre": "MERCADO"
+  },
+  {
+    "fila_id": 188,
+    "placa": "5633-PHK",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 189,
+    "placa": "4540-TCA",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 190,
+    "placa": "5202-XPC",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 191,
+    "placa": "5288-FFH",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 192,
+    "placa": "5297-YLY",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 193,
+    "placa": "6247-YFU",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 194,
+    "placa": "3460-ZDC",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 195,
+    "placa": "4256-FPF",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 196,
+    "placa": "6315-YUN",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 197,
+    "placa": "5689-ESS",
+    "ruta": "local",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 198,
+    "placa": "6311-XGK",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 199,
+    "placa": "5198-HUL",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 200,
+    "placa": "6324-RAX",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 201,
+    "placa": "4086-AAE",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 202,
+    "placa": "6330-SUK",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 203,
+    "placa": "5632-RSF",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 204,
+    "placa": "6236-RXP",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 205,
+    "placa": "5342-RRC",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 206,
+    "placa": "4821-TUC",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 207,
+    "placa": "5345-KAY",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 208,
+    "placa": "5571-YTB",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 209,
+    "placa": "5587-FEG",
+    "ruta": "granja",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 210,
+    "placa": "5642-PDY",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 211,
+    "placa": "5696-PBK",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 212,
+    "placa": "4729-ULA",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 213,
+    "placa": "5631-FEX",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 214,
+    "placa": "6005-RSB",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 215,
+    "placa": "6005-RTE",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 216,
+    "placa": "6005-RXL",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 217,
+    "placa": "6005-RRX",
+    "ruta": "",
+    "ruta_madre": "RUTA H"
+  },
+  {
+    "fila_id": 218,
+    "placa": "5023-GYK",
+    "ruta": "",
+    "ruta_madre": "CERDO"
+  },
+  {
+    "fila_id": 219,
+    "placa": "5159-CYB",
+    "ruta": "",
+    "ruta_madre": "CERDO"
+  },
+  {
+    "fila_id": 220,
+    "placa": "3042-AXK",
+    "ruta": "",
+    "ruta_madre": "CERDO"
+  },
+  {
+    "fila_id": 221,
+    "placa": "5695-SRC",
+    "ruta": "",
+    "ruta_madre": "CERDO"
+  },
+  {
+    "fila_id": 222,
+    "placa": "5308-DEK",
+    "ruta": "",
+    "ruta_madre": "CERDO"
+  },
+  {
+    "fila_id": 223,
+    "placa": "4461-HAI",
+    "ruta": "",
+    "ruta_madre": "PROVINCIA"
+  },
+  {
+    "fila_id": 224,
+    "placa": "5612-SHF",
+    "ruta": "",
+    "ruta_madre": "PROVINCIA"
+  },
+  {
+    "fila_id": 225,
+    "placa": "5598-PEL",
+    "ruta": "",
+    "ruta_madre": "PROVINCIA"
+  },
+  {
+    "fila_id": 226,
+    "placa": "5679-RKY",
+    "ruta": "",
+    "ruta_madre": "PROVINCIA"
+  },
+  {
+    "fila_id": 227,
+    "placa": "5653-CDF",
+    "ruta": "",
+    "ruta_madre": "PROVINCIA"
+  },
+  {
+    "fila_id": 228,
+    "placa": "2917-YRN",
+    "ruta": "",
+    "ruta_madre": "ESPECIALES"
+  },
+  {
+    "fila_id": 229,
+    "placa": "4984-DAB",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 230,
+    "placa": "5264-UHU",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 231,
+    "placa": "5232-ZFL",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 232,
+    "placa": "3094-YTE",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 233,
+    "placa": "5603-EED",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 234,
+    "placa": "5635-IGU",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 235,
+    "placa": "5660-RDE",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 236,
+    "placa": "4702-ZPY",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 237,
+    "placa": "5251-KKE",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 238,
+    "placa": "5563-GXA",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 239,
+    "placa": "5611-DGD",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 240,
+    "placa": "5614-BRF",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 241,
+    "placa": "5658-CXG",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 242,
+    "placa": "5289-KTL",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 243,
+    "placa": "4784-YXE",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 244,
+    "placa": "5716-ZPY",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 245,
+    "placa": "5294-XGD",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 246,
+    "placa": "4778-LIH",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 247,
+    "placa": "4767-BNL",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 248,
+    "placa": "5249-DLL",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 249,
+    "placa": "5689-HRS",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 250,
+    "placa": "5696-ICI",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 251,
+    "placa": "5689-PTG",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 252,
+    "placa": "5611-LLD",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 253,
+    "placa": "5721-HER",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 254,
+    "placa": "2977-DFH",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 255,
+    "placa": "4719-IYH",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 256,
+    "placa": "5026-CNF",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 257,
+    "placa": "4754-KGN",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 258,
+    "placa": "4821-YNK",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 259,
+    "placa": "5567-UUU",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 260,
+    "placa": "5603-YXY",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 261,
+    "placa": "5748-EDX",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 262,
+    "placa": "5776-ZFR",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 263,
+    "placa": "5181-AYI",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 264,
+    "placa": "5181-AST",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 265,
+    "placa": "5773-CGU",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 266,
+    "placa": "6280-ZCS",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 267,
+    "placa": "5996-IDB",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 268,
+    "placa": "4810-GDS",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 269,
+    "placa": "4562-ZRP",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 270,
+    "placa": "6369-BCG",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 271,
+    "placa": "3479-APG",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 272,
+    "placa": "5181-ATY",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 273,
+    "placa": "4768-YAB",
+    "ruta": "",
+    "ruta_madre": "PLANIFICA"
+  },
+  {
+    "fila_id": 274,
+    "placa": "4269-LLT",
+    "ruta": "",
+    "ruta_madre": "APOYO"
+  },
+  {
+    "fila_id": 275,
+    "placa": "5329-SRT",
+    "ruta": "",
+    "ruta_madre": "APOYO"
+  },
+  {
+    "fila_id": 276,
+    "placa": "5260-CRN",
+    "ruta": "",
+    "ruta_madre": "APOYO"
+  },
+  {
+    "fila_id": 277,
+    "placa": "4089-UZD",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 278,
+    "placa": "4093-PUS",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 279,
+    "placa": "4729-BYK",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 280,
+    "placa": "4248-EXF",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 281,
+    "placa": "4243-BEE",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 282,
+    "placa": "5578-XYB",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 283,
+    "placa": "5572-BNX",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 284,
+    "placa": "4750-RDU",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 285,
+    "placa": "5775-FAT",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 286,
+    "placa": "4564-EHP",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 287,
+    "placa": "2917-YPI",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 288,
+    "placa": "5004-ZAS",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 289,
+    "placa": "5183-CKU",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 290,
+    "placa": "5260-CKY",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 291,
+    "placa": "5329-SPP",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 292,
+    "placa": "6024-PLY",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 293,
+    "placa": "6268-GKD",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 294,
+    "placa": "6401-YIL",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 295,
+    "placa": "3799-SPK",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 296,
+    "placa": "4766-XKR",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 297,
+    "placa": "5571-ZZS",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 298,
+    "placa": "6414-UIA",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 299,
+    "placa": "5635-XPF",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 300,
+    "placa": "5016-TIA",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 301,
+    "placa": "3820-FLE",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 302,
+    "placa": "3869-BLE",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 303,
+    "placa": "4441-SGT",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 304,
+    "placa": "4441-SHY",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 305,
+    "placa": "4494-CLF",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 306,
+    "placa": "4828-DLC",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 307,
+    "placa": "5366-PHK",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 308,
+    "placa": "6021-XKY",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 309,
+    "placa": "6278-ITR",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 310,
+    "placa": "6305-UXD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 311,
+    "placa": "6407-LHD",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 312,
+    "placa": "6443-HYD",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 313,
+    "placa": "3820-FEF",
+    "ruta": "",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 314,
+    "placa": "1374-YSK",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 315,
+    "placa": "1612-XBF",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 316,
+    "placa": "2360-ZTT",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 317,
+    "placa": "2469-UXI",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 318,
+    "placa": "2823-HBY",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 319,
+    "placa": "2980-UHF",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 320,
+    "placa": "3143-RFT",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 321,
+    "placa": "3799-DEP",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 322,
+    "placa": "4097-RLG",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 323,
+    "placa": "4406-ZAB",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 324,
+    "placa": "4494-FCD",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 325,
+    "placa": "4529-KTC",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 326,
+    "placa": "4762-DXS",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 327,
+    "placa": "4804-UIB",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 328,
+    "placa": "4995-NBK",
+    "ruta": "",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 329,
+    "placa": "5164-ZKL",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 330,
+    "placa": "5165-ZKL",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 331,
+    "placa": "5181-AXF",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 332,
+    "placa": "5195-TGF",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 333,
+    "placa": "5287-HKS",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 334,
+    "placa": "5288-BSN",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 335,
+    "placa": "5580-DEP",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 336,
+    "placa": "5689 ESS",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 337,
+    "placa": "5721-EHA",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 338,
+    "placa": "5787-HKL",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 339,
+    "placa": "6016-IND",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 340,
+    "placa": "6236-NAU",
+    "ruta": "",
+    "ruta_madre": "HUEVO"
+  },
+  {
+    "fila_id": 341,
+    "placa": "6239-ALY",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 342,
+    "placa": "6245-GDD",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 343,
+    "placa": "6324-GTX",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 344,
+    "placa": "6352-YEK",
+    "ruta": "",
+    "ruta_madre": "RETIRADO"
+  },
+  {
+    "fila_id": 345,
+    "placa": "6443-IXB",
+    "ruta": "local",
+    "ruta_madre": "SECOS"
+  },
+  {
+    "fila_id": 346,
+    "placa": "4553-CXF",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 347,
+    "placa": "5989-CID",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 348,
+    "placa": "2436-UHG",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 349,
+    "placa": "5289-KGC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 350,
+    "placa": "5299-KEF",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 351,
+    "placa": "5723-EPL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 352,
+    "placa": "6664-FEK",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 353,
+    "placa": "5000-AYC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 354,
+    "placa": "5259-DRK",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 355,
+    "placa": "3085-AAT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 356,
+    "placa": "1929-ZNK",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 357,
+    "placa": "2489-KAG",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 358,
+    "placa": "2911-YTR",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 359,
+    "placa": "3765-DYY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 360,
+    "placa": "3873-YRU",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 361,
+    "placa": "5725-LYL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 362,
+    "placa": "2419-TNB",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 363,
+    "placa": "2821-FPU",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 364,
+    "placa": "2839-TEL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 365,
+    "placa": "3071-RLC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 366,
+    "placa": "3153-EPX",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 367,
+    "placa": "4142-UGT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 368,
+    "placa": "4273-XSB",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 369,
+    "placa": "4441-SIC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 370,
+    "placa": "4558-LZU",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 371,
+    "placa": "5322-CLC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 372,
+    "placa": "685-GCE",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 373,
+    "placa": "935-UTX",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 374,
+    "placa": "4219-FLD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 375,
+    "placa": "155-UKP",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 376,
+    "placa": "2364-GGD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 377,
+    "placa": "2706-FZR",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 378,
+    "placa": "2862-IFD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 379,
+    "placa": "5240-LDK",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 380,
+    "placa": "5773ELN",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 381,
+    "placa": "2756-FTI",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 382,
+    "placa": "6276-ESN",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 383,
+    "placa": "3766-UPB",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 384,
+    "placa": "6362-LYS",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 385,
+    "placa": "2795-XTN",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 386,
+    "placa": "3091-YEH",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 387,
+    "placa": "5328-YYI",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 388,
+    "placa": "4046-FTY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 389,
+    "placa": "6275-UFI",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 390,
+    "placa": "4038-TRI",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 391,
+    "placa": "5342-TII",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 392,
+    "placa": "4707-CSE",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 393,
+    "placa": "6238-ZLN",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 394,
+    "placa": "6381-USA",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 395,
+    "placa": "2807-DKL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 396,
+    "placa": "5674-GYD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 397,
+    "placa": "612-FTT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 398,
+    "placa": "3780-SUG",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 399,
+    "placa": "3811-SUL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 400,
+    "placa": "4428-HUP",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 401,
+    "placa": "4521-UAD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 402,
+    "placa": "4714-HCY",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 403,
+    "placa": "4745-LKA",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 404,
+    "placa": "5022-RYK",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 405,
+    "placa": "5773-ELN",
+    "ruta": "-",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 406,
+    "placa": "532-NKY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 407,
+    "placa": "1144-YUV",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 408,
+    "placa": "3074-AHB",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 409,
+    "placa": "3079-EGY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 410,
+    "placa": "3080-YGU",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 411,
+    "placa": "3462-ULT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 412,
+    "placa": "3780-DPC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 413,
+    "placa": "3860-FNF",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 414,
+    "placa": "4086-KXH",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 415,
+    "placa": "4551-HAC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 416,
+    "placa": "5210-RTC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 417,
+    "placa": "5221-YHY",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 418,
+    "placa": "5235 UHT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 419,
+    "placa": "5276-GYD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 420,
+    "placa": "5297-CZL",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 421,
+    "placa": "5668-GYD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 422,
+    "placa": "5709-NUT",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 423,
+    "placa": "5741-RYD",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 424,
+    "placa": "6446-BAC",
+    "ruta": "local",
+    "ruta_madre": ""
+  },
+  {
+    "fila_id": 425,
+    "placa": "6648-BXU",
+    "ruta": "local",
+    "ruta_madre": ""
+  }
+]

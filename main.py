@@ -1,20 +1,24 @@
 import os
 import logging
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse, Response
-from modules.camiones import router as camiones_router, init_module, shutdown_module
+from modules.camiones import router as camiones_router, init_module as camiones_init, shutdown_module as camiones_shutdown
+from modules.rutas import router as rutas_router, init_module as rutas_init, shutdown_module as rutas_shutdown
 
 logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Iniciando aplicación principal...")
-    await init_module()
+    await camiones_init()
+    await rutas_init()
     yield
-    await shutdown_module()
+    await camiones_shutdown()
+    await rutas_shutdown()
     logger.info("Aplicación principal detenida.")
 
 app = FastAPI(
@@ -34,6 +38,7 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(camiones_router)
+app.include_router(rutas_router)
 
 @app.get("/")
 async def root():
@@ -42,8 +47,10 @@ async def root():
 @app.get("/sw.js")
 async def service_worker():
     sw_path = os.path.join("static", "sw.js")
-    with open(sw_path, "r", encoding="utf-8") as f:
-        content = f.read()
+    def _read():
+        with open(sw_path, "r", encoding="utf-8") as f:
+            return f.read()
+    content = await asyncio.to_thread(_read)
     return Response(
         content=content,
         media_type="application/javascript",
@@ -56,8 +63,10 @@ async def service_worker():
 @app.get("/manifest.json")
 async def manifest_route():
     manifest_path = os.path.join("static", "manifest.json")
-    with open(manifest_path, "r", encoding="utf-8") as f:
-        content = f.read()
+    def _read():
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            return f.read()
+    content = await asyncio.to_thread(_read)
     return Response(
         content=content,
         media_type="application/manifest+json",
@@ -75,3 +84,11 @@ async def camiones_dashboard():
 @app.get("/camiones/login")
 async def camiones_login():
     return FileResponse("static/camiones/login.html")
+
+@app.get("/rutas")
+async def rutas_dashboard():
+    return FileResponse("static/rutas/index.html")
+
+@app.get("/rutas/login")
+async def rutas_login():
+    return FileResponse("static/rutas/login.html")

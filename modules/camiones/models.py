@@ -23,6 +23,7 @@ class CamionBase(BaseModel):
     propietario: str = Field("", description="Nombre del propietario/chofer")
     modificado_por: str = Field("", description="Nombre de quien registra/modifica")
     modificado_por_email: str = Field("", description="Email de quien registra/modifica")
+    ruta_madre: str | None = Field(None, description="Ruta madre para proyección de flete")
 
 class CamionCreate(CamionBase):
     pass
@@ -41,6 +42,7 @@ class CamionUpdate(BaseModel):
     propietario: str | None = None
     modificado_por: str | None = None
     modificado_por_email: str | None = None
+    ruta_madre: str | None = None
 
 class CamionResponse(CamionBase):
     fila_id: int
@@ -48,6 +50,7 @@ class CamionResponse(CamionBase):
     estado_sincronizacion: str
     error_sincronizacion: str | None = None
     factor_0_75: float = Field(default=0.0, description="0.75 × capacidad_maples")
+    flete_proyectado: float = Field(default=0.0, description="Flete proyectado desde promedios_ruta")
 
     class Config:
         from_attributes = True
@@ -88,3 +91,38 @@ class FletePromedioResponse(BaseModel):
     promedio_flete: float
     total_camiones: int
     total_flete: float
+
+# ── Esquemas para Tarifas de Rutas ────────────────────────────────────
+
+class RutaTarifaCreate(BaseModel):
+    ruta: str = Field(..., min_length=1, description="Nombre de la ruta")
+    precio: float = Field(0.0, ge=0.0, description="Precio en Bs")
+    sucursal: str | None = Field(None, description="Sucursal opcional")
+    descripcion: str | None = Field(None, description="Descripción de la ruta")
+
+class RutaTarifaUpdate(BaseModel):
+    ruta: str = Field(..., min_length=1, description="Nombre de la ruta")
+    precio: float = Field(0.0, ge=0.0, description="Precio en Bs")
+    sucursal: str | None = Field(None, description="Sucursal opcional")
+    descripcion: str | None = Field(None, description="Descripción de la ruta")
+
+class RutaTarifaResponse(BaseModel):
+    id: int
+    ruta: str
+    precio: float
+    sucursal: str | None
+    descripcion: str | None
+    creado_en: datetime | None = None
+
+    class Config:
+        from_attributes = True
+
+class RutaTarifasListResponse(BaseModel):
+    success: bool
+    data: list[RutaTarifaResponse] = []
+    total: int = 0
+
+class RutaTarifaOperationResponse(BaseModel):
+    success: bool
+    message: str
+    data: RutaTarifaResponse | None = None

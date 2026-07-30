@@ -3,7 +3,7 @@ auth.py — Login local con credenciales predefinidas. Sin registro.
 """
 
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # ── Editar aquí los usuarios y contraseñas ──────────────────────
 # Formato: "usuario": ("contraseña", "Nombre visible")
@@ -27,7 +27,7 @@ def create_session(username: str) -> str:
     _sessions[token] = {
         "username": username,
         "display_name": name,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     return token
 
@@ -35,7 +35,7 @@ def verify_session(token: str) -> dict | None:
     session = _sessions.get(token)
     if not session:
         return None
-    elapsed = datetime.utcnow() - session["created_at"]
+    elapsed = datetime.now(timezone.utc) - session["created_at"]
     if elapsed > timedelta(hours=TOKEN_EXPIRE_HOURS):
         del _sessions[token]
         return None

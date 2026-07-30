@@ -6,7 +6,6 @@ import logging
 import json
 import asyncio
 from datetime import datetime, timezone
-from pathlib import Path
 
 from sqlalchemy import select
 from fastapi import APIRouter, HTTPException, status
@@ -20,8 +19,11 @@ from modules.camiones.models import (
     AuditEntry,
     SyncStatusResponse,
     FletePromedioResponse,
-    PromedioFleteRutaResponse,
-    RutaPrecioUpdate,
+    RutaTarifaCreate,
+    RutaTarifaUpdate,
+    RutaTarifaResponse,
+    RutaTarifasListResponse,
+    RutaTarifaOperationResponse
 )
 from modules.camiones.db.database import (
     init_db,
@@ -43,23 +45,24 @@ from modules.camiones.db.database import (
     obtener_ultimo_cambio,
     obtener_camiones_por_sucursal,
     obtener_promedio_flete_por_sucursal,
-    recalcular_promedios_ruta,
-    obtener_promedios_ruta,
-    guardar_promedio_ruta,
-    eliminar_promedio_ruta,
-    obtener_todas_tarifas,
-    cargar_tarifas_desde_lista,
-    obtener_clasificaciones_tarifas,
-    eliminar_tarifa,
-    seed_rutas_desde_excel,
-    obtener_rutas_madres,
-    obtener_rutas_hijas,
+    obtener_rutas_tarifas,
+    obtener_ruta_tarifa_por_nombre,
+    crear_ruta_tarifa,
+    actualizar_ruta_tarifa,
+    eliminar_ruta_tarifa,
+    contar_rutas_tarifas,
+    obtener_precio_promedio_ruta,
+    seed_promedios_desde_planilla,
+    asignar_rutas_desde_madres,
+    poblar_ruta_madre_desde_ruta,
 )
 from modules.camiones.services.sheets import sheets_client
 from modules.camiones.services.queue import UpdateQueue, QueueItem
 from modules.camiones.services.excel_parser import parse_excel_camiones
+from modules.camiones.services.planilla_parser import parse_planilla
 from modules.camiones.services.bootstrap import bootstrap_sheets
 from modules.camiones.auth import verify_credentials, create_session, verify_session, destroy_session
+from modules.rutas.db.database import obtener_flete_por_ruta_o_madre, obtener_hijas_con_flete, obtener_promedios_por_madre
 
 logger = logging.getLogger(__name__)
 
@@ -89,10 +92,14 @@ async def write_callback(item: QueueItem):
         return
 
     if item.action == "append":
-        result = await sheets_client.append_row(item.valores)
+        result = await sheets_client.append_row(item.valores, fila=item.fila_id)
         if result.get("success"):
-            fila_real = result.get("data", {}).get("fila_insertada") or result.get("data")
-            await marcar_sincronizado(fila_id=item.fila_id, nuevo_fila_id_real=fila_real)
+            data = result.get("data")
+            if isinstance(data, dict):
+                fila_real = data.get("fila_insertada")
+            else:
+                fila_real = data
+            await marcar_sincronizado(fila_id=item.fila_id, nuevo_fila_id_real=fila_real if isinstance(fila_real, int) else None)
         else:
             raise Exception(result.get("error", "Error desconocido al hacer append"))
     elif item.action == "update_row":
@@ -142,120 +149,6 @@ async def push_status():
 async def health():
     """Health check simple para monitoreo."""
     return {"status": "ok", "mode": "sheets" if sheets_client.enabled else "local"}
-
-@router.get("/api/dashboard/stats")
-async def dashboard_stats():
-    """Estadísticas completas para el dashboard (KPIs, promedios, alertas)."""
-    from modules.camiones.db.database import (
-        obtener_todos_camiones, obtener_promedios_ruta,
-        obtener_promedio_flete_por_sucursal
-    )
-    camiones = await obtener_todos_camiones()
-    promedios_ruta = await obtener_promedios_ruta()
-    promedios_sucursal = await obtener_promedio_flete_por_sucursal()
-
-    total = len(camiones)
-    en_servicio = sum(1 for c in camiones if (c.estado_servicio or "EN SERVICIO").upper() == "EN SERVICIO")
-    fuera_servicio = sum(1 for c in camiones if (c.estado_servicio or "").upper() == "FUERA DE SERVICIO")
-    consultar = sum(1 for c in camiones if (c.estado_servicio or "").upper() == "CONSULTAR")
-    total_capacidad_maples = sum(c.capacidad_maples or 0 for c in camiones)
-    total_capacidad_kg = sum(c.capacidad_util_kg or 0 for c in camiones)
-
-    # Calcular flete total desde precios por ruta
-    ruta_precios = {p["ruta"]: p["promedio"] for p in promedios_ruta if p["promedio"] > 0}
-    total_flete = 0.0
-    camiones_con_precio_ruta = 0
-    for c in camiones:
-        ruta = c.ruta or "local"
-        precio = ruta_precios.get(ruta, 0)
-        if precio > 0:
-            total_flete += precio
-            camiones_con_precio_ruta += 1
-
-    # Camiones sin ruta asignada
-    sin_ruta = sum(1 for c in camiones if not c.ruta or c.ruta in ("", "-"))
-    con_ruta = total - sin_ruta
-
-    # Promedio general de flete (promedio simple de precios por ruta)
-    precios_activos = [p["promedio"] for p in promedios_ruta if p["promedio"] > 0]
-    prom_general = round(sum(precios_activos) / len(precios_activos), 2) if precios_activos else 0
-
-    # Ruta más rentable (mayor promedio)
-    ruta_mas_rentable = max(promedios_ruta, key=lambda p: p["promedio"]) if promedios_ruta else None
-
-    # Rutas madres más frecuentes
-    from collections import Counter
-    madres = Counter(c.ruta_madre or "(sin ruta)" for c in camiones)
-    top_rutas = [{"ruta": r, "count": n} for r, n in madres.most_common(10)]
-
-    # Por sucursal: proyección desde precios por ruta
-    suc_map = {}
-    for c in camiones:
-        s = c.sucursal or "Sin Sucursal"
-        if s not in suc_map:
-            suc_map[s] = {"cantidad": 0, "total_flete": 0, "camiones_con_flete": 0}
-        suc_map[s]["cantidad"] += 1
-        ruta = c.ruta or "local"
-        precio = ruta_precios.get(ruta, 0)
-        if precio > 0:
-            suc_map[s]["total_flete"] += precio
-            suc_map[s]["camiones_con_flete"] += 1
-    suc_resumen = [
-        {"sucursal": s, "cantidad": v["cantidad"], "total_flete": round(v["total_flete"], 2),
-         "promedio": round(v["total_flete"] / max(v.get("camiones_con_flete", 1), 1), 2),
-         "camiones_con_flete": v.get("camiones_con_flete", 0)}
-        for s, v in sorted(suc_map.items())
-    ]
-
-    # Alertas
-    alertas = []
-    if fuera_servicio > 0:
-        alertas.append({"tipo": "warning", "mensaje": f"{fuera_servicio} camión(es) están FUERA DE SERVICIO"})
-    if consultar > 0:
-        alertas.append({"tipo": "info", "mensaje": f"{consultar} camión(es) están en estado CONSULTAR"})
-    rutas_sin_precio = total - camiones_con_precio_ruta
-    if rutas_sin_precio > 0:
-        alertas.append({"tipo": "info", "mensaje": f"{rutas_sin_precio} camión(es) sin precio de ruta asignado"})
-    if sin_ruta > 0:
-        alertas.append({"tipo": "info", "mensaje": f"{sin_ruta} camión(es) sin ruta asignada"})
-
-    return {
-        "kpis": {
-            "total_camiones": total,
-            "en_servicio": en_servicio,
-            "fuera_servicio": fuera_servicio,
-            "consultar": consultar,
-            "total_capacidad_maples": total_capacidad_maples,
-            "total_capacidad_kg": total_capacidad_kg,
-            "total_flete": round(total_flete, 2),
-            "promedio_flete_general": prom_general,
-            "camiones_con_flete": camiones_con_precio_ruta,
-            "sin_ruta": sin_ruta,
-            "con_ruta": con_ruta,
-            "ruta_mas_rentable": {"ruta": ruta_mas_rentable["ruta"], "promedio": ruta_mas_rentable["promedio"]} if ruta_mas_rentable else None,
-        },
-        "resumen_sucursales": suc_resumen,
-        "promedios_ruta": [
-            {
-                "ruta": p["ruta"],
-                "cantidad_viajes": p["cantidad_viajes"],
-                "total_pagado": p["total_pagado"],
-                "promedio": p["promedio"],
-            }
-            for p in promedios_ruta
-        ],
-        "promedios_sucursal": [
-            {
-                "sucursal": s["sucursal"],
-                "promedio_flete": s["promedio_flete"],
-                "total_camiones": s["total_camiones"],
-                "total_flete": s["total_flete"],
-            }
-            for s in promedios_sucursal
-        ],
-        "top_rutas_madre": top_rutas,
-        "alertas": alertas,
-    }
 
 # ── Auth ───────────────────────────────────────────────────────
 from pydantic import BaseModel
@@ -308,10 +201,30 @@ async def get_status():
 @router.get("/api/camiones", response_model=list[CamionResponse])
 async def list_camiones():
     """
-    Lista todos los camiones desde la caché de SQLite (rápido).
+    Lista todos los camiones desde la caché de SQLite con flete proyectado.
     """
     try:
-        return await obtener_todos_camiones()
+        camiones = await obtener_todos_camiones()
+        result = []
+        for c in camiones:
+            flete_proy = await obtener_flete_por_ruta_o_madre(c.ruta, c.ruta_madre)
+            result.append(CamionResponse(
+                placa=c.placa, estado_trabajo=c.estado_trabajo,
+                ruta=c.ruta, tipo_combustible=c.tipo_combustible,
+                costo_flete=c.costo_flete, sucursal=c.sucursal,
+                capacidad_kg=c.capacidad_kg, capacidad_maples=c.capacidad_maples,
+                capacidad_util_kg=c.capacidad_util_kg,
+                sistema_camion=c.sistema_camion, estado_servicio=c.estado_servicio,
+                propietario=c.propietario, modificado_por=c.modificado_por,
+                modificado_por_email=c.modificado_por_email,
+                ruta_madre=c.ruta_madre,
+                fila_id=c.fila_id, nro=c.nro,
+                estado_sincronizacion=c.estado_sincronizacion,
+                error_sincronizacion=c.error_sincronizacion,
+                factor_0_75=c.factor_0_75,
+                flete_proyectado=flete_proy,
+            ))
+        return result
     except Exception as e:
         logger.error("Error al listar camiones: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
@@ -332,7 +245,6 @@ async def export_camiones_xlsx(
     from io import BytesIO
 
     todos = await obtener_todos_camiones()
-    promedios_map = {p["ruta"]: p["promedio"] for p in await obtener_promedios_ruta()}
     query = placa.strip().lower()
     camiones = [
         c for c in todos
@@ -346,7 +258,9 @@ async def export_camiones_xlsx(
     ws = wb.active
     ws.title = "Camiones"
 
-    headers = ["Placa","Sucursal","Sistema","Servicio","Ruta Madre","Ruta","Flete (Bs)","Capacidad (Maples)"]
+    headers = ["Nº","Placa","Sucursal","Sistema","Servicio","Estado Trabajo",
+               "Ruta","Ruta Madre","Combustible","Flete (Bs)","Flete Proy.",
+               "Cap. KG","Maples","Cap. Útil Kg","F. 0.75"]
 
     header_font = Font(name="Calibri", bold=True, color="FFFFFF", size=11)
     header_fill = PatternFill(start_color="2563EB", end_color="2563EB", fill_type="solid")
@@ -365,27 +279,35 @@ async def export_camiones_xlsx(
 
     data_font = Font(name="Calibri", size=10)
     for i, c in enumerate(camiones, 2):
-        ruta_key = c.ruta or "local"
-        flete_val = promedios_map.get(ruta_key, c.costo_flete or 0)
+        flete_proy = await obtener_flete_por_ruta_o_madre(c.ruta, c.ruta_madre)
         vals = [
-            c.placa, c.sucursal, c.sistema_camion or "SIN INFORMACIÓN",
-            c.estado_servicio or "EN SERVICIO", c.ruta_madre or "",
-            c.ruta or "local", flete_val,
-            c.capacidad_maples or 0,
+            i - 1, c.placa, c.sucursal, c.sistema_camion or "SIN INFORMACIÓN",
+            c.estado_servicio or "EN SERVICIO", c.estado_trabajo,
+            c.ruta or "", c.ruta_madre or "", c.tipo_combustible, c.costo_flete or 0,
+            round(flete_proy, 2),
+            c.capacidad_kg or 0, c.capacidad_maples or 0, c.capacidad_util_kg or 0,
+            round((c.capacidad_maples or 0) * 0.75, 2),
         ]
         for col, v in enumerate(vals, 1):
             cell = ws.cell(row=i, column=col, value=v)
             cell.font = data_font
             cell.border = thin_border
 
-    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["A"].width = 6
     ws.column_dimensions["B"].width = 14
-    ws.column_dimensions["C"].width = 16
-    ws.column_dimensions["D"].width = 14
-    ws.column_dimensions["E"].width = 14
+    ws.column_dimensions["C"].width = 14
+    ws.column_dimensions["D"].width = 16
+    ws.column_dimensions["E"].width = 12
     ws.column_dimensions["F"].width = 14
-    ws.column_dimensions["G"].width = 12
+    ws.column_dimensions["G"].width = 14
     ws.column_dimensions["H"].width = 14
+    ws.column_dimensions["I"].width = 16
+    ws.column_dimensions["J"].width = 12
+    ws.column_dimensions["K"].width = 12
+    ws.column_dimensions["L"].width = 10
+    ws.column_dimensions["M"].width = 10
+    ws.column_dimensions["N"].width = 12
+    ws.column_dimensions["O"].width = 10
 
     from fastapi.responses import StreamingResponse
     buf = BytesIO()
@@ -449,8 +371,6 @@ async def create_camion(request: CamionCreate):
                 str(capacidad_util_calculada),
                 request.sistema_camion,
                 request.estado_servicio or "EN SERVICIO",
-                request.ruta_madre or "",
-                request.ruta or "",
             ]
             
             # Registrar auditoría
@@ -469,15 +389,12 @@ async def create_camion(request: CamionCreate):
             )
             await update_queue.enqueue(item)
             
-            asyncio.create_task(recalcular_promedios_ruta())
             return UpdateSheetResponse(
                 success=True,
                 message=f"Registro guardado localmente y encolado para Google Sheets (auditoría #{auditoria_id}).",
                 auditoria_id=auditoria_id
             )
         else:
-            # Recalcular promedios por ruta
-            asyncio.create_task(recalcular_promedios_ruta())
             return UpdateSheetResponse(
                 success=True,
                 message="Registro guardado localmente de forma exitosa (Modo Local).",
@@ -529,8 +446,6 @@ async def update_camion(fila_id: int, request: CamionUpdate):
                 str(camion_actualizado.capacidad_util_kg),
                 str(camion_actualizado.sistema_camion),
                 str(camion_actualizado.estado_servicio or "EN SERVICIO"),
-                str(camion_actualizado.ruta_madre or ""),
-                str(camion_actualizado.ruta or ""),
             ]
             
             # Registrar auditoría
@@ -549,15 +464,12 @@ async def update_camion(fila_id: int, request: CamionUpdate):
             )
             await update_queue.enqueue(item)
             
-            asyncio.create_task(recalcular_promedios_ruta())
             return UpdateSheetResponse(
                 success=True,
                 message=f"Modificación guardada localmente y encolada para Google Sheets (auditoría #{auditoria_id}).",
                 auditoria_id=auditoria_id
             )
         else:
-            # Recalcular promedios por ruta
-            asyncio.create_task(recalcular_promedios_ruta())
             return UpdateSheetResponse(
                 success=True,
                 message="Modificación guardada localmente de forma exitosa (Modo Local).",
@@ -571,7 +483,8 @@ async def update_camion(fila_id: int, request: CamionUpdate):
 @router.delete("/api/camiones/{fila_id}", response_model=UpdateSheetResponse)
 async def delete_camion(fila_id: int):
     """
-    Elimina un camión de SQLite y lo encola para borrar de Sheets.
+    Elimina un camión de SQLite y de Google Sheets.
+    Siempre borra local primero; si Sheets falla, igual el local queda limpio.
     """
     logger.info("Eliminando camión fila_id: %d", fila_id)
     
@@ -579,47 +492,57 @@ async def delete_camion(fila_id: int):
     if not camion:
         raise HTTPException(status_code=404, detail="Camión no encontrado.")
     
-    try:
-        if sheets_client.enabled:
-            result = await sheets_client.delete_row(fila_id)
-            if not result.get("success"):
-                logger.error("Delete en Sheets falló: %s", result.get("error"))
-                return UpdateSheetResponse(
-                    success=False,
-                    message=f"No se pudo eliminar en Google Sheets: {result.get('error', 'error desconocido')}",
-                    auditoria_id=None
-                )
-            # Ajustar fila_id local para los registros que estaban debajo
-            from modules.camiones.db.database import CamionDb, async_session_factory
-            async with async_session_factory() as session:
-                stmt = select(CamionDb).where(CamionDb.fila_id > fila_id).order_by(CamionDb.fila_id)
-                rows_to_shift = await session.execute(stmt)
-                for row in rows_to_shift.scalars():
-                    row.fila_id -= 1
-                await session.commit()
-        
-        await eliminar_camion_local(fila_id)
-        
-        auditoria_id = None
-        if sheets_client.enabled:
-            vals = {"placa": camion.placa}
-            if camion.modificado_por:
-                vals["eliminado_por"] = camion.modificado_por
-                vals["modificado_por_email"] = camion.modificado_por_email or ""
-            auditoria_id = await crear_registro_auditoria(
-                fila_id=fila_id, accion="eliminar",
-                valores=json.dumps(vals)
-            )
-        
-        asyncio.create_task(recalcular_promedios_ruta())
-        return UpdateSheetResponse(
-            success=True,
-            message=f"Camión {camion.placa} eliminado correctamente.",
-            auditoria_id=auditoria_id
+    # 1. Borrar local (siempre, incluso si sheets falla)
+    await eliminar_camion_local(fila_id)
+    
+    sheets_ok = True
+    sheets_error = ""
+    # 2. Intentar borrar en Sheets por placa (más robusto que por fila_id)
+    if sheets_client.enabled:
+        try:
+            result = await sheets_client.delete_by_placa(camion.placa)
+            if result.get("success"):
+                from modules.camiones.db.database import CamionDb, async_session_factory
+                async with async_session_factory() as session:
+                    stmt = select(CamionDb).where(CamionDb.fila_id > fila_id).order_by(CamionDb.fila_id)
+                    for row in (await session.execute(stmt)).scalars():
+                        row.fila_id -= 1
+                    await session.commit()
+            else:
+                sheets_ok = False
+                sheets_error = result.get("error", "error desconocido")
+                logger.error("Delete en Sheets falló (local ya eliminado): %s", sheets_error)
+        except Exception as e:
+            sheets_ok = False
+            sheets_error = str(e)
+            logger.error("Delete en Sheets lanzó excepción (local ya eliminado): %s", e)
+    
+    # 3. Auditoría
+    auditoria_id = None
+    if sheets_client.enabled:
+        vals = {"placa": camion.placa}
+        if camion.modificado_por:
+            vals["eliminado_por"] = camion.modificado_por
+            vals["modificado_por_email"] = camion.modificado_por_email or ""
+        auditoria_id = await crear_registro_auditoria(
+            fila_id=fila_id, accion="eliminar",
+            valores=json.dumps(vals)
         )
-    except Exception as e:
-        logger.error("Error al eliminar camión: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
+        await actualizar_estado_auditoria(
+            auditoria_id,
+            "éxito" if sheets_ok else "fallido",
+            sheets_error if not sheets_ok else None
+        )
+    
+    msg = f"Camión {camion.placa} eliminado."
+    if not sheets_ok:
+        msg += f" Sheets: {sheets_error}"
+    
+    return UpdateSheetResponse(
+        success=True,
+        message=msg,
+        auditoria_id=auditoria_id
+    )
 
 @router.post("/api/sync")
 async def force_sync():
@@ -635,33 +558,68 @@ async def force_sync():
 
     try:
         result = await sheets_client.read_all_rows()
-        if not result.get("success"):
-            return {"success": False, "message": result.get("error", "Error del Apps Script")}
+        if not isinstance(result, dict) or not result.get("success"):
+            return {"success": False, "message": result.get("error", "Error al leer Sheets") if isinstance(result, dict) else "Error: formato inesperado"}
 
         rows = result.get("data", [])
         if not rows:
             return {"success": False, "message": "No hay datos en el Sheet."}
 
         camiones = []
-        for obj in rows:
-            entry = {
-                "fila_id": obj.get("fila_id", 0),
-                "nro": str(obj.get("nro", "")),
-                "placa": str(obj.get("placa", "")),
-                "estado_trabajo": str(obj.get("estado_trabajo", "Fijo")),
-                "tipo_combustible": str(obj.get("tipo_combustible", "GAS-GASOLINA")),
-                "costo_flete": float(obj.get("costo_flete", 0)),
-                "sucursal": str(obj.get("sucursal", "")),
-                "capacidad_kg": int(obj.get("capacidad_kg", 0)),
-                "capacidad_maples": int(obj.get("capacidad_maples", 0)),
-                "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
-            }
-            raw_sistema = (obj.get("sistema_camion") or "").strip().upper()
-            entry["sistema_camion"] = "SIN INFORMACIÓN" if raw_sistema in ("-", "—", "") else raw_sistema
-            entry["estado_servicio"] = obj.get("estado_servicio") or "EN SERVICIO"
-            entry["ruta_madre"] = obj.get("ruta_madre") or ""
-            entry["ruta"] = obj.get("ruta") or "local"
-            camiones.append(entry)
+        # Si rows[0] es dict → Apps Script; si es list → gspread (raw arrays)
+        if isinstance(rows[0], dict):
+            for obj in rows:
+                placa = str(obj.get("placa", "")).strip()
+                if not placa:
+                    continue
+                ruta_val = str(obj.get("ruta", "")).strip()
+                entry = {
+                    "fila_id": obj.get("fila_id", 0),
+                    "nro": str(obj.get("nro", "")),
+                    "placa": placa,
+                    "estado_trabajo": str(obj.get("estado_trabajo", "Fijo")),
+                    "tipo_combustible": str(obj.get("tipo_combustible", "GAS-GASOLINA")),
+                    "costo_flete": float(obj.get("costo_flete", 0)),
+                    "sucursal": str(obj.get("sucursal", "")),
+                    "capacidad_kg": int(obj.get("capacidad_kg", 0)),
+                    "capacidad_maples": int(obj.get("capacidad_maples", 0)),
+                    "capacidad_util_kg": float(obj.get("capacidad_util_kg", 0)),
+                    "sistema_camion": obj.get("sistema_camion") or "SIN INFORMACIÓN",
+                    "estado_servicio": obj.get("estado_servicio") or "EN SERVICIO",
+                }
+                if ruta_val:
+                    entry["ruta"] = ruta_val
+                camiones.append(entry)
+        else:
+            # gspread: raw arrays, primera fila es header
+            def to_float(v, d=0.0):
+                try: return float(str(v).replace(",", "."))
+                except: return d
+            def to_int(v, d=0):
+                try: return int(float(str(v).replace(",", ".")))
+                except: return d
+            for idx, row in enumerate(rows[1:], start=2):
+                if not row or not any(row):
+                    continue
+                padded = row + [""] * max(0, 11 - len(row))
+                placa = str(padded[1]).strip()
+                if not placa:
+                    continue
+                entry = {
+                    "fila_id": idx,
+                    "nro": str(padded[0]).strip(),
+                    "placa": placa,
+                    "estado_trabajo": str(padded[2]).strip() or "Fijo",
+                    "tipo_combustible": str(padded[3]).strip() or "GAS-GASOLINA",
+                    "costo_flete": to_float(padded[4]),
+                    "sucursal": str(padded[5]).strip(),
+                    "capacidad_kg": to_int(padded[6]),
+                    "capacidad_maples": to_int(padded[7]),
+                    "capacidad_util_kg": to_float(padded[8]),
+                    "sistema_camion": str(padded[9]).strip() if len(padded) > 9 and str(padded[9]).strip() else "SIN INFORMACIÓN",
+                    "estado_servicio": str(padded[10]).strip() if len(padded) > 10 and str(padded[10]).strip() else "EN SERVICIO",
+                }
+                camiones.append(entry)
 
         # Preserve local fields over sheet values for existing records
         camiones_local = {c.placa: c for c in await obtener_todos_camiones()}
@@ -671,11 +629,8 @@ async def force_sync():
                 local = camiones_local[placa]
                 c["sistema_camion"] = getattr(local, "sistema_camion", "SIN INFORMACIÓN")
                 c["estado_servicio"] = getattr(local, "estado_servicio", "EN SERVICIO")
-                c["ruta_madre"] = getattr(local, "ruta_madre", "")
-                c["ruta"] = getattr(local, "ruta", "local")
 
         await upsert_camiones_desde_sheets(camiones)
-        asyncio.create_task(recalcular_promedios_ruta())
         return {"success": True, "message": f"Sincronizados/actualizados {len(camiones)} camiones."}
     except Exception as e:
         logger.error("Error en sincronización forzada: %s", e)
@@ -684,69 +639,26 @@ async def force_sync():
 @router.get("/api/fletes", response_model=list[FletePromedioResponse])
 async def list_fletes():
     """
-    Obtiene el promedio de flete por sucursal.
+    Obtiene el promedio de flete por sucursal desde las rutas hijas.
     """
+    SUCURSAL_MAP = {"SCZ.": "Santa Cruz", "LP-EA.": "La Paz", "CBBA.": "Cochabamba"}
     try:
-        data = await obtener_promedio_flete_por_sucursal()
-        return [FletePromedioResponse(**d) for d in data]
+        promedios = await obtener_promedios_por_madre()
+        grouped: dict[str, dict] = {}
+        for p in promedios:
+            name = SUCURSAL_MAP.get(p["sucursal"], p["sucursal"])
+            if name not in grouped:
+                grouped[name] = {"sucursal": name, "promedio_flete": 0, "total_camiones": 0, "total_flete": 0}
+            g = grouped[name]
+            g["total_camiones"] += p["total_rutas"]
+            g["total_flete"] += p["promedio_flete"] * p["total_rutas"]
+        result = []
+        for name, g in sorted(grouped.items()):
+            g["promedio_flete"] = round(g["total_flete"] / g["total_camiones"], 0) if g["total_camiones"] else 0
+            result.append(FletePromedioResponse(**g))
+        return result
     except Exception as e:
         logger.error("Error al obtener fletes: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/api/fletes/ruta", response_model=list[PromedioFleteRutaResponse])
-async def list_fletes_ruta():
-    """
-    Obtiene el promedio de flete por ruta (calculado desde costo_flete de camiones).
-    """
-    try:
-        data = await obtener_promedios_ruta()
-        return [PromedioFleteRutaResponse(**d) for d in data]
-    except Exception as e:
-        logger.error("Error al obtener promedios por ruta: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/api/fletes/recalcular")
-async def recalculate_fletes_ruta():
-    """
-    Recalcula todos los promedios de flete por ruta desde los camiones.
-    """
-    try:
-        await recalcular_promedios_ruta()
-        return {"success": True, "message": "Promedios por ruta recalculados."}
-    except Exception as e:
-        logger.error("Error al recalcular promedios: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.put("/api/fletes/ruta/{ruta}")
-async def update_flete_ruta(ruta: str, body: RutaPrecioUpdate):
-    """Actualiza el precio de flete de una ruta manualmente."""
-    try:
-        await guardar_promedio_ruta(ruta, body.promedio)
-        return {"success": True, "message": f"Precio de ruta '{ruta}' actualizado a Bs {body.promedio:.2f}"}
-    except Exception as e:
-        logger.error("Error al actualizar precio de ruta: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/api/fletes/ruta")
-async def create_flete_ruta(body: RutaPrecioUpdate, ruta: str = ""):
-    """Crea un nuevo precio de flete para una ruta (query param ?ruta=XXX)."""
-    if not ruta:
-        raise HTTPException(status_code=400, detail="Debe especificar ?ruta= en la URL")
-    try:
-        await guardar_promedio_ruta(ruta, body.promedio)
-        return {"success": True, "message": f"Precio para ruta '{ruta}' creado: Bs {body.promedio:.2f}"}
-    except Exception as e:
-        logger.error("Error al crear precio de ruta: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.delete("/api/fletes/ruta/{ruta}")
-async def delete_flete_ruta(ruta: str):
-    """Elimina el precio de flete de una ruta."""
-    try:
-        await eliminar_promedio_ruta(ruta)
-        return {"success": True, "message": f"Precio de ruta '{ruta}' eliminado."}
-    except Exception as e:
-        logger.error("Error al eliminar precio de ruta: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/api/bootstrap")
@@ -813,106 +725,179 @@ async def list_auditoria(limit: int = 20):
         logger.error("Error al listar auditoría: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-# ── Tarifas de Flete ──────────────────────────────────────────────────
+# ─── Endpoints para Rutas Tarifas ────────────────────────────────────
 
-@router.get("/api/tarifas")
-async def list_tarifas(clasificacion: str | None = None):
-    """Lista todas las tarifas de flete. Opcional: ?clasificacion=EL ALTO"""
+@router.get("/api/fletes/rutas")
+async def list_rutas_tarifas(offset: int = 0, limit: int = 10):
+    """
+    Lista las tarifas de rutas con paginación.
+    """
     try:
-        return await obtener_todas_tarifas(clasificacion=clasificacion)
+        rutas = await obtener_rutas_tarifas(offset=offset, limit=limit)
+        total = await contar_rutas_tarifas()
+        
+        data = [
+            RutaTarifaResponse(
+                id=r.id,
+                ruta=r.ruta,
+                precio=r.precio,
+                sucursal=r.sucursal,
+                descripcion=r.descripcion,
+                creado_en=r.creado_en
+            )
+            for r in rutas
+        ]
+        
+        return data
     except Exception as e:
-        logger.error("Error al listar tarifas: %s", e)
+        logger.error("Error al listar rutas tarifas: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/api/tarifas/clasificaciones")
-async def list_clasificaciones():
-    """Lista las clasificaciones disponibles en las tarifas."""
+@router.get("/api/fletes/promedios-por-ruta")
+async def list_promedios_por_ruta(sucursal: str | None = None):
+    """Promedio de flete agrupado por ruta_madre, desde el módulo Rutas."""
     try:
-        return await obtener_clasificaciones_tarifas()
+        promedios = await obtener_promedios_por_madre(sucursal=sucursal)
+        return promedios
     except Exception as e:
-        logger.error("Error al listar clasificaciones: %s", e)
+        logger.error("Error al listar promedios por ruta: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/api/tarifas/load")
-async def load_tarifas():
-    """
-    Carga las tarifas desde FLETE DE FLOTA DETALLE.xlsx.
-    Reemplaza todas las tarifas existentes.
-    """
-    import openpyxl
-    
-    excel_path = Path(__file__).parent.parent.parent / "FLETE DE FLOTA DETALLE.xlsx"
-    if not excel_path.exists():
-        raise HTTPException(status_code=404, detail=f"No se encontro el archivo: {excel_path.name}")
-    
+@router.get("/api/fletes/costos-por-ruta")
+async def list_costos_por_ruta(sucursal: str | None = None):
+    """Lista los costos de flete por ruta hija desde el módulo Rutas."""
     try:
-        wb = openpyxl.load_workbook(str(excel_path), data_only=True)
-        ws = wb["Hoja1"]
-        tarifas = []
-        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
-            clas = str(row[0]).strip() if row[0] else ""
-            ruta = str(row[1]).strip() if row[1] else ""
-            flete = float(row[2]) if row[2] is not None else 0.0
-            if clas and ruta:
-                tarifas.append({
-                    "clasificacion": clas.upper(),
-                    "tipo_ruta": ruta,
-                    "flete_final": flete,
-                })
-        wb.close()
+        hijas = await obtener_hijas_con_flete(sucursal=sucursal)
+        return hijas
+    except Exception as e:
+        logger.error("Error al listar costos por ruta: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/fletes/ruta")
+async def create_ruta_tarifa(payload: RutaTarifaCreate):
+    """
+    Crea una nueva tarifa de ruta.
+    """
+    try:
+        # Verificar si ya existe
+        existente = await obtener_ruta_tarifa_por_nombre(payload.ruta)
+        if existente:
+            raise HTTPException(status_code=409, detail=f"La ruta '{payload.ruta}' ya existe.")
         
-        if not tarifas:
-            raise HTTPException(status_code=400, detail="No se encontraron datos validos en el Excel")
+        registro = await crear_ruta_tarifa(
+            ruta=payload.ruta,
+            precio=payload.precio,
+            sucursal=payload.sucursal,
+            descripcion=payload.descripcion
+        )
         
-        count = await cargar_tarifas_desde_lista(tarifas)
-        return {"success": True, "message": f"{count} tarifas cargadas exitosamente"}
+        return {
+            "success": True,
+            "message": f"Ruta '{payload.ruta}' creada exitosamente.",
+            "data": RutaTarifaResponse(
+                id=registro.id,
+                ruta=registro.ruta,
+                precio=registro.precio,
+                sucursal=registro.sucursal,
+                descripcion=registro.descripcion,
+                creado_en=registro.creado_en
+            )
+        }
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Error al cargar tarifas: %s", e)
+        logger.error("Error al crear ruta tarifa: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/api/tarifas/{tarifa_id}")
-async def delete_tarifa(tarifa_id: int):
-    """Elimina una tarifa por ID."""
-    ok = await eliminar_tarifa(tarifa_id)
-    if not ok:
-        raise HTTPException(status_code=404, detail="Tarifa no encontrada")
-    return {"success": True, "message": f"Tarifa {tarifa_id} eliminada"}
-
-# ── Rutas Madre/Hija (planilla de métodos de pago) ─────────
-
-RUTAS_EXCEL_PATH = Path(__file__).parent.parent.parent / "PLANILLA DE MÉTODOS PARA PAGOS.xlsx"
-
-@router.get("/api/rutas/seed")
-async def seed_rutas():
-    """Carga/actualiza la tabla de rutas desde el Excel."""
-    if not RUTAS_EXCEL_PATH.exists():
-        raise HTTPException(404, f"No se encontró: {RUTAS_EXCEL_PATH.name}")
+@router.put("/api/fletes/ruta")
+async def update_ruta_tarifa(payload: RutaTarifaUpdate):
+    """
+    Actualiza una tarifa de ruta existente o crea una nueva.
+    """
     try:
-        count = await seed_rutas_desde_excel(str(RUTAS_EXCEL_PATH))
-        return {"success": True, "message": f"{count} rutas cargadas desde Excel"}
+        registro = await actualizar_ruta_tarifa(
+            ruta=payload.ruta,
+            precio=payload.precio,
+            sucursal=payload.sucursal,
+            descripcion=payload.descripcion
+        )
+        
+        return {
+            "success": True,
+            "message": f"Ruta '{payload.ruta}' actualizada.",
+            "data": RutaTarifaResponse(
+                id=registro.id,
+                ruta=registro.ruta,
+                precio=registro.precio,
+                sucursal=registro.sucursal,
+                descripcion=registro.descripcion,
+                creado_en=registro.creado_en
+            )
+        }
     except Exception as e:
-        logger.error("Error al seed rutas: %s", e)
-        raise HTTPException(500, detail=str(e))
+        logger.error("Error al actualizar ruta tarifa: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/api/rutas/madres")
-async def list_rutas_madres():
-    """Lista las rutas madre disponibles."""
+@router.delete("/api/fletes/ruta/{ruta}")
+async def delete_ruta_tarifa(ruta: str):
+    """
+    Elimina una tarifa de ruta.
+    """
     try:
-        return await obtener_rutas_madres()
+        existe = await eliminar_ruta_tarifa(ruta)
+        if not existe:
+            raise HTTPException(status_code=404, detail=f"La ruta '{ruta}' no existe.")
+        
+        return {
+            "success": True,
+            "message": f"Ruta '{ruta}' eliminada."
+        }
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error("Error al listar rutas madre: %s", e)
-        raise HTTPException(500, detail=str(e))
+        logger.error("Error al eliminar ruta tarifa: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/api/rutas/hijas")
-async def list_rutas_hijas(madre: str):
-    """Lista las rutas hijas para una ruta madre. ?madre=MERCADO"""
-    if not madre:
-        raise HTTPException(400, detail="Parámetro 'madre' es requerido")
+# ─── Endpoints para Planilla y proyección de fletes ──────────────────
+
+@router.post("/api/fletes/seed-planilla")
+async def seed_planilla():
+    """
+    Parsea PLANILLA DE MÉTODOS PARA PAGOS.xlsx y pobla promedios_ruta.
+    Agrupa por RUTA MADRE EBS y calcula el promedio de flete.
+    """
     try:
-        return await obtener_rutas_hijas(madre)
+        registros = parse_planilla()
+        if not registros:
+            return {"success": False, "message": "No se encontraron datos en la planilla o el archivo no existe."}
+        creados = await seed_promedios_desde_planilla(registros)
+        total = await contar_rutas_tarifas()
+        return {
+            "success": True,
+            "message": f"Planilla procesada: {len(registros)} rutas madre, {creados} nuevas en DB. Total tarifas: {total}.",
+            "data": registros,
+        }
     except Exception as e:
-        logger.error("Error al listar rutas hijas: %s", e)
-        raise HTTPException(500, detail=str(e))
+        logger.error("Error al seed planilla: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/api/fletes/asignar-rutas")
+async def asignar_rutas():
+    """
+    Asigna ruta a camiones con ruta vacía según el mapping ruta_madre → ruta.
+    """
+    try:
+        asignados = await asignar_rutas_desde_madres()
+        return {"success": True, "message": f"{asignados} camiones actualizados con su ruta asignada."}
+    except Exception as e:
+        logger.error("Error al asignar rutas: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/fletes/poblar-ruta-madre")
+async def poblar_ruta_madre():
+    try:
+        poblados = await poblar_ruta_madre_desde_ruta()
+        return {"success": True, "message": f"{poblados} camiones actualizados con ruta_madre deducida."}
+    except Exception as e:
+        logger.error("Error al poblar ruta_madre: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))

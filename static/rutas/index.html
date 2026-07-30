@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#C41E24">
+<title>Rutas y Tarifas — Sofía Ltda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root {
+    --red: #C41E24;
+    --red-hover: #B01A1F;
+    --red-soft: #FDEAEA;
+    --red-bg: rgba(196,30,36,0.06);
+    --red-glow: 0 0 0 3px rgba(196,30,36,0.1);
+
+    --white: #FFFFFF;
+    --bg: #F7F8FC;
+
+    --border: #EDF0F7;
+    --border-hover: #D8DCE8;
+
+    --green: #22C55E;
+    --green-bg: rgba(34,197,94,0.08);
+    --amber: #F59E0B;
+    --amber-bg: rgba(245,158,11,0.08);
+    --danger: #EF4444;
+    --danger-bg: rgba(239,68,68,0.08);
+
+    --ink: #1A1D2E;
+    --ink2: #4A5068;
+    --ink3: #8B90A5;
+
+    --title: 'Outfit', sans-serif;
+    --body: 'Inter', sans-serif;
+
+    --r-2xl: 28px;
+    --r-xl: 20px;
+    --r-lg: 14px;
+    --r-md: 10px;
+    --r-sm: 8px;
+
+    --s-xs: 0 1px 2px rgba(0,0,0,0.04);
+    --s-sm: 0 2px 8px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    --s-md: 0 4px 24px rgba(0,0,0,0.06);
+    --s-lg: 0 8px 40px rgba(0,0,0,0.08);
+    --s-red: 0 6px 24px rgba(196,30,36,0.2);
+
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HEADER ─────────────────────────────── */
+.top-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+}
+.top-left { display: flex; align-items: center; gap: 0.85rem; }
+
+.back-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: var(--bg); color: var(--ink2); text-decoration: none;
+    font-size: 0.82rem; font-weight: 600;
+    padding: 0.4rem 0.85rem; border-radius: 50px;
+    border: 1px solid var(--border);
+    transition: all 0.2s var(--ease);
+}
+.back-pill:hover { background: var(--white); border-color: var(--border-hover); color: var(--ink); transform: translateX(-2px); }
+
+.page-title {
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.page-title h1 { font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: var(--ink); }
+
+.top-right { display: flex; align-items: center; gap: 0.65rem; }
+.user-chip {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: var(--bg); padding: 0.4rem 0.85rem; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 600; color: var(--ink2);
+    border: 1px solid var(--border);
+}
+.user-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.logout-btn {
+    background: var(--white); color: var(--ink2); border: 1px solid var(--border);
+    padding: 0.4rem 0.85rem; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; font-family: var(--body); transition: all 0.2s var(--ease);
+}
+.logout-btn:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+
+/* ─── MAIN CONTAINER ─────────────────────── */
+.container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem 1.25rem; }
+
+/* ─── KPI STRIP ──────────────────────────── */
+.kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.85rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-xl);
+    padding: 1.15rem 1.25rem; display: flex; align-items: center; gap: 0.85rem;
+    box-shadow: var(--s-xs); transition: all 0.25s var(--ease);
+}
+.kpi-card:hover { box-shadow: var(--s-sm); transform: translateY(-2px); }
+.kpi-icon {
+    width: 44px; height: 44px; border-radius: var(--r-lg);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.kpi-icon.red { background: var(--red-soft); color: var(--red); }
+.kpi-icon.green { background: var(--green-bg); color: #16A34A; }
+.kpi-icon.blue { background: rgba(59,130,246,0.08); color: #2563EB; }
+.kpi-num { font-family: var(--title); font-size: 1.4rem; font-weight: 800; color: var(--ink); line-height: 1; }
+.kpi-lbl { font-size: 0.72rem; color: var(--ink3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.1rem; }
+
+/* ─── CONTROL PANEL ──────────────────────── */
+.control-panel {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-2xl);
+    padding: 1.25rem 1.5rem; box-shadow: var(--s-sm); margin-bottom: 1.5rem;
+}
+.control-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;
+}
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.55rem 1.1rem; border-radius: var(--r-md); font-family: var(--body);
+    font-weight: 700; font-size: 0.82rem; cursor: pointer; border: none;
+    transition: all 0.2s var(--ease); text-decoration: none;
+}
+.btn-red {
+    background: var(--red); color: var(--white); box-shadow: var(--s-red);
+}
+.btn-red:hover { background: var(--red-hover); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(196,30,36,0.28); }
+.btn-white {
+    background: var(--white); color: var(--ink); border: 1px solid var(--border);
+    box-shadow: var(--s-xs);
+}
+.btn-white:hover { border-color: var(--border-hover); background: var(--bg); }
+.btn-warn {
+    background: var(--amber-bg); color: #B45309; border: 1px solid rgba(245,158,11,0.2);
+}
+.btn-warn:hover { background: var(--amber); color: var(--white); }
+
+/* ─── SEARCH & CHIPS ─────────────────────── */
+.search-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+.search-box { position: relative; flex: 1; min-width: 260px; }
+.search-box i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink3); }
+.search-input {
+    width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; border: 1px solid var(--border);
+    border-radius: var(--r-lg); font-family: var(--body); font-size: 0.88rem;
+    background: var(--bg); transition: all 0.2s var(--ease);
+}
+.search-input:focus { outline: none; border-color: var(--red); background: var(--white); box-shadow: var(--red-glow); }
+.search-input::placeholder { color: var(--ink3); }
+
+.chips { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.chip {
+    padding: 0.4rem 0.9rem; border-radius: 50px; border: 1px solid var(--border);
+    background: var(--white); font-family: var(--body); font-size: 0.78rem; font-weight: 600;
+    color: var(--ink3); cursor: pointer; transition: all 0.2s var(--ease);
+}
+.chip.active { background: var(--red); color: var(--white); border-color: var(--red); box-shadow: 0 2px 8px rgba(196,30,36,0.2); }
+.chip:hover:not(.active) { border-color: var(--red); color: var(--red); }
+
+/* ─── MADRE CARD ─────────────────────────── */
+.madre {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-2xl);
+    box-shadow: var(--s-sm); margin-bottom: 1rem; overflow: hidden;
+    transition: all 0.25s var(--ease);
+}
+.madre:hover { border-color: var(--border-hover); box-shadow: var(--s-md); }
+
+.madre-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.5rem; cursor: pointer; background: var(--white);
+    border-bottom: 1px solid transparent;
+    transition: all 0.15s var(--ease);
+}
+.madre-head:hover { background: #FAFBFE; }
+.madre-head.open { border-bottom-color: var(--border); }
+
+.madre-title { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+.madre-title h3 {
+    font-family: var(--title); font-size: 1.1rem; font-weight: 800; color: var(--ink);
+    display: flex; align-items: center; gap: 0.4rem;
+}
+.tag-suc {
+    background: var(--red); color: var(--white); font-size: 0.68rem; font-weight: 800;
+    padding: 0.18rem 0.55rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.tag-count {
+    background: var(--bg); color: var(--ink3); font-size: 0.72rem; font-weight: 700;
+    padding: 0.18rem 0.55rem; border-radius: var(--r-sm); border: 1px solid var(--border);
+}
+
+.madre-head .right-btns { display: flex; gap: 0.35rem; align-items: center; }
+.icon-btn {
+    width: 34px; height: 34px; border-radius: var(--r-sm); border: 1px solid var(--border);
+    background: var(--white); color: var(--ink3); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease);
+}
+.icon-btn:hover { background: var(--red-soft); color: var(--red); border-color: rgba(196,30,36,0.15); }
+.icon-btn.del:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.15); }
+
+.madre-body { padding: 0; }
+.madre-body.collapsed { display: none; }
+
+/* ─── TABLE ──────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+    text-align: left; padding: 0.7rem 1.5rem; font-size: 0.7rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink3);
+    background: var(--bg); border-bottom: 1px solid var(--border);
+}
+.tbl td {
+    padding: 0.8rem 1.5rem; font-size: 0.88rem; border-bottom: 1px solid #F3F5FA;
+    vertical-align: middle;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: #FBFCFE; }
+
+.cell-name { font-weight: 700; color: var(--ink); }
+
+/* Flete & Método chips */
+.val-chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.3rem 0.7rem; border-radius: var(--r-sm);
+    cursor: pointer; transition: all 0.15s var(--ease);
+    border: 1px solid transparent;
+}
+.val-chip:hover { border-color: var(--border-hover); }
+.val-chip .pencil { opacity: 0; transition: opacity 0.15s; }
+.val-chip:hover .pencil { opacity: 0.7; }
+
+.flete-chip {
+    font-family: var(--title); font-size: 0.95rem; font-weight: 800; color: var(--red);
+    background: var(--red-soft);
+}
+.flete-chip:hover { background: #FDD; }
+
+.metodo-chip {
+    font-weight: 600; color: var(--ink2); background: var(--bg); font-size: 0.82rem;
+}
+.metodo-chip:hover { background: #ECEEF5; }
+
+.edit-input {
+    border: 2px solid var(--red); border-radius: var(--r-sm); padding: 0.35rem 0.6rem;
+    font-family: var(--body); font-size: 0.88rem; font-weight: 700; width: 120px;
+    box-shadow: var(--red-glow);
+}
+.edit-input:focus { outline: none; }
+
+/* Add row */
+.add-row td { background: var(--red-soft) !important; padding: 1rem 1.5rem; }
+.add-form { display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap; }
+.add-form input {
+    padding: 0.5rem 0.85rem; border: 1px solid var(--border); border-radius: var(--r-md);
+    font-family: var(--body); font-size: 0.85rem; background: var(--white);
+}
+.add-form input:focus { outline: none; border-color: var(--red); }
+
+.madre-empty {
+    padding: 1.75rem; text-align: center; color: var(--ink3); font-size: 0.88rem;
+    background: #FAFBFE;
+}
+
+/* ─── STATES ─────────────────────────────── */
+.state-box { padding: 4rem 1.5rem; text-align: center; color: var(--ink3); }
+.spinner {
+    width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--red);
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── TOAST ──────────────────────────────── */
+.toast-box { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; z-index: 300; pointer-events: none; }
+.toast {
+    background: var(--white); border-left: 4px solid var(--green);
+    padding: 0.85rem 1.15rem; border-radius: var(--r-lg);
+    box-shadow: var(--s-lg); min-width: 300px; max-width: 420px;
+    transform: translateX(120%); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: auto; display: flex; align-items: flex-start; gap: 0.75rem;
+    border-top: 1px solid var(--border); border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.toast.show { transform: translateX(0); }
+.toast.warning { border-left-color: var(--amber); }
+.toast.error { border-left-color: var(--danger); }
+.toast-t { font-size: 0.85rem; font-weight: 800; color: var(--ink); }
+.toast-d { font-size: 0.8rem; color: var(--ink3); margin-top: 0.1rem; }
+
+/* ─── MODAL ──────────────────────────────── */
+.overlay {
+    position: fixed; inset: 0; background: rgba(26,29,46,0.35); backdrop-filter: blur(6px);
+    z-index: 250; display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s var(--ease);
+}
+.overlay.show { opacity: 1; pointer-events: auto; }
+.modal {
+    background: var(--white); border-radius: var(--r-2xl); padding: 1.75rem;
+    max-width: 480px; width: 92%; border: 1px solid var(--border);
+    transform: scale(0.95) translateY(12px);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: var(--s-lg);
+}
+.overlay.show .modal { transform: scale(1) translateY(0); }
+.modal-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.25rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border);
+}
+.modal-top h2 {
+    font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: var(--ink);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.close-x { background: none; border: none; cursor: pointer; color: var(--ink3); padding: 0.25rem; border-radius: var(--r-sm); }
+.close-x:hover { background: var(--bg); }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; color: var(--ink); }
+.field-input {
+    width: 100%; padding: 0.7rem 1rem; border: 1px solid var(--border);
+    border-radius: var(--r-md); font-family: var(--body); font-size: 0.9rem;
+    background: var(--white); transition: border-color 0.2s;
+}
+.field-input:focus { outline: none; border-color: var(--red); box-shadow: var(--red-glow); }
+.modal-btns { display: flex; gap: 0.65rem; justify-content: flex-end; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+
+@media (max-width: 640px) {
+    .tbl th:nth-child(3), .tbl td:nth-child(3) { display: none; }
+    .add-form { flex-direction: column; }
+    .add-form input { width: 100% !important; }
+    .toast-box { right: 0.75rem; left: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="top-bar">
+    <div class="top-left">
+        <a href="/" class="back-pill"><i data-lucide="arrow-left" style="width:15px;height:15px;"></i> Inicio</a>
+        <div class="page-title">
+            <i data-lucide="map" style="width:20px;height:20px;color:var(--red);"></i>
+            <h1>Rutas y Tarifas</h1>
+        </div>
+    </div>
+    <div class="top-right">
+        <div class="user-chip">
+            <span class="dot"></span>
+            <span id="userDisplay">Usuario</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Salir</button>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- KPIs -->
+    <div class="kpi-strip">
+        <div class="kpi-card">
+            <div class="kpi-icon red"><i data-lucide="building-2" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kS">0</div><div class="kpi-lbl">Sucursales</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon green"><i data-lucide="git-merge" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kM">0</div><div class="kpi-lbl">Rutas Madre</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><i data-lucide="map-pin" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kH">0</div><div class="kpi-lbl">Destinos</div></div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-row">
+            <div class="actions">
+                <button id="addMadreBtn" class="btn btn-red"><i data-lucide="plus" style="width:16px;height:16px;"></i> Nueva Ruta Madre</button>
+                <button id="seedBtn" class="btn btn-white" title="Importar 156 rutas desde BBDDs_SL.xlsx"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Importar de Excel</button>
+                <button id="reseedBtn" class="btn btn-warn" title="Borrar todo y reimportar del Excel"><i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Restablecer (Excel)</button>
+            </div>
+            <div style="display:flex;gap:0.4rem;">
+                <button id="refreshBtn" class="btn btn-white"><i data-lucide="refresh-cw" style="width:15px;height:15px;"></i></button>
+                <button id="toggleBtn" class="btn btn-white"><i data-lucide="chevrons-up-down" style="width:15px;height:15px;"></i> Vista</button>
+            </div>
+        </div>
+        <div class="search-row">
+            <div class="search-box">
+                <i data-lucide="search" style="width:17px;height:17px;"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar sucursal, ruta madre o destino...">
+            </div>
+            <div class="chips" id="chips"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div id="loadState" class="state-box"><div class="spinner"></div><p>Cargando tarifario...</p></div>
+    <div id="emptyState" class="state-box" style="display:none;">
+        <i data-lucide="map-off" style="width:48px;height:48px;color:var(--red);margin-bottom:0.75rem;"></i>
+        <h3 style="font-family:var(--title);font-size:1.2rem;margin-bottom:0.3rem;">Sin resultados</h3>
+        <p style="font-size:0.88rem;">No hay rutas con los filtros actuales o la base está vacía.</p>
+        <button class="btn btn-red" style="margin-top:1rem;" onclick="openSeedModal()"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Importar desde Excel</button>
+    </div>
+    <div id="list"></div>
+</div>
+
+<!-- Modal -->
+<div id="overlay" class="overlay">
+    <div class="modal">
+        <div class="modal-top">
+            <h2 id="mTitle">Confirmar</h2>
+            <button class="close-x" id="mClose"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+        </div>
+        <div id="mBody"></div>
+        <div class="modal-btns">
+            <button class="btn btn-white" id="mCancel">Cancelar</button>
+            <button class="btn btn-red" id="mOk">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<div id="toasts" class="toast-box"></div>
+
+<script>
+// ── Auth ──────────────────────────────────
+(async()=>{const t=localStorage.getItem('auth_token');if(!t){location.href='/rutas/login';return}try{const r=await fetch('/api/check-auth?token='+encodeURIComponent(t));const d=await r.json();if(!d.success){localStorage.removeItem('auth_token');location.href='/rutas/login';}}catch(e){}})();
+
+const $=id=>document.getElementById(id);
+const list=$('list'), loadState=$('loadState'), emptyState=$('emptyState'), chips=$('chips'), search=$('searchInput');
+
+$('userDisplay').textContent=localStorage.getItem('auth_display_name')||localStorage.getItem('auth_user')||'Usuario';
+
+$('logoutBtn').onclick=()=>{const t=localStorage.getItem('auth_token');if(t)fetch('/api/logout',{method:'POST',body:new URLSearchParams({token:t})}).catch(()=>{});localStorage.removeItem('auth_token');localStorage.removeItem('auth_user');localStorage.removeItem('auth_display_name');location.href='/rutas/login';};
+
+function token(){return localStorage.getItem('auth_token')||''}
+function api(p,x=[]){const s=p.includes('?')?'&':'?';return p+s+['token='+encodeURIComponent(token()),...x].join('&')}
+
+function fmtBs(v){const n=parseFloat(v);if(isNaN(n))return'0';return n%1===0?n.toLocaleString('es-BO'):n.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+// ── Toast ─────────────────────────────────
+function toast(t,d,type='success'){
+    const el=document.createElement('div');el.className='toast '+type;
+    const ic=type==='success'?'check-circle':type==='warning'?'alert-triangle':'x-circle';
+    const col=type==='success'?'#22C55E':type==='warning'?'#F59E0B':'#EF4444';
+    el.innerHTML=`<i data-lucide="${ic}" style="width:20px;height:20px;color:${col};flex-shrink:0;margin-top:1px;"></i><div><div class="toast-t">${t}</div><div class="toast-d">${d}</div></div>`;
+    $('toasts').appendChild(el);lucide.createIcons({node:el});
+    setTimeout(()=>el.classList.add('show'),20);
+    setTimeout(()=>{if(el.parentNode){el.classList.remove('show');setTimeout(()=>el.remove(),350)}},4000);
+}
+
+// ── Modal ─────────────────────────────────
+function modal({title,body,ok='Confirmar',okClass='btn-red',onOk}){
+    const o=$('overlay');
+    $('mTitle').innerHTML=title;$('mBody').innerHTML=body;
+    const btn=$('mOk');btn.textContent=ok;btn.className='btn '+okClass;
+    o.classList.add('show');lucide.createIcons({node:o});
+    const close=()=>o.classList.remove('show');
+    btn.onclick=async()=>{if(onOk){const r=await onOk();if(r!==false)close()}else close()};
+    $('mCancel').onclick=close;$('mClose').onclick=close;
+}
+
+// ── State ─────────────────────────────────
+let madres=[],branch='Todas',collapsed=false;
+
+async function load(){
+    loadState.style.display='block';emptyState.style.display='none';list.innerHTML='';
+    try{const r=await fetch('/api/rutas/madres');if(!r.ok)throw new Error(await r.text());madres=await r.json();buildChips();render();}
+    catch(e){toast('Error',e.message||'No se pudo cargar','error');}
+    finally{loadState.style.display='none';}
+}
+
+function buildChips(){
+    const bs=new Set();madres.forEach(m=>{if(m.sucursal)bs.add(m.sucursal)});
+    const sorted=['Todas',...[...bs].sort()];
+    chips.innerHTML=sorted.map(b=>`<button class="chip ${b===branch?'active':''}" data-b="${b}">${b}</button>`).join('');
+    chips.querySelectorAll('.chip').forEach(c=>{c.onclick=()=>{branch=c.dataset.b;chips.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');render();}});
+}
+
+function kpis(f){
+    const s=new Set(madres.map(m=>m.sucursal)).size;
+    $('kS').textContent=s;$('kM').textContent=f.length;
+    $('kH').textContent=f.reduce((a,m)=>a+(m.hijas?m.hijas.length:0),0);
+}
+
+function render(){
+    const q=search.value.trim().toLowerCase();
+    const f=madres.filter(m=>{
+        if(branch!=='Todas'&&m.sucursal!==branch)return false;
+        if(!q)return true;
+        return m.nombre.toLowerCase().includes(q)||m.sucursal.toLowerCase().includes(q)||(m.hijas&&m.hijas.some(h=>h.ruta_hija.toLowerCase().includes(q)||(h.metodo&&h.metodo.toLowerCase().includes(q))));
+    });
+    kpis(f);
+    if(!f.length){emptyState.style.display='block';list.innerHTML='';return;}
+    emptyState.style.display='none';
+
+    list.innerHTML=f.map(m=>`
+    <div class="madre" data-id="${m.id}">
+        <div class="madre-head${collapsed?'':' open'}" onclick="toggle(this)">
+            <div class="madre-title">
+                <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;color:var(--red);transition:transform 0.2s;${collapsed?'transform:rotate(-90deg)':''}"></i>
+                <h3>${m.nombre}</h3>
+                <span class="tag-suc">${m.sucursal}</span>
+                <span class="tag-count">${m.hijas.length} destino${m.hijas.length===1?'':'s'}</span>
+            </div>
+            <div class="right-btns">
+                <button class="btn btn-white" style="padding:0.35rem 0.75rem;font-size:0.78rem;" onclick="event.stopPropagation();addHija(${m.id})" title="Agregar destino">
+                    <i data-lucide="plus" style="width:14px;height:14px;"></i> Destino
+                </button>
+                <button class="icon-btn del" onclick="event.stopPropagation();delMadre(${m.id},'${m.nombre.replace(/'/g,"\\'")}')" title="Eliminar ruta madre">
+                    <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
+                </button>
+            </div>
+        </div>
+        <div class="madre-body${collapsed?' collapsed':''}">
+            ${!m.hijas.length?'<div class="madre-empty">Sin destinos. <button class="btn btn-white" style="margin-left:0.5rem;padding:0.3rem 0.7rem;font-size:0.78rem;" onclick="addHija('+m.id+')">Agregar</button></div>':`
+            <table class="tbl"><thead><tr>
+                <th style="width:45%">Destino (Ruta Hija)</th>
+                <th style="width:25%">Flete (Bs.)</th>
+                <th style="width:20%">Método</th>
+                <th style="width:10%;text-align:right"></th>
+            </tr></thead><tbody>
+            ${m.hijas.map(h=>`<tr>
+                <td class="cell-name">${h.ruta_hija}</td>
+                <td>
+                    <div class="val-chip flete-chip" onclick="editFlete(this,${h.id})" title="Clic para editar">
+                        <span>Bs. ${fmtBs(h.flete)}</span>
+                        <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
+                    </div>
+                    <input class="edit-input fi" style="display:none" type="number" step="0.01" min="0" value="${h.flete}">
+                </td>
+                <td>
+                    <div class="val-chip metodo-chip" onclick="editMetodo(this,${h.id})" title="Clic para editar">
+                        <span>${h.metodo||'—'}</span>
+                        <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
+                    </div>
+                    <input class="edit-input mi" style="display:none" type="text" value="${h.metodo||''}" placeholder="Ej: MS-010">
+                </td>
+                <td style="text-align:right">
+                    <button class="icon-btn del" onclick="delHija(${h.id},'${h.ruta_hija.replace(/'/g,"\\'")}')" title="Eliminar"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
+                </td>
+            </tr>`).join('')}
+            </tbody></table>`}
+        </div>
+    </div>`).join('');
+    lucide.createIcons({node:list});
+}
+
+function toggle(head){
+    const body=head.nextElementSibling;const ic=head.querySelector('.chev');
+    body.classList.toggle('collapsed');
+    const open=!body.classList.contains('collapsed');
+    if(ic)ic.style.transform=open?'':'rotate(-90deg)';
+    head.classList.toggle('open',open);
+}
+
+$('toggleBtn').onclick=()=>{
+    collapsed=!collapsed;
+    document.querySelectorAll('.madre-body').forEach(b=>{if(collapsed)b.classList.add('collapsed');else b.classList.remove('collapsed')});
+    document.querySelectorAll('.chev').forEach(i=>{i.style.transform=collapsed?'rotate(-90deg)':''});
+    document.querySelectorAll('.madre-head').forEach(h=>{h.classList.toggle('open',!collapsed)});
+};
+
+search.oninput=render;
+
+// ── Inline edits ──────────────────────────
+function editFlete(chip,id){
+    const td=chip.parentElement;const inp=td.querySelector('.fi');
+    chip.style.display='none';inp.style.display='inline-block';inp.focus();inp.select();
+    const save=async()=>{
+        const v=parseFloat(inp.value)||0;
+        try{const r=await fetch(api('/api/rutas/hijas/'+id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({flete:v})});const d=await r.json();
+        if(d.success){chip.querySelector('span').textContent='Bs. '+fmtBs(v);toast('Flete actualizado','Bs. '+fmtBs(v)+' guardado');}
+        else toast('Error',d.detail||'Error','error');}catch(e){toast('Error',e.message,'error');}
+        inp.style.display='none';chip.style.display='inline-flex';
+    };
+    inp.onblur=save;inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.onblur=null;inp.style.display='none';chip.style.display='inline-flex';}};
+}
+
+function editMetodo(chip,id){
+    const td=chip.parentElement;const inp=td.querySelector('.mi');
+    chip.style.display='none';inp.style.display='inline-block';inp.focus();inp.select();
+    const save=async()=>{
+        const v=inp.value.trim()||null;
+        try{const r=await fetch(api('/api/rutas/hijas/'+id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({metodo:v})});const d=await r.json();
+        if(d.success){chip.querySelector('span').textContent=v||'—';toast('Método actualizado','Cambio guardado');}
+        else toast('Error',d.detail||'Error','error');}catch(e){toast('Error',e.message,'error');}
+        inp.style.display='none';chip.style.display='inline-flex';
+    };
+    inp.onblur=save;inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.onblur=null;inp.style.display='none';chip.style.display='inline-flex';}};
+}
+
+// ── Nueva Ruta Madre ─────────────────────
+$('addMadreBtn').onclick=()=>{
+    const sucs=['Santa Cruz','La Paz','Cochabamba','Sucre','Tarija','Potosí','Oruro','Beni','Pando'];
+    modal({
+        title:'<i data-lucide="plus" style="width:20px;height:20px;color:var(--red);"></i> Nueva Ruta Madre',
+        body:`<div class="field"><label>Sucursal</label><select id="mSuc" class="field-input">${sucs.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div><div class="field"><label>Nombre de la Ruta Madre</label><input type="text" id="mNom" class="field-input" placeholder="Ej: SANTA CRUZ - TRINIDAD"></div>`,
+        ok:'Crear Ruta',
+        onOk:async()=>{
+            const suc=$('mSuc').value.trim(),nom=$('mNom').value.trim();
+            if(!nom){toast('Requerido','Escribe el nombre','warning');return false;}
+            try{const r=await fetch(api('/api/rutas/madres'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sucursal:suc,nombre:nom})});const d=await r.json();
+            if(d.success){toast('Creada','Ruta Madre "'+nom+'" registrada');await load();return true;}
+            else{toast('Error',d.detail||'Duplicada','error');return false;}}catch(e){toast('Error',e.message,'error');return false;}
+        }
+    });
+};
+
+// ── Agregar Destino ──────────────────────
+function addHija(madreId){
+    const card=document.querySelector(`.madre[data-id="${madreId}"]`);
+    const body=card.querySelector('.madre-body');body.classList.remove('collapsed');
+    const head=card.querySelector('.madre-head');head.classList.add('open');
+    const chev=head.querySelector('.chev');if(chev)chev.style.transform='';
+
+    const row=document.createElement('tr');row.className='add-row';
+    row.innerHTML=`<td colspan="4"><div class="add-form"><input type="text" class="in" placeholder="Nombre del destino" style="flex:2;"><input type="number" class="if" placeholder="Flete (Bs.)" step="0.01" min="0" style="width:130px;"><input type="text" class="im" placeholder="Método (ej: MS-010)" style="width:130px;"><button class="btn btn-red" style="padding:0.4rem 0.85rem;font-size:0.8rem;"><i data-lucide="check" style="width:14px;height:14px;"></i> Guardar</button><button class="btn btn-white" style="padding:0.4rem 0.6rem;"><i data-lucide="x" style="width:14px;height:14px;"></i></button></div></td>`;
+
+    let tbody=card.querySelector('.tbl tbody');
+    if(!tbody){body.innerHTML=`<table class="tbl"><thead><tr><th>Destino</th><th>Flete (Bs.)</th><th>Método</th><th></th></tr></thead><tbody></tbody></table>`;tbody=body.querySelector('tbody');}
+    tbody.appendChild(row);lucide.createIcons({node:row});
+    row.querySelector('.in').focus();
+
+    const save=async()=>{
+        const n=row.querySelector('.in').value.trim(),f=parseFloat(row.querySelector('.if').value)||0,m=row.querySelector('.im').value.trim()||null;
+        if(!n){toast('Requerido','Escribe el nombre','warning');return;}
+        try{const r=await fetch(api('/api/rutas/hijas'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ruta_madre_id:madreId,ruta_hija:n,flete:f,metodo:m})});const d=await r.json();
+        if(d.success){toast('Guardado','Destino "'+n+'" agregado');await load();}
+        else toast('Error',d.detail||'Error','error');}catch(e){toast('Error',e.message,'error');}
+    };
+    row.querySelector('.btn-red').onclick=save;
+    row.querySelector('.btn-white').onclick=()=>row.remove();
+    row.querySelector('.in').onkeydown=e=>{if(e.key==='Enter')save()};
+}
+
+// ── Eliminar ──────────────────────────────
+function delHija(id,nom){modal({title:'<i data-lucide="trash-2" style="width:20px;height:20px;color:#EF4444;"></i> Eliminar Destino',body:`<p>¿Eliminar el destino <strong>"${nom}"</strong>?</p>`,ok:'Eliminar',okClass:'btn-warn',onOk:async()=>{try{const r=await fetch(api('/api/rutas/hijas/'+id),{method:'DELETE'});const d=await r.json();if(d.success){toast('Eliminado','"'+nom+'" eliminado');await load();return true;}}catch(e){toast('Error',e.message,'error');}}});}
+
+function delMadre(id,nom){modal({title:'<i data-lucide="alert-triangle" style="width:20px;height:20px;color:#EF4444;"></i> Eliminar Ruta Madre',body:`<p>Se eliminará <strong>"${nom}"</strong> y <u>todos sus destinos</u>.</p>`,ok:'Eliminar Todo',okClass:'btn-warn',onOk:async()=>{try{const r=await fetch(api('/api/rutas/madres/'+id),{method:'DELETE'});const d=await r.json();if(d.success){toast('Eliminado','"'+nom+'" eliminada');await load();return true;}}catch(e){toast('Error',e.message,'error');}}});}
+
+// ── Seed / Reseed ─────────────────────────
+function openSeedModal(){modal({title:'<i data-lucide="file-spreadsheet" style="width:20px;height:20px;color:var(--red);"></i> Importar desde Excel',body:'<p>Se leerá la planilla <strong>BBDDs_SL.xlsx</strong> (hoja RUTAS) y se cargarán las 156 rutas sin sobrescribir datos existentes.</p>',ok:'Importar',onOk:async()=>{try{const r=await fetch(api('/api/rutas/seed',['confirm=true']),{method:'POST'});const d=await r.json();if(d.success){toast('Importado',d.message);await load();return true;}else toast('Aviso',d.detail||'Sin datos','warning');}catch(e){toast('Error',e.message,'error');}}});}
+
+function openReseedModal(){modal({title:'<i data-lucide="rotate-ccw" style="width:20px;height:20px;color:#F59E0B;"></i> Restablecer Tarifario',body:'<p style="color:#B45309;font-weight:700;">⚠️ Atención:</p><p>Se borrarán todas las rutas actuales y se recargarán las 156 originales del Excel.</p>',ok:'Restablecer',okClass:'btn-warn',onOk:async()=>{try{const r=await fetch(api('/api/rutas/reseed',['confirm=true']),{method:'POST'});const d=await r.json();if(d.success){toast('Restablecido',d.message);await load();return true;}}catch(e){toast('Error',e.message,'error');}}});}
+
+$('refreshBtn').onclick=()=>load();
+$('seedBtn').onclick=openSeedModal;
+$('reseedBtn').onclick=openReseedModal;
+
+load();
+</script>
+</body>
+</html>
