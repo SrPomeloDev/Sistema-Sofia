@@ -247,27 +247,31 @@ async def init_module():
     total_locales = await obtener_total_camiones_count()
     await sheets_client.initialize()
     
+    # Si no hay datos locales, seed desde Excel (con o sin sheets)
+    if total_locales == 0:
+        excel_path = settings.bootstrap_excel
+        if not os.path.exists(excel_path):
+            excel_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", excel_path)
+        if os.path.exists(excel_path):
+            logger.info("BD vacía. Importando desde Excel: %s", excel_path)
+            records = parse_excel_camiones(excel_path)
+            if records:
+                await guardar_camiones_bulk(records)
+                total_locales = len(records)
+                logger.info("Importación desde Excel: %d registros", total_locales)
+        else:
+            logger.warning("Excel no encontrado: %s", excel_path)
+    
     if sheets_client.enabled:
         try:
             sheet_result = await sheets_client.read_all_rows()
             sheet_has_data = sheet_result.get("success") and len(sheet_result.get("data", [])) > 0
             
-            if total_locales == 0:
-                if sheet_has_data:
-                    n_sheet = len(sheet_result["data"])
-                    logger.info("Local vacío, sheets con %d registros. Sync sheets -> local.", n_sheet)
-                    await sincronizar_desde_sheets()
-                    total_locales = n_sheet
-                else:
-                    excel_path = settings.bootstrap_excel
-                    if not os.path.exists(excel_path):
-                        excel_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", excel_path)
-                    logger.info("SQLite y sheets vacíos. Importando desde Excel: %s", excel_path)
-                    records = parse_excel_camiones(excel_path)
-                    if records:
-                        await guardar_camiones_bulk(records)
-                        total_locales = len(records)
-                        logger.info("Importación desde Excel: %d registros", total_locales)
+            if total_locales == 0 and sheet_has_data:
+                n_sheet = len(sheet_result["data"])
+                logger.info("Local vacío, sheets con %d registros. Sync sheets -> local.", n_sheet)
+                await sincronizar_desde_sheets()
+                total_locales = n_sheet
             
             if total_locales > 0 and sheet_has_data:
                 n_sheet = len(sheet_result["data"])
