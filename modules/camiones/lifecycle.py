@@ -144,6 +144,9 @@ async def inicializar_sheets_con_local():
     from modules.camiones.services.sheets import HEADERS_LIST
     camiones = await obtener_todos_camiones()
 
+    # Ordenar por fila_id para mantener correspondencia fila_id ↔ sheet row
+    camiones.sort(key=lambda c: c.fila_id)
+
     # Recalcular nro como contador secuencial por sucursal y persistir
     from sqlalchemy import text
     suc_counters = {}

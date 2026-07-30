@@ -201,20 +201,31 @@ class GoogleSheetsClient:
         res = await asyncio.to_thread(self._worksheet.append_row, valores, value_input_option="USER_ENTERED")
         return {"success": True, "data": res}
 
-    async def update_row(self, fila: int, valores: list) -> dict:
+    async def update_row(self, fila: int, valores: list, placa: str | None = None) -> dict:
         if not self.enabled:
             return {"success": False, "error": "No disponible"}
 
         if self._mode == "apps_script":
             return await self._call_apps_script({"action": "update", "fila": fila, "values": valores})
 
-        # Fallback gspread
+        # Fallback gspread: buscar la fila correcta por placa si se proporciona
+        fila_real = fila
+        if placa:
+            try:
+                col_b = await asyncio.to_thread(self._worksheet.col_values, 2)
+                for i, val in enumerate(col_b):
+                    if val.strip() == placa.strip():
+                        fila_real = i + 1
+                        break
+            except Exception:
+                pass  # si falla la búsqueda, usar fila original
+
         col_fin = _col_letter(len(valores) - 1)
         await asyncio.to_thread(
-            self._worksheet.update, f"A{fila}:{col_fin}{fila}", [valores],
+            self._worksheet.update, f"A{fila_real}:{col_fin}{fila_real}", [valores],
             value_input_option="USER_ENTERED"
         )
-        return {"success": True, "data": fila}
+        return {"success": True, "data": fila_real}
 
     async def delete_by_placa(self, placa: str) -> dict:
         """Elimina una fila del sheet buscando por placa."""

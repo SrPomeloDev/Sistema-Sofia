@@ -103,7 +103,8 @@ async def write_callback(item: QueueItem):
         else:
             raise Exception(result.get("error", "Error desconocido al hacer append"))
     elif item.action == "update_row":
-        result = await sheets_client.update_row(item.fila_id, item.valores)
+        placa = item.valores[1] if len(item.valores) > 1 else None
+        result = await sheets_client.update_row(item.fila_id, item.valores, placa=placa)
         if result.get("success"):
             await marcar_sincronizado(fila_id=item.fila_id)
         else:
