@@ -104,7 +104,13 @@ async def write_callback(item: QueueItem):
         placa = item.valores[1] if len(item.valores) > 1 else None
         result = await sheets_client.update_row(item.fila_id, item.valores, placa=placa)
         if result.get("success"):
-            await marcar_sincronizado(fila_id=item.fila_id)
+            data_res = result.get("data")
+            fila_real = None
+            if isinstance(data_res, dict):
+                fila_real = data_res.get("fila_insertada")
+            elif isinstance(data_res, int):
+                fila_real = data_res
+            await marcar_sincronizado(fila_id=item.fila_id, nuevo_fila_id_real=fila_real if isinstance(fila_real, int) else None)
         else:
             raise Exception(result.get("error", "Error desconocido al hacer update"))
 

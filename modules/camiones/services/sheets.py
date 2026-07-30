@@ -221,7 +221,7 @@ class GoogleSheetsClient:
         if self._mode == "apps_script":
             return await self._call_apps_script({"action": "update", "fila": fila, "values": valores})
 
-        # Fallback gspread: buscar la fila correcta por placa si se proporciona
+        # Fallback gspread: buscar la fila correcta por placa
         fila_real = fila
         if placa:
             try:
@@ -231,7 +231,10 @@ class GoogleSheetsClient:
                         fila_real = i + 1
                         break
             except Exception:
-                pass  # si falla la búsqueda, usar fila original
+                pass
+            # Si no se encontró la placa, apendar al final en vez de escribir donde no corresponde
+            if fila_real == fila:
+                return await self.append_row(valores)
 
         col_fin = _col_letter(len(valores) - 1)
         await asyncio.to_thread(
