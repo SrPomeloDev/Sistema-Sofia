@@ -1382,7 +1382,7 @@
             .mobile-bottom-nav { display: flex; }
             main { padding-bottom: 4.5rem; }
             .tab-nav { display: none; }
-            /* Show only essential: N°, Placa, Flete, Maples, Cap.Útil, Acción */
+            /* Show only: N°, Placa, Flete, Maples, Cap.Útil, Acción */
             table thead th:nth-child(3),
             table thead th:nth-child(4),
             table thead th:nth-child(5),
@@ -1397,25 +1397,44 @@
             table tbody td:nth-child(7),
             table tbody td:nth-child(9),
             table tbody td:nth-child(12) { display: none; }
-            /* bigger tap targets for action buttons */
-            .edit-action-btn,
-            .delete-action-btn {
-                padding: 0.5rem 0.6rem;
+            /* Bigger tap targets */
+            .edit-action-btn {
+                padding: 0.4rem;
                 min-width: 44px;
                 min-height: 44px;
                 background: transparent;
                 border: none;
                 border-radius: 8px;
+                cursor: pointer;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
             }
-            .edit-action-btn:active,
-            .delete-action-btn:active {
-                background: var(--primary-lighter);
-                transform: scale(0.92);
+            .edit-action-btn:active { background: var(--primary-lighter); transform: scale(0.92); }
+            .delete-action-btn {
+                padding: 0.4rem;
+                min-width: 44px;
+                min-height: 44px;
+                background: transparent;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 4px;
+                color: var(--danger);
             }
+            .delete-action-btn:active { background: var(--danger-bg); transform: scale(0.92); }
             tbody tr { min-height: 44px; }
+            /* Narrow widths so all visible columns fit on a 360px phone */
+            .table-scroll table { min-width: 0 !important; }
+            colgroup .col-nro { width: 28px; }
+            colgroup .col-placa { width: 92px; }
+            colgroup .col-flete { width: 60px; }
+            colgroup .col-maples { width: 48px; }
+            colgroup .col-util { width: 55px; }
+            colgroup .col-accion { width: 72px; }
         }
     </style>
 
