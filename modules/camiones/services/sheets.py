@@ -223,17 +223,18 @@ class GoogleSheetsClient:
 
         # Fallback gspread: buscar la fila correcta por placa
         fila_real = fila
+        encontrado = False
         if placa:
             try:
                 col_b = await asyncio.to_thread(self._worksheet.col_values, 2)
                 for i, val in enumerate(col_b):
                     if val.strip() == placa.strip():
                         fila_real = i + 1
+                        encontrado = True
                         break
             except Exception:
                 pass
-            # Si no se encontró la placa, apendar al final en vez de escribir donde no corresponde
-            if fila_real == fila:
+            if not encontrado:
                 return await self.append_row(valores)
 
         col_fin = _col_letter(len(valores) - 1)
