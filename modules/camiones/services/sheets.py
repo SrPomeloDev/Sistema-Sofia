@@ -186,7 +186,8 @@ class GoogleSheetsClient:
         if self._mode == "apps_script":
             return await self._call_apps_script({"action": "append", "values": valores})
 
-        # gspread: escribir en la fila indicada, o detectar última fila
+        # gspread: siempre apendar al final del sheet para evitar colisiones
+        # Si se pasa fila, se usa como posición exacta; si no, append_row lo agrega al final
         if fila is not None:
             col_fin = _col_letter(len(valores) - 1)
             try:
@@ -194,12 +195,24 @@ class GoogleSheetsClient:
                     self._worksheet.update, f"A{fila}:{col_fin}{fila}",
                     [valores], value_input_option="USER_ENTERED"
                 )
-                return {"success": True, "data": {"fila_insertada": fila}}
+                fila_real = fila
             except Exception as e:
                 return {"success": False, "error": f"Error al escribir en fila {fila}: {e}"}
-        # Sin fila: usar append_row (table detection)
-        res = await asyncio.to_thread(self._worksheet.append_row, valores, value_input_option="USER_ENTERED")
-        return {"success": True, "data": res}
+        else:
+            try:
+                import re as _re
+                res = await asyncio.to_thread(
+                    self._worksheet.append_row, valores, value_input_option="USER_ENTERED"
+                )
+                # Extraer la fila real desde updatedRange (ej: "Hoja1!A202:K202")
+                updated_range = res.get("updates", {}).get("updatedRange", "")
+                m = _re.search(r"A(\d+):", updated_range)
+                fila_real = int(m.group(1)) if m else None
+                if not fila_real:
+                    return {"success": False, "error": f"No se pudo determinar la fila insertada: {updated_range}"}
+            except Exception as e:
+                return {"success": False, "error": f"Error al apendar en sheets: {e}"}
+        return {"success": True, "data": {"fila_insertada": fila_real}}
 
     async def update_row(self, fila: int, valores: list, placa: str | None = None) -> dict:
         if not self.enabled:

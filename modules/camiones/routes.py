@@ -92,13 +92,11 @@ async def write_callback(item: QueueItem):
         return
 
     if item.action == "append":
-        result = await sheets_client.append_row(item.valores, fila=item.fila_id)
+        # apendar al final del sheet (sin fila) para evitar colisiones
+        result = await sheets_client.append_row(item.valores)
         if result.get("success"):
-            data = result.get("data")
-            if isinstance(data, dict):
-                fila_real = data.get("fila_insertada")
-            else:
-                fila_real = data
+            data = result.get("data", {})
+            fila_real = data.get("fila_insertada")
             await marcar_sincronizado(fila_id=item.fila_id, nuevo_fila_id_real=fila_real if isinstance(fila_real, int) else None)
         else:
             raise Exception(result.get("error", "Error desconocido al hacer append"))
