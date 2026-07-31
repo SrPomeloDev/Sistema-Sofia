@@ -131,7 +131,7 @@ class GoogleSheetsClient:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Accept": "application/json, text/plain, */*",
         }
-        async with httpx.AsyncClient(timeout=60, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
             try:
                 if use_get:
                     resp = await client.get(settings.apps_script_url, params=payload, headers=headers)

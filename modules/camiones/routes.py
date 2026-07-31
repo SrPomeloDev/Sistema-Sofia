@@ -107,7 +107,7 @@ async def write_callback(item: QueueItem):
             data_res = result.get("data")
             fila_real = None
             if isinstance(data_res, dict):
-                fila_real = data_res.get("fila_insertada")
+                fila_real = data_res.get("fila_insertada") or data_res.get("fila_actualizada")
             elif isinstance(data_res, int):
                 fila_real = data_res
             await marcar_sincronizado(fila_id=item.fila_id, nuevo_fila_id_real=fila_real if isinstance(fila_real, int) else None)

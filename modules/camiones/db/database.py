@@ -330,12 +330,12 @@ async def marcar_sincronizado(fila_id: int, nuevo_fila_id_real: int | None = Non
         camion.error_sincronizacion = None
         
         if nuevo_fila_id_real is not None and nuevo_fila_id_real != fila_id:
-            # Si se le asignó un nuevo ID real (por ejemplo, después de una inserción en Sheets)
-            # Primero eliminamos el temporal e insertamos el real, o actualizamos la clave primaria
-            # En SQLAlchemy actualizar la PK puede ser complejo; es más fácil recrearlo si cambia
-            # Pero como calculamos fila_id = max_fila_id + 1 en el backend, nuevo_fila_id_real
-            # suele ser idéntico al calculado. Si cambia, hacemos update del fila_id.
-            # SQLite permite cambiar la PK directamente.
+            # Swap seguro: si el fila_id destino está ocupado por otro camión,
+            # mover primero al ocupante al fila_id viejo (que quedará libre),
+            # y luego mover este camión a su fila_id real. Evita UNIQUE constraint.
+            ocupante = await session.get(CamionDb, nuevo_fila_id_real)
+            if ocupante and ocupante.fila_id != fila_id:
+                ocupante.fila_id = fila_id
             camion.fila_id = nuevo_fila_id_real
             
         await session.commit()
