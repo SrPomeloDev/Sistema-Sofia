@@ -212,11 +212,8 @@ function actionSetAll(sheet, headers, data) {
   return { filas_escritas: data.length };
 }
 
-function respondJson(data, statusCode) {
+function respondJson(data) {
   var output = ContentService.createTextOutput(JSON.stringify(data));
   output.setMimeType(ContentService.MimeType.JSON);
-  if (statusCode) {
-    output.setStatusCode(statusCode);
-  }
   return output;
 }
