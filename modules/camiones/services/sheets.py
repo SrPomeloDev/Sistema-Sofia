@@ -219,7 +219,10 @@ class GoogleSheetsClient:
             return {"success": False, "error": "No disponible"}
 
         if self._mode == "apps_script":
-            return await self._call_apps_script({"action": "update", "fila": fila, "values": valores})
+            payload = {"action": "update", "fila": fila, "values": valores}
+            if placa:
+                payload["placa"] = placa
+            return await self._call_apps_script(payload)
 
         # Fallback gspread: buscar la fila correcta por placa (case-insensitive)
         fila_real = fila

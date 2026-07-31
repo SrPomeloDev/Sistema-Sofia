@@ -57,7 +57,7 @@ function handleRequest(e, method) {
 
       case 'update': {
         var data = JSON.parse(e.postData.contents);
-        result = actionUpdate(sheet, data.fila, data.values);
+        result = actionUpdate(sheet, data.fila, data.values, data.placa);
         break;
       }
 
@@ -163,14 +163,31 @@ function actionAppend(sheet, values) {
   return { fila_insertada: lastRow, valores: flatValues };
 }
 
-function actionUpdate(sheet, fila, values) {
-  if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
+function actionUpdate(sheet, fila, values, placa) {
   if (!values || values.length < NUM_COLUMNS) throw new Error("Se requieren " + NUM_COLUMNS + " valores");
 
   var flatValues = values.map(function(v) { return v !== null && v !== undefined ? v : ""; });
-  var range = sheet.getRange(fila, 1, 1, NUM_COLUMNS);
-  range.setValues([flatValues]);
 
+  // Buscar por placa (case-insensitive) para escribir SIEMPRE en la fila correcta,
+  // aunque el fila_id local no coincida con la fila física del sheet.
+  if (placa) {
+    var colB = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < colB.length; i++) {
+      if (String(colB[i][0]).trim().toUpperCase() === placa.trim().toUpperCase()) {
+        var filaReal = i + 2;
+        sheet.getRange(filaReal, 1, 1, NUM_COLUMNS).setValues([flatValues]);
+        return { fila_actualizada: filaReal, valores: flatValues };
+      }
+    }
+    // Placa no encontrada en el sheet → apendar al final (mismo comportamiento que gspread)
+    sheet.appendRow(flatValues);
+    var lastRow = sheet.getLastRow();
+    return { fila_insertada: lastRow, valores: flatValues, apendado: true };
+  }
+
+  // Sin placa: comportamiento legacy por fila
+  if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
+  sheet.getRange(fila, 1, 1, NUM_COLUMNS).setValues([flatValues]);
   return { fila_actualizada: fila, valores: flatValues };
 }
 
