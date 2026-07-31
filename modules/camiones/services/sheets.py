@@ -221,20 +221,22 @@ class GoogleSheetsClient:
         if self._mode == "apps_script":
             return await self._call_apps_script({"action": "update", "fila": fila, "values": valores})
 
-        # Fallback gspread: buscar la fila correcta por placa
+        # Fallback gspread: buscar la fila correcta por placa (case-insensitive)
         fila_real = fila
         encontrado = False
         if placa:
             try:
                 col_b = await asyncio.to_thread(self._worksheet.col_values, 2)
+                placa_busqueda = str(placa).strip().upper()
                 for i, val in enumerate(col_b):
-                    if val.strip() == placa.strip():
+                    if str(val).strip().upper() == placa_busqueda:
                         fila_real = i + 1
                         encontrado = True
                         break
             except Exception:
                 pass
             if not encontrado:
+                logger.warning("update_row: placa %s no encontrada en sheet, apendando al final", placa)
                 return await self.append_row(valores)
 
         col_fin = _col_letter(len(valores) - 1)
@@ -245,7 +247,7 @@ class GoogleSheetsClient:
         return {"success": True, "data": fila_real}
 
     async def delete_by_placa(self, placa: str) -> dict:
-        """Elimina una fila del sheet buscando por placa."""
+        """Elimina una fila del sheet buscando por placa (case-insensitive)."""
         if not self.enabled:
             return {"success": False, "error": "No disponible"}
         if self._mode == "apps_script":
@@ -254,15 +256,21 @@ class GoogleSheetsClient:
         try:
             col_b = await asyncio.to_thread(self._worksheet.col_values, 2)
         except Exception as e:
+            logger.error("delete_by_placa: no se pudo leer columna B: %s", e)
             return {"success": False, "error": f"No se pudo leer columna B: {e}"}
+        placa_busqueda = str(placa).strip().upper()
         for i, val in enumerate(col_b):
-            if val.strip() == placa.strip():
+            val_str = str(val).strip().upper()
+            if val_str == placa_busqueda:
                 fila = i + 1
                 try:
                     await asyncio.to_thread(self._worksheet.delete_rows, fila)
                 except Exception as e:
+                    logger.error("delete_by_placa: error al eliminar fila %s: %s", fila, e)
                     return {"success": False, "error": f"Error al eliminar fila {fila}: {e}"}
+                logger.info("delete_by_placa: fila %s eliminada para placa %s", fila, placa)
                 return {"success": True, "data": {"fila": fila, "placa": placa}}
+        logger.warning("delete_by_placa: placa %s no encontrada en columna B", placa)
         return {"success": False, "error": f"Placa {placa} no encontrada en el sheet"}
 
     async def delete_row(self, fila: int) -> dict:

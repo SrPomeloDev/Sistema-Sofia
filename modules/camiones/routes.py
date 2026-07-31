@@ -545,8 +545,8 @@ async def delete_camion(fila_id: int):
         )
     
     msg = f"Camión {camion.placa} eliminado."
-    if not sheets_ok:
-        msg += f" Sheets: {sheets_error}"
+    if sheets_client.enabled and not sheets_ok:
+        msg += f" (no se pudo borrar de Sheets: {sheets_error})"
     
     return UpdateSheetResponse(
         success=True,
