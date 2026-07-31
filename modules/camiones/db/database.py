@@ -9,7 +9,7 @@ import json
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Text, DateTime, Float, select, func, delete
+from sqlalchemy import Integer, String, Text, DateTime, Float, select, func, delete, update
 
 from modules.camiones.config import settings
 
@@ -330,13 +330,29 @@ async def marcar_sincronizado(fila_id: int, nuevo_fila_id_real: int | None = Non
         camion.error_sincronizacion = None
         
         if nuevo_fila_id_real is not None and nuevo_fila_id_real != fila_id:
-            # Swap seguro: si el fila_id destino está ocupado por otro camión,
-            # mover primero al ocupante al fila_id viejo (que quedará libre),
-            # y luego mover este camión a su fila_id real. Evita UNIQUE constraint.
+            # Swap de 3 pasos (SQLite valida UNIQUE por statement, no por transacción):
+            # 1) marcar temporal al ocupante con fila_id negativo
+            # 2) mover este camión a su fila_id real
+            # 3) restaurar al ocupante al fila_id viejo (que quedó libre)
             ocupante = await session.get(CamionDb, nuevo_fila_id_real)
             if ocupante and ocupante.fila_id != fila_id:
-                ocupante.fila_id = fila_id
-            camion.fila_id = nuevo_fila_id_real
+                await session.execute(
+                    update(CamionDb)
+                    .where(CamionDb.fila_id == nuevo_fila_id_real)
+                    .values(fila_id=-nuevo_fila_id_real)
+                )
+                await session.execute(
+                    update(CamionDb)
+                    .where(CamionDb.fila_id == fila_id)
+                    .values(fila_id=nuevo_fila_id_real)
+                )
+                await session.execute(
+                    update(CamionDb)
+                    .where(CamionDb.fila_id == -nuevo_fila_id_real)
+                    .values(fila_id=fila_id)
+                )
+            else:
+                camion.fila_id = nuevo_fila_id_real
             
         await session.commit()
         logger.debug("Camión fila %s marcado como sincronizado", fila_id)
