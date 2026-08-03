@@ -132,6 +132,7 @@ class JornalerosSheetsClient:
 
     async def _call_apps_script(self, payload: dict) -> dict:
         payload["token"] = settings.apps_script_token
+        payload["sheetName"] = _sheet_name()
         actions_get = ("getAll", "getRow", "deleteRow", "clear", "writeHeaders")
         use_get = payload.get("action") in actions_get
         headers = {
@@ -164,7 +165,7 @@ class JornalerosSheetsClient:
         if not self.enabled:
             return {"success": False, "data": []}
         if self._mode == "apps_script":
-            return await self._call_apps_script({"action": "getAll"})
+            return await self._call_apps_script({"action": "getAllValues"})
         rows = await asyncio.to_thread(self._worksheet.get_all_values)
         return {"success": True, "data": rows}
 
@@ -238,6 +239,30 @@ class JornalerosSheetsClient:
         col_fin = _col_letter(len(HEADERS_LIST) - 1)
         await asyncio.to_thread(self._worksheet.update, f"A1:{col_fin}1", [HEADERS_LIST])
         return {"success": True}
+
+    async def set_all_rows(self, headers: list, rows: list[list]) -> dict:
+        """Reescribe TODA la hoja en un solo request (headers + data).
+        Misma lógica que el módulo de camiones (acción 'setAll')."""
+        if not self.enabled:
+            return {"success": False, "error": "No disponible"}
+        if self._mode == "apps_script":
+            return await self._call_apps_script({
+                "action": "setAll",
+                "headers": headers,
+                "data": rows,
+            })
+        try:
+            col_fin = _col_letter(len(headers) - 1)
+            all_rows = [headers] + rows
+            rango = f"A1:{col_fin}{len(all_rows)}"
+            await asyncio.to_thread(self._worksheet.clear)
+            await asyncio.to_thread(
+                self._worksheet.update, rango, all_rows,
+                value_input_option="USER_ENTERED"
+            )
+            return {"success": True, "data": len(rows)}
+        except Exception as e:
+            return {"success": False, "error": f"Error al reescribir la hoja: {e}"}
 
 
 jornaleros_sheets_client = JornalerosSheetsClient()

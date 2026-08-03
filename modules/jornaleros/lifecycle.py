@@ -6,6 +6,7 @@ import logging
 
 from modules.jornaleros.db.database import init_db, seed_desde_excel, contar_jornaleros
 from modules.jornaleros.sheets import jornaleros_sheets_client
+from modules.jornaleros.routes import update_queue
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,10 @@ async def init_module():
     except Exception as e:
         logger.warning("Sheets de jornaleros no inicializado: %s", e)
 
+    await update_queue.start()
+    logger.info("Módulo Jornaleros listo.")
+
 
 async def shutdown_module():
     logger.info("Deteniendo módulo Jornaleros...")
+    await update_queue.stop()

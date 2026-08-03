@@ -22,20 +22,22 @@ function doPost(e) {
 
 function handleRequest(e, method) {
   try {
-    var token = method === 'get' ? e.parameter.token : JSON.parse(e.postData.contents).token;
+    var data = method === 'post' ? JSON.parse(e.postData.contents) : e.parameter;
+    var token = data.token;
     if (token !== API_TOKEN) {
       return respondJson({ success: false, error: "Token inválido" }, 403);
     }
 
-    var action = method === 'get' ? e.parameter.action : JSON.parse(e.postData.contents).action;
+    var action = data.action;
     if (!action) {
       return respondJson({ success: false, error: "Parámetro 'action' requerido" }, 400);
     }
 
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var sheet = ss.getSheetByName(SHEET_NAME);
+    var sheetName = data.sheetName || SHEET_NAME;
+    var sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
-      sheet = ss.getSheets()[0];
+      sheet = ss.insertSheet(sheetName);
     }
 
     var result;
@@ -44,42 +46,36 @@ function handleRequest(e, method) {
         result = actionGetAll(sheet);
         break;
 
-      case 'getRow':
-        var fila = method === 'get' ? parseInt(e.parameter.fila) : JSON.parse(e.postData.contents).fila;
-        result = actionGetRow(sheet, fila);
+      case 'getAllValues':
+        result = sheet.getDataRange().getValues();
         break;
 
-      case 'append': {
-        var data = JSON.parse(e.postData.contents);
+      case 'getRow':
+        result = actionGetRow(sheet, parseInt(data.fila));
+        break;
+
+      case 'append':
         result = actionAppend(sheet, data.values);
         break;
-      }
 
-      case 'update': {
-        var data = JSON.parse(e.postData.contents);
+      case 'update':
         result = actionUpdate(sheet, data.fila, data.values, data.placa);
         break;
-      }
 
-      case 'clear': {
+      case 'clear':
         result = actionClear(sheet);
         break;
-      }
 
-      case 'writeHeaders': {
-        var data = JSON.parse(e.postData.contents);
+      case 'writeHeaders':
         result = actionWriteHeaders(sheet, data.headers);
         break;
-      }
 
       case 'deleteByPlaca': {
-        var placa = JSON.parse(e.postData.contents).placa;
-        result = actionDeleteByPlaca(sheet, placa);
+        result = actionDeleteByPlaca(sheet, data.placa);
         break;
       }
 
       case 'setAll': {
-        var data = JSON.parse(e.postData.contents);
         result = actionSetAll(sheet, data.headers, data.data);
         break;
       }
@@ -175,7 +171,7 @@ function actionUpdate(sheet, fila, values, placa) {
     for (var i = 0; i < colB.length; i++) {
       if (String(colB[i][0]).trim().toUpperCase() === placa.trim().toUpperCase()) {
         var filaReal = i + 2;
-        sheet.getRange(filaReal, 1, 1, NUM_COLUMNS).setValues([flatValues]);
+        sheet.getRange(filaReal, 1, 1, flatValues.length).setValues([flatValues]);
         return { fila_actualizada: filaReal, valores: flatValues };
       }
     }
@@ -187,7 +183,7 @@ function actionUpdate(sheet, fila, values, placa) {
 
   // Sin placa: comportamiento legacy por fila
   if (!fila || fila < 2) throw new Error("fila debe ser >= 2");
-  sheet.getRange(fila, 1, 1, NUM_COLUMNS).setValues([flatValues]);
+  sheet.getRange(fila, 1, 1, flatValues.length).setValues([flatValues]);
   return { fila_actualizada: fila, valores: flatValues };
 }
 
@@ -201,7 +197,7 @@ function actionClear(sheet) {
 
 function actionWriteHeaders(sheet, headers) {
   if (!headers || headers.length < NUM_COLUMNS) throw new Error("Se requieren " + NUM_COLUMNS + " cabeceras");
-  sheet.getRange(1, 1, 1, NUM_COLUMNS).setValues([headers]);
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   return { cabeceras_escritas: headers };
 }
 

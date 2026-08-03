@@ -14,6 +14,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
 from modules.camiones.auth import verify_session
+from modules.camiones.config import settings
 from modules.jornaleros.models import (
     JornaleroCreate, JornaleroUpdate, JornaleroResponse,
     JornaleroListResponse, OperationResponse,
@@ -24,11 +25,52 @@ from modules.jornaleros.db.database import (
     obtener_stats, upsert_from_sheet_rows, obtener_todos, marcar_sincronizado,
 )
 from modules.jornaleros.sheets import jornaleros_sheets_client, HEADERS_LIST
+from modules.jornaleros.services.queue import UpdateQueue, QueueItem
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Jornaleros"])
 
 _push_task: asyncio.Task | None = None
+_push_result: dict | None = None
+
+
+# ── Cola de escrituras a Sheets (misma lógica que camiones) ────────────
+async def write_callback(item: QueueItem):
+    """
+    Ejecuta la escritura real en Google Sheets:
+    - append: agrega una fila nueva al final.
+    - update_row: busca el ID en la col A y actualiza ESA MISMA fila
+      (si el ID ya no está en la hoja, la apenda).
+    """
+    from modules.jornaleros.db.database import marcar_sincronizado
+
+    if not jornaleros_sheets_client.enabled:
+        raise Exception("Cliente de Google Sheets no habilitado")
+
+    if item.action == "append":
+        result = await jornaleros_sheets_client.append_row(item.valores)
+    elif item.action == "update_row":
+        fila = await jornaleros_sheets_client._buscar_fila_por_id(item.jornalero_id)
+        if fila is not None:
+            result = await jornaleros_sheets_client.update_row(fila, item.valores)
+        else:
+            result = await jornaleros_sheets_client.append_row(item.valores)
+    else:
+        raise Exception(f"Acción desconocida: {item.action}")
+
+    if result.get("success"):
+        await marcar_sincronizado(item.jornalero_id)
+    else:
+        raise Exception(result.get("error", "Error desconocido al escribir en Sheets"))
+
+
+update_queue = UpdateQueue(
+    write_callback=write_callback,
+    max_retries=settings.max_retries,
+    retry_base_delay=settings.retry_base_delay,
+    rate_limit_max=settings.rate_limit_max,
+    rate_limit_window=settings.rate_limit_window,
+)
 
 
 def _require_auth(token: str):
@@ -106,7 +148,17 @@ async def crear_jornalero(body: JornaleroCreate, token: str = Query("")):
     _require_auth(token)
     try:
         row = await create_jornalero(body.model_dump())
-        return OperationResponse(success=True, message="Registro de jornalero creado (pendiente de sincronizar)", data=_a_response(row))
+        mensaje = "Registro de jornalero creado"
+        if jornaleros_sheets_client.enabled:
+            await update_queue.enqueue(QueueItem(
+                jornalero_id=row.id,
+                action="append",
+                valores=_fila_a_lista(row),
+            ))
+            mensaje += " y enviado a Google Sheets (nueva fila)"
+        else:
+            mensaje += " (modo local, sin Sheets)"
+        return OperationResponse(success=True, message=mensaje, data=_a_response(row))
     except Exception as e:
         logger.error("Error al crear jornalero: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
@@ -122,7 +174,17 @@ async def actualizar_jornalero(jornalero_id: str, body: JornaleroUpdate, token: 
         row = await update_jornalero(jornalero_id, datos)
         if not row:
             raise HTTPException(status_code=404, detail="Registro de jornalero no encontrado")
-        return OperationResponse(success=True, message="Registro actualizado (pendiente de sincronizar)", data=_a_response(row))
+        mensaje = "Registro actualizado"
+        if jornaleros_sheets_client.enabled:
+            await update_queue.enqueue(QueueItem(
+                jornalero_id=row.id,
+                action="update_row",
+                valores=_fila_a_lista(row),
+            ))
+            mensaje += " y actualizada su misma fila en Google Sheets"
+        else:
+            mensaje += " (modo local, sin Sheets)"
+        return OperationResponse(success=True, message=mensaje, data=_a_response(row))
     except HTTPException:
         raise
     except Exception as e:
@@ -134,12 +196,18 @@ async def actualizar_jornalero(jornalero_id: str, body: JornaleroUpdate, token: 
 async def eliminar_jornalero(jornalero_id: str, token: str = Query("")):
     _require_auth(token)
     try:
-        # Si sheets está configurado, intenta borrar la fila remota (best effort)
-        if jornaleros_sheets_client.enabled:
-            await jornaleros_sheets_client.delete_by_id(jornalero_id)
+        # 1. Borrar local primero (siempre, aunque sheets falle) — lógica de camiones
         ok = await delete_jornalero(jornalero_id)
         if not ok:
             raise HTTPException(status_code=404, detail="Registro de jornalero no encontrado")
+        # 2. Borrar en Sheets por ID (best effort)
+        if jornaleros_sheets_client.enabled:
+            try:
+                result = await jornaleros_sheets_client.delete_by_id(jornalero_id)
+                if not result.get("success") and "no encontrado" not in str(result.get("error", "")).lower():
+                    logger.warning("Delete en Sheets falló (local ya eliminado): %s", result.get("error"))
+            except Exception as e:
+                logger.warning("Delete en Sheets lanzó excepción (local ya eliminado): %s", e)
         return OperationResponse(success=True, message="Registro eliminado")
     except HTTPException:
         raise
@@ -198,44 +266,55 @@ def _fila_a_lista(row) -> list:
 
 
 async def _push_task_body():
-    registros = await obtener_todos()
-    ok = 0
-    fallidos = 0
-    for row in registros:
-        valores = _fila_a_lista(row)
-        result = await jornaleros_sheets_client.upsert_row(row.id, valores)
-        if result.get("success"):
-            await marcar_sincronizado(row.id)
-            ok += 1
-        else:
-            await marcar_sincronizado(row.id, error=result.get("error", "Error desconocido"))
-            fallidos += 1
-    return {"total": len(registros), "sincronizados": ok, "fallidos": fallidos}
+    global _push_result
+    try:
+        # Reescritura completa en UN solo request (misma lógica que camiones):
+        # headers + todas las filas → la hoja queda idéntica a la BD local.
+        registros = await obtener_todos()
+        valores = [_fila_a_lista(r) for r in registros]
+        result = await jornaleros_sheets_client.set_all_rows(HEADERS_LIST, valores)
+        if not result.get("success"):
+            _push_result = {"total": len(registros), "sincronizados": 0, "fallidos": len(registros),
+                            "error": result.get("error", "Error al escribir en la hoja")}
+            return _push_result
+        for r in registros:
+            await marcar_sincronizado(r.id)
+        _push_result = {"total": len(registros), "sincronizados": len(registros), "fallidos": 0}
+        return _push_result
+    except Exception as e:
+        logger.error("Error en push de jornaleros: %s", e)
+        _push_result = {"total": 0, "sincronizados": 0, "fallidos": 0, "error": str(e)}
+        return _push_result
 
 
 @router.post("/api/jornaleros/push-to-sheets")
 async def push_a_sheets(token: str = Query("")):
-    """Push: envía los registros pendientes a Google Sheets en segundo plano."""
+    """Push: reescribe TODOS los registros locales en Google Sheets en segundo plano."""
     _require_auth(token)
-    global _push_task
+    global _push_task, _push_result
+    await jornaleros_sheets_client.initialize()
     if not jornaleros_sheets_client.enabled:
-        raise HTTPException(status_code=400, detail="Google Sheets no está configurado para jornaleros")
+        raise HTTPException(status_code=400, detail="Google Sheets no está configurado para jornaleros (APPS_SCRIPT_URL/APPS_SCRIPT_TOKEN o credenciales OAuth)")
     if _push_task and not _push_task.done():
         return {"success": True, "running": True, "message": "Ya hay un push en progreso."}
-    await jornaleros_sheets_client.initialize()
-    await jornaleros_sheets_client.write_headers()
+    _push_result = None
     _push_task = asyncio.create_task(_push_task_body())
     return {"success": True, "running": True, "message": "Push iniciado en segundo plano."}
 
 
 @router.get("/api/jornaleros/push-status")
 async def push_status():
-    global _push_task
+    global _push_task, _push_result
     if _push_task and not _push_task.done():
         return {"success": True, "running": True, "message": "Push en progreso..."}
     if _push_task and _push_task.done() and _push_task.exception():
         return {"success": False, "running": False, "message": f"Push falló: {_push_task.exception()}"}
-    return {"success": True, "running": False, "message": "Sin push activo."}
+    return {
+        "success": True,
+        "running": False,
+        "message": "Push completado" if _push_result else "Sin push activo.",
+        "result": _push_result,
+    }
 
 
 @router.get("/api/jornaleros/stats")
