@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#C41E24">
 <title>Rutas y Tarifas — Sofía Ltda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,52 +11,67 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 :root {
-    --red: #C41E24;
-    --red-hover: #B01A1F;
-    --red-soft: #FDEAEA;
-    --red-bg: rgba(196,30,36,0.06);
-    --red-glow: 0 0 0 3px rgba(196,30,36,0.1);
+    --primary: #C41E24;
+    --primary-hover: #A01820;
+    --primary-dark: #7A1015;
+    --primary-light: #FEF2F2;
+    --primary-soft: rgba(196,30,36,0.06);
+    --primary-glow: 0 0 0 3px rgba(196,30,36,0.1);
+    --header-gradient: linear-gradient(135deg, #C41E24 0%, #A01820 55%, #7A1015 100%);
 
-    --white: #FFFFFF;
-    --bg: #F7F8FC;
+    --surface: #FFFFFF;
+    --bg: #F4F5F7;
 
-    --border: #EDF0F7;
+    --border: #E8E8ED;
     --border-hover: #D8DCE8;
 
-    --green: #22C55E;
-    --green-bg: rgba(34,197,94,0.08);
-    --amber: #F59E0B;
-    --amber-bg: rgba(245,158,11,0.08);
-    --danger: #EF4444;
-    --danger-bg: rgba(239,68,68,0.08);
+    --success: #047857;
+    --success-bg: rgba(5,150,105,0.08);
+    --warning: #B45309;
+    --warning-bg: rgba(217,119,6,0.08);
+    --danger: #B91C1C;
+    --danger-bg: rgba(220,38,38,0.08);
 
-    --ink: #1A1D2E;
-    --ink2: #4A5068;
-    --ink3: #8B90A5;
+    --ink: #111827;
+    --ink2: #4B5563;
+    --ink3: #6B7280;
 
     --title: 'Outfit', sans-serif;
     --body: 'Inter', sans-serif;
 
-    --r-2xl: 28px;
+    --r-2xl: 20px;
     --r-xl: 20px;
     --r-lg: 14px;
     --r-md: 10px;
-    --r-sm: 8px;
+    --r-sm: 6px;
 
-    --s-xs: 0 1px 2px rgba(0,0,0,0.04);
-    --s-sm: 0 2px 8px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-    --s-md: 0 4px 24px rgba(0,0,0,0.06);
-    --s-lg: 0 8px 40px rgba(0,0,0,0.08);
-    --s-red: 0 6px 24px rgba(196,30,36,0.2);
+    --s-xs: 0 1px 3px rgba(17,24,39,0.05);
+    --s-sm: 0 2px 8px rgba(17,24,39,0.05), 0 1px 2px rgba(17,24,39,0.03);
+    --s-md: 0 6px 20px rgba(17,24,39,0.08);
+    --s-lg: 0 12px 40px rgba(17,24,39,0.12);
+    --s-primary: 0 8px 30px rgba(196,30,36,0.18);
 
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+button, .btn, a, [role="button"], .chip, .val-chip, .icon-btn, .madre-head, .close-x { touch-action: manipulation; }
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+}
+
 body {
     font-family: var(--body);
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(ellipse at 0% 0%, rgba(196, 30, 36, 0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 30, 36, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(196, 30, 36, 0.03) 0%, transparent 60%);
+    background-attachment: fixed;
     color: var(--ink);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -64,71 +79,74 @@ body {
 
 /* ─── HEADER ─────────────────────────────── */
 .top-bar {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 0.75rem 1.5rem;
+    background: var(--header-gradient);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.9rem 1.5rem;
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 6px 24px rgba(122, 16, 21, 0.35);
 }
 .top-left { display: flex; align-items: center; gap: 0.85rem; }
 
 .back-pill {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    background: var(--bg); color: var(--ink2); text-decoration: none;
+    background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.9); text-decoration: none;
     font-size: 0.82rem; font-weight: 600;
     padding: 0.4rem 0.85rem; border-radius: 50px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     transition: all 0.2s var(--ease);
 }
-.back-pill:hover { background: var(--white); border-color: var(--border-hover); color: var(--ink); transform: translateX(-2px); }
+.back-pill:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255,255,255,0.3); color: #FFFFFF; transform: translateX(-2px); }
 
 .page-title {
     display: flex; align-items: center; gap: 0.5rem;
 }
-.page-title h1 { font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: var(--ink); }
+.page-title h1 { font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: #FFFFFF; }
+.page-title i { color: #FFFFFF !important; }
 
 .top-right { display: flex; align-items: center; gap: 0.65rem; }
 .user-chip {
     display: flex; align-items: center; gap: 0.4rem;
-    background: var(--bg); padding: 0.4rem 0.85rem; border-radius: 50px;
-    font-size: 0.82rem; font-weight: 600; color: var(--ink2);
-    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.12); padding: 0.4rem 0.85rem; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 600; color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
-.user-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.user-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #34D399; box-shadow: 0 0 8px #34D399; }
 .logout-btn {
-    background: var(--white); color: var(--ink2); border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 0.4rem 0.85rem; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 700;
     cursor: pointer; font-family: var(--body); transition: all 0.2s var(--ease);
 }
-.logout-btn:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+.logout-btn:hover { background: rgba(255, 255, 255, 0.25); color: #FFFFFF; border-color: rgba(255,255,255,0.3); }
 
 /* ─── MAIN CONTAINER ─────────────────────── */
 .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem 1.25rem; }
 
 /* ─── KPI STRIP ──────────────────────────── */
 .kpi-strip {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 0.85rem; margin-bottom: 1.5rem;
 }
 .kpi-card {
-    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-xl);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl);
     padding: 1.15rem 1.25rem; display: flex; align-items: center; gap: 0.85rem;
     box-shadow: var(--s-xs); transition: all 0.25s var(--ease);
 }
-.kpi-card:hover { box-shadow: var(--s-sm); transform: translateY(-2px); }
+.kpi-card:hover { box-shadow: var(--s-md); transform: translateY(-2px); border-color: var(--border-hover); }
 .kpi-icon {
     width: 44px; height: 44px; border-radius: var(--r-lg);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
-.kpi-icon.red { background: var(--red-soft); color: var(--red); }
-.kpi-icon.green { background: var(--green-bg); color: #16A34A; }
-.kpi-icon.blue { background: rgba(59,130,246,0.08); color: #2563EB; }
-.kpi-num { font-family: var(--title); font-size: 1.4rem; font-weight: 800; color: var(--ink); line-height: 1; }
-.kpi-lbl { font-size: 0.72rem; color: var(--ink3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.1rem; }
+.kpi-icon.red { background: linear-gradient(135deg, #FFF1F1, #FEE2E2); color: var(--primary); }
+.kpi-icon.green { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: var(--success); }
+.kpi-icon.blue { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: #2563EB; }
+.kpi-num { font-family: var(--title); font-size: 1.4rem; font-weight: 800; color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-lbl { font-size: 0.72rem; color: var(--ink2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.1rem; }
 
 /* ─── CONTROL PANEL ──────────────────────── */
 .control-panel {
-    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-2xl);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-2xl);
     padding: 1.25rem 1.5rem; box-shadow: var(--s-sm); margin-bottom: 1.5rem;
 }
 .control-row {
@@ -144,18 +162,19 @@ body {
     transition: all 0.2s var(--ease); text-decoration: none;
 }
 .btn-red {
-    background: var(--red); color: var(--white); box-shadow: var(--s-red);
+    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+    color: var(--surface); box-shadow: 0 4px 14px rgba(196,30,36,0.35);
 }
-.btn-red:hover { background: var(--red-hover); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(196,30,36,0.28); }
+.btn-red:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(196,30,36,0.45); }
 .btn-white {
-    background: var(--white); color: var(--ink); border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
     box-shadow: var(--s-xs);
 }
-.btn-white:hover { border-color: var(--border-hover); background: var(--bg); }
+.btn-white:hover { border-color: var(--border-hover); background: var(--primary-light); color: var(--primary); }
 .btn-warn {
-    background: var(--amber-bg); color: #B45309; border: 1px solid rgba(245,158,11,0.2);
+    background: var(--warning-bg); color: #B45309; border: 1px solid rgba(217,119,6,0.25);
 }
-.btn-warn:hover { background: var(--amber); color: var(--white); }
+.btn-warn:hover { background: var(--warning); color: var(--surface); }
 
 /* ─── SEARCH & CHIPS ─────────────────────── */
 .search-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
@@ -166,21 +185,21 @@ body {
     border-radius: var(--r-lg); font-family: var(--body); font-size: 0.88rem;
     background: var(--bg); transition: all 0.2s var(--ease);
 }
-.search-input:focus { outline: none; border-color: var(--red); background: var(--white); box-shadow: var(--red-glow); }
+.search-input:focus { outline: none; border-color: var(--primary); background: var(--surface); box-shadow: var(--primary-glow); }
 .search-input::placeholder { color: var(--ink3); }
 
 .chips { display: flex; gap: 0.35rem; flex-wrap: wrap; }
 .chip {
     padding: 0.4rem 0.9rem; border-radius: 50px; border: 1px solid var(--border);
-    background: var(--white); font-family: var(--body); font-size: 0.78rem; font-weight: 600;
+    background: var(--surface); font-family: var(--body); font-size: 0.78rem; font-weight: 600;
     color: var(--ink3); cursor: pointer; transition: all 0.2s var(--ease);
 }
-.chip.active { background: var(--red); color: var(--white); border-color: var(--red); box-shadow: 0 2px 8px rgba(196,30,36,0.2); }
-.chip:hover:not(.active) { border-color: var(--red); color: var(--red); }
+.chip.active { background: var(--primary); color: var(--surface); border-color: var(--primary); box-shadow: 0 2px 8px rgba(196,30,36,0.2); }
+.chip:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
 
 /* ─── MADRE CARD ─────────────────────────── */
 .madre {
-    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-2xl);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-2xl);
     box-shadow: var(--s-sm); margin-bottom: 1rem; overflow: hidden;
     transition: all 0.25s var(--ease);
 }
@@ -188,11 +207,11 @@ body {
 
 .madre-head {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 1.5rem; cursor: pointer; background: var(--white);
+    padding: 1rem 1.5rem; cursor: pointer; background: var(--surface);
     border-bottom: 1px solid transparent;
     transition: all 0.15s var(--ease);
 }
-.madre-head:hover { background: #FAFBFE; }
+.madre-head:hover { background: var(--primary-light); }
 .madre-head.open { border-bottom-color: var(--border); }
 
 .madre-title { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
@@ -201,8 +220,10 @@ body {
     display: flex; align-items: center; gap: 0.4rem;
 }
 .tag-suc {
-    background: var(--red); color: var(--white); font-size: 0.68rem; font-weight: 800;
+    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 100%);
+    color: var(--surface); font-size: 0.68rem; font-weight: 800;
     padding: 0.18rem 0.55rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.04em;
+    box-shadow: 0 2px 6px rgba(196,30,36,0.25);
 }
 .tag-count {
     background: var(--bg); color: var(--ink3); font-size: 0.72rem; font-weight: 700;
@@ -212,12 +233,16 @@ body {
 .madre-head .right-btns { display: flex; gap: 0.35rem; align-items: center; }
 .icon-btn {
     width: 34px; height: 34px; border-radius: var(--r-sm); border: 1px solid var(--border);
-    background: var(--white); color: var(--ink3); cursor: pointer;
+    background: var(--surface); color: var(--ink3); cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
     transition: all 0.15s var(--ease);
 }
-.icon-btn:hover { background: var(--red-soft); color: var(--red); border-color: rgba(196,30,36,0.15); }
+.icon-btn:hover { background: var(--primary-light); color: var(--primary); border-color: rgba(196,30,36,0.15); }
 .icon-btn.del:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.15); }
+
+@media (max-width: 640px) {
+    .icon-btn { width: 44px; height: 44px; border-radius: var(--r-md); }
+}
 
 .madre-body { padding: 0; }
 .madre-body.collapsed { display: none; }
@@ -225,16 +250,17 @@ body {
 /* ─── TABLE ──────────────────────────────── */
 .tbl { width: 100%; border-collapse: collapse; }
 .tbl th {
-    text-align: left; padding: 0.7rem 1.5rem; font-size: 0.7rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink3);
-    background: var(--bg); border-bottom: 1px solid var(--border);
+    text-align: left; padding: 0.7rem 1.5rem; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary-hover);
+    background: linear-gradient(180deg, var(--primary-light), #FDE8E8);
+    border-bottom: 2px solid rgba(196, 30, 36, 0.12);
 }
 .tbl td {
     padding: 0.8rem 1.5rem; font-size: 0.88rem; border-bottom: 1px solid #F3F5FA;
-    vertical-align: middle;
+    vertical-align: middle; font-variant-numeric: tabular-nums;
 }
 .tbl tr:last-child td { border-bottom: none; }
-.tbl tr:hover td { background: #FBFCFE; }
+.tbl tr:hover td { background: var(--primary-soft); }
 
 .cell-name { font-weight: 700; color: var(--ink); }
 
@@ -250,8 +276,8 @@ body {
 .val-chip:hover .pencil { opacity: 0.7; }
 
 .flete-chip {
-    font-family: var(--title); font-size: 0.95rem; font-weight: 800; color: var(--red);
-    background: var(--red-soft);
+    font-family: var(--title); font-size: 0.95rem; font-weight: 800; color: var(--primary);
+    background: var(--primary-light);
 }
 .flete-chip:hover { background: #FDD; }
 
@@ -261,20 +287,20 @@ body {
 .metodo-chip:hover { background: #ECEEF5; }
 
 .edit-input {
-    border: 2px solid var(--red); border-radius: var(--r-sm); padding: 0.35rem 0.6rem;
+    border: 2px solid var(--primary); border-radius: var(--r-sm); padding: 0.35rem 0.6rem;
     font-family: var(--body); font-size: 0.88rem; font-weight: 700; width: 120px;
-    box-shadow: var(--red-glow);
+    box-shadow: var(--primary-glow);
 }
 .edit-input:focus { outline: none; }
 
 /* Add row */
-.add-row td { background: var(--red-soft) !important; padding: 1rem 1.5rem; }
+.add-row td { background: var(--primary-light) !important; padding: 1rem 1.5rem; }
 .add-form { display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap; }
 .add-form input {
     padding: 0.5rem 0.85rem; border: 1px solid var(--border); border-radius: var(--r-md);
-    font-family: var(--body); font-size: 0.85rem; background: var(--white);
+    font-family: var(--body); font-size: 0.85rem; background: var(--surface);
 }
-.add-form input:focus { outline: none; border-color: var(--red); }
+.add-form input:focus { outline: none; border-color: var(--primary); }
 
 .madre-empty {
     padding: 1.75rem; text-align: center; color: var(--ink3); font-size: 0.88rem;
@@ -284,7 +310,7 @@ body {
 /* ─── STATES ─────────────────────────────── */
 .state-box { padding: 4rem 1.5rem; text-align: center; color: var(--ink3); }
 .spinner {
-    width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--red);
+    width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--primary);
     border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem auto;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -292,7 +318,7 @@ body {
 /* ─── TOAST ──────────────────────────────── */
 .toast-box { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; z-index: 300; pointer-events: none; }
 .toast {
-    background: var(--white); border-left: 4px solid var(--green);
+    background: var(--surface); border-left: 4px solid var(--success);
     padding: 0.85rem 1.15rem; border-radius: var(--r-lg);
     box-shadow: var(--s-lg); min-width: 300px; max-width: 420px;
     transform: translateX(120%); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
@@ -301,7 +327,7 @@ body {
     border-bottom: 1px solid var(--border);
 }
 .toast.show { transform: translateX(0); }
-.toast.warning { border-left-color: var(--amber); }
+.toast.warning { border-left-color: var(--warning); }
 .toast.error { border-left-color: var(--danger); }
 .toast-t { font-size: 0.85rem; font-weight: 800; color: var(--ink); }
 .toast-d { font-size: 0.8rem; color: var(--ink3); margin-top: 0.1rem; }
@@ -314,38 +340,143 @@ body {
 }
 .overlay.show { opacity: 1; pointer-events: auto; }
 .modal {
-    background: var(--white); border-radius: var(--r-2xl); padding: 1.75rem;
+    background: var(--surface); border-radius: var(--r-2xl); padding: 1.75rem;
     max-width: 480px; width: 92%; border: 1px solid var(--border);
     transform: scale(0.95) translateY(12px);
     transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
     box-shadow: var(--s-lg);
 }
 .overlay.show .modal { transform: scale(1) translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .modal { transform: none; }
+}
 .modal-top {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1.25rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem; padding: 1rem 1.25rem; margin: -1.75rem -1.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-radius: var(--r-2xl) var(--r-2xl) 0 0;
 }
 .modal-top h2 {
-    font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: var(--ink);
+    font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: #FFFFFF;
     display: flex; align-items: center; gap: 0.5rem;
 }
-.close-x { background: none; border: none; cursor: pointer; color: var(--ink3); padding: 0.25rem; border-radius: var(--r-sm); }
-.close-x:hover { background: var(--bg); }
+.modal-top h2 i { color: #FFFFFF !important; }
+.close-x { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; color: #FFFFFF; padding: 0.25rem; border-radius: var(--r-sm); }
+.close-x:hover { background: rgba(255,255,255,0.25); }
 .field { margin-bottom: 1rem; }
 .field label { display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; color: var(--ink); }
 .field-input {
     width: 100%; padding: 0.7rem 1rem; border: 1px solid var(--border);
     border-radius: var(--r-md); font-family: var(--body); font-size: 0.9rem;
-    background: var(--white); transition: border-color 0.2s;
+    background: var(--surface); transition: border-color 0.2s;
 }
-.field-input:focus { outline: none; border-color: var(--red); box-shadow: var(--red-glow); }
+.field-input:focus { outline: none; border-color: var(--primary); box-shadow: var(--primary-glow); }
 .modal-btns { display: flex; gap: 0.65rem; justify-content: flex-end; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
 
-@media (max-width: 640px) {
-    .tbl th:nth-child(3), .tbl td:nth-child(3) { display: none; }
+@media (max-width: 768px) {
+    .container { padding: 1rem 0.75rem 4rem 0.75rem; }
+    .top-bar { padding: 0.7rem 0.85rem; }
+    .user-chip span:not(.dot) { display: none; }
+    .control-panel { padding: 1rem; }
+    .control-row { flex-direction: column; align-items: stretch; }
+    .control-row .actions, .control-row > div:last-child { width: 100%; }
+    .btn { flex: 1; justify-content: center; }
+    .madre-head { padding: 0.85rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .madre-title { flex: 1; min-width: 0; }
+    .madre-title h3 { font-size: 1rem; }
+
+    /* Tabla → Tarjetas */
+    .tbl thead { display: none; }
+    .tbl, .tbl tbody { display: block; }
+    .tbl tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem 0.85rem;
+        padding: 0.75rem 0.85rem;
+        margin: 0 0.75rem 0.65rem 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--s-xs);
+    }
+    .tbl tbody tr:last-child { margin-bottom: 0.9rem; }
+    .tbl tbody tr:hover td { background: transparent; }
+    .tbl tbody td {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: flex-start;
+        gap: 0.1rem 0.5rem;
+        padding: 0;
+        border: none;
+        font-size: 0.82rem;
+        text-align: left;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        min-width: 0;
+        max-width: 100%;
+    }
+    .tbl tbody td > * { min-width: 0; max-width: 100%; }
+    .tbl tbody td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: var(--ink3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .tbl tbody td .cell-val {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        text-align: right;
+        line-height: 1.35;
+    }
+    .tbl tbody td .cell-val .val-chip {
+        display: inline-block;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .tbl tbody td[data-label="Destino"] {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        font-size: 0.9rem;
+    }
+    .tbl tbody td[data-label="Destino"]::before { display: none; }
+    .tbl tbody td[data-label="Destino"] .cell-val { text-align: left; font-weight: 600; }
+    .tbl tbody td[data-label="Método"] { grid-column: 1 / -1; }
+    .tbl tbody td[data-label="Acción"] {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        border-top: 1px dashed var(--border);
+        padding-top: 0.45rem;
+    }
+    .tbl tbody td[data-label="Acción"]::before { display: none; }
+    .tbl tbody td[data-label="Acción"] .icon-btn { width: 44px; height: 44px; }
+    .cell-name { word-break: break-word; }
+    .val-chip { max-width: 100%; overflow: hidden; }
+    .val-chip span { word-break: break-word; }
+    .edit-input { width: 100%; max-width: 140px; }
+    .add-row td { grid-column: 1 / -1; padding: 0.85rem; }
     .add-form { flex-direction: column; }
     .add-form input { width: 100% !important; }
     .toast-box { right: 0.75rem; left: 0.75rem; }
+    .toast { min-width: 0; max-width: none; }
+    .kpi-strip { grid-template-columns: 1fr; }
+    .kpi-card { padding: 1rem; }
+    .search-box { min-width: 0; }
 }
 </style>
 </head>
@@ -356,7 +487,7 @@ body {
     <div class="top-left">
         <a href="/" class="back-pill"><i data-lucide="arrow-left" style="width:15px;height:15px;"></i> Inicio</a>
         <div class="page-title">
-            <i data-lucide="map" style="width:20px;height:20px;color:var(--red);"></i>
+            <img src="/static/icons/camion-sofia.png" alt="Sofía Ltda" style="width:32px;height:29px;border-radius:6px;object-fit:cover;">
             <h1>Rutas y Tarifas</h1>
         </div>
     </div>
@@ -391,13 +522,13 @@ body {
     <div class="control-panel">
         <div class="control-row">
             <div class="actions">
-                <button id="addMadreBtn" class="btn btn-red"><i data-lucide="plus" style="width:16px;height:16px;"></i> Nueva Ruta Madre</button>
-                <button id="seedBtn" class="btn btn-white" title="Importar 156 rutas desde BBDDs_SL.xlsx"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Importar de Excel</button>
-                <button id="reseedBtn" class="btn btn-warn" title="Borrar todo y reimportar del Excel"><i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Restablecer (Excel)</button>
+                <button id="addMadreBtn" class="btn btn-red" aria-label="Crear nueva ruta madre"><i data-lucide="plus" style="width:16px;height:16px;"></i> Nueva Ruta Madre</button>
+                <button id="seedBtn" class="btn btn-white" title="Importar 156 rutas desde BBDDs_SL.xlsx" aria-label="Importar rutas desde Excel"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Importar de Excel</button>
+                <button id="reseedBtn" class="btn btn-warn" title="Borrar todo y reimportar del Excel" aria-label="Restablecer tarifario desde Excel"><i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Restablecer (Excel)</button>
             </div>
             <div style="display:flex;gap:0.4rem;">
-                <button id="refreshBtn" class="btn btn-white"><i data-lucide="refresh-cw" style="width:15px;height:15px;"></i></button>
-                <button id="toggleBtn" class="btn btn-white"><i data-lucide="chevrons-up-down" style="width:15px;height:15px;"></i> Vista</button>
+                <button id="refreshBtn" class="btn btn-white" aria-label="Recargar rutas"><i data-lucide="refresh-cw" style="width:15px;height:15px;"></i></button>
+                <button id="toggleBtn" class="btn btn-white" aria-label="Expandir o colapsar todas las rutas"><i data-lucide="chevrons-up-down" style="width:15px;height:15px;"></i> Vista</button>
             </div>
         </div>
         <div class="search-row">
@@ -412,7 +543,7 @@ body {
     <!-- Content -->
     <div id="loadState" class="state-box"><div class="spinner"></div><p>Cargando tarifario...</p></div>
     <div id="emptyState" class="state-box" style="display:none;">
-        <i data-lucide="map-off" style="width:48px;height:48px;color:var(--red);margin-bottom:0.75rem;"></i>
+        <i data-lucide="map-off" style="width:48px;height:48px;color:var(--primary);margin-bottom:0.75rem;"></i>
         <h3 style="font-family:var(--title);font-size:1.2rem;margin-bottom:0.3rem;">Sin resultados</h3>
         <p style="font-size:0.88rem;">No hay rutas con los filtros actuales o la base está vacía.</p>
         <button class="btn btn-red" style="margin-top:1rem;" onclick="openSeedModal()"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Importar desde Excel</button>
@@ -422,10 +553,10 @@ body {
 
 <!-- Modal -->
 <div id="overlay" class="overlay">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
         <div class="modal-top">
             <h2 id="mTitle">Confirmar</h2>
-            <button class="close-x" id="mClose"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+            <button class="close-x" id="mClose" aria-label="Cerrar diálogo"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
         </div>
         <div id="mBody"></div>
         <div class="modal-btns">
@@ -435,7 +566,7 @@ body {
     </div>
 </div>
 
-<div id="toasts" class="toast-box"></div>
+<div id="toasts" class="toast-box" role="status" aria-live="polite"></div>
 
 <script>
 // ── Auth ──────────────────────────────────
@@ -471,8 +602,18 @@ function modal({title,body,ok='Confirmar',okClass='btn-red',onOk}){
     const btn=$('mOk');btn.textContent=ok;btn.className='btn '+okClass;
     o.classList.add('show');lucide.createIcons({node:o});
     const close=()=>o.classList.remove('show');
-    btn.onclick=async()=>{if(onOk){const r=await onOk();if(r!==false)close()}else close()};
+    btn.onclick=async()=>{
+        if(onOk){
+            const orig=btn.innerHTML;
+            btn.disabled=true;
+            btn.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:currentColor;margin:0;vertical-align:-2px;"></span> '+ok;
+            let r;
+            try{ r=await onOk(); }finally{ btn.disabled=false; btn.innerHTML=orig; }
+            if(r!==false)close();
+        }else close();
+    };
     $('mCancel').onclick=close;$('mClose').onclick=close;
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&o.classList.contains('show'))close()},{once:true});
 }
 
 // ── State ─────────────────────────────────
@@ -513,16 +654,16 @@ function render(){
     <div class="madre" data-id="${m.id}">
         <div class="madre-head${collapsed?'':' open'}" onclick="toggle(this)">
             <div class="madre-title">
-                <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;color:var(--red);transition:transform 0.2s;${collapsed?'transform:rotate(-90deg)':''}"></i>
+                <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;color:var(--primary);transition:transform 0.2s;${collapsed?'transform:rotate(-90deg)':''}"></i>
                 <h3>${m.nombre}</h3>
                 <span class="tag-suc">${m.sucursal}</span>
                 <span class="tag-count">${m.hijas.length} destino${m.hijas.length===1?'':'s'}</span>
             </div>
             <div class="right-btns">
-                <button class="btn btn-white" style="padding:0.35rem 0.75rem;font-size:0.78rem;" onclick="event.stopPropagation();addHija(${m.id})" title="Agregar destino">
+                <button class="btn btn-white" style="padding:0.35rem 0.75rem;font-size:0.78rem;" onclick="event.stopPropagation();addHija(${m.id})" title="Agregar destino" aria-label="Agregar destino a ${m.nombre}">
                     <i data-lucide="plus" style="width:14px;height:14px;"></i> Destino
                 </button>
-                <button class="icon-btn del" onclick="event.stopPropagation();delMadre(${m.id},'${m.nombre.replace(/'/g,"\\'")}')" title="Eliminar ruta madre">
+                <button class="icon-btn del" onclick="event.stopPropagation();delMadre(${m.id},'${m.nombre.replace(/'/g,"\\'")}')" title="Eliminar ruta madre" aria-label="Eliminar ruta madre ${m.nombre}">
                     <i data-lucide="trash-2" style="width:16px;height:16px;"></i>
                 </button>
             </div>
@@ -536,23 +677,27 @@ function render(){
                 <th style="width:10%;text-align:right"></th>
             </tr></thead><tbody>
             ${m.hijas.map(h=>`<tr>
-                <td class="cell-name">${h.ruta_hija}</td>
-                <td>
-                    <div class="val-chip flete-chip" onclick="editFlete(this,${h.id})" title="Clic para editar">
-                        <span>Bs. ${fmtBs(h.flete)}</span>
-                        <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
-                    </div>
+                <td class="cell-name" data-label="Destino"><span class="cell-val">${h.ruta_hija}</span></td>
+                <td data-label="Flete (Bs.)">
+                    <span class="cell-val">
+                        <div class="val-chip flete-chip" onclick="editFlete(this,${h.id})" title="Clic para editar">
+                            <span>Bs. ${fmtBs(h.flete)}</span>
+                            <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
+                        </div>
+                    </span>
                     <input class="edit-input fi" style="display:none" type="number" step="0.01" min="0" value="${h.flete}">
                 </td>
-                <td>
-                    <div class="val-chip metodo-chip" onclick="editMetodo(this,${h.id})" title="Clic para editar">
-                        <span>${h.metodo||'—'}</span>
-                        <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
-                    </div>
+                <td data-label="Método">
+                    <span class="cell-val">
+                        <div class="val-chip metodo-chip" onclick="editMetodo(this,${h.id})" title="Clic para editar">
+                            <span>${h.metodo||'—'}</span>
+                            <i data-lucide="pencil" class="pencil" style="width:11px;height:11px;"></i>
+                        </div>
+                    </span>
                     <input class="edit-input mi" style="display:none" type="text" value="${h.metodo||''}" placeholder="Ej: MS-010">
                 </td>
-                <td style="text-align:right">
-                    <button class="icon-btn del" onclick="delHija(${h.id},'${h.ruta_hija.replace(/'/g,"\\'")}')" title="Eliminar"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
+                <td data-label="Acción" style="text-align:right">
+                    <button class="icon-btn del" onclick="delHija(${h.id},'${h.ruta_hija.replace(/'/g,"\\'")}')" title="Eliminar" aria-label="Eliminar destino ${h.ruta_hija}"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
                 </td>
             </tr>`).join('')}
             </tbody></table>`}
@@ -609,7 +754,7 @@ function editMetodo(chip,id){
 $('addMadreBtn').onclick=()=>{
     const sucs=['Santa Cruz','La Paz','Cochabamba','Sucre','Tarija','Potosí','Oruro','Beni','Pando'];
     modal({
-        title:'<i data-lucide="plus" style="width:20px;height:20px;color:var(--red);"></i> Nueva Ruta Madre',
+        title:'<i data-lucide="plus" style="width:20px;height:20px;color:var(--primary);"></i> Nueva Ruta Madre',
         body:`<div class="field"><label>Sucursal</label><select id="mSuc" class="field-input">${sucs.map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div><div class="field"><label>Nombre de la Ruta Madre</label><input type="text" id="mNom" class="field-input" placeholder="Ej: SANTA CRUZ - TRINIDAD"></div>`,
         ok:'Crear Ruta',
         onOk:async()=>{
@@ -655,11 +800,19 @@ function delHija(id,nom){modal({title:'<i data-lucide="trash-2" style="width:20p
 function delMadre(id,nom){modal({title:'<i data-lucide="alert-triangle" style="width:20px;height:20px;color:#EF4444;"></i> Eliminar Ruta Madre',body:`<p>Se eliminará <strong>"${nom}"</strong> y <u>todos sus destinos</u>.</p>`,ok:'Eliminar Todo',okClass:'btn-warn',onOk:async()=>{try{const r=await fetch(api('/api/rutas/madres/'+id),{method:'DELETE'});const d=await r.json();if(d.success){toast('Eliminado','"'+nom+'" eliminada');await load();return true;}}catch(e){toast('Error',e.message,'error');}}});}
 
 // ── Seed / Reseed ─────────────────────────
-function openSeedModal(){modal({title:'<i data-lucide="file-spreadsheet" style="width:20px;height:20px;color:var(--red);"></i> Importar desde Excel',body:'<p>Se leerá la planilla <strong>BBDDs_SL.xlsx</strong> (hoja RUTAS) y se cargarán las 156 rutas sin sobrescribir datos existentes.</p>',ok:'Importar',onOk:async()=>{try{const r=await fetch(api('/api/rutas/seed',['confirm=true']),{method:'POST'});const d=await r.json();if(d.success){toast('Importado',d.message);await load();return true;}else toast('Aviso',d.detail||'Sin datos','warning');}catch(e){toast('Error',e.message,'error');}}});}
+async function withLoading(btn, label, fn){
+    const old = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:currentColor;margin:0;"></span> '+label;
+    try { return await fn(); }
+    finally { btn.disabled = false; btn.innerHTML = old; }
+}
+
+function openSeedModal(){modal({title:'<i data-lucide="file-spreadsheet" style="width:20px;height:20px;color:var(--primary);"></i> Importar desde Excel',body:'<p>Se leerá la planilla <strong>BBDDs_SL.xlsx</strong> (hoja RUTAS) y se cargarán las 156 rutas sin sobrescribir datos existentes.</p>',ok:'Importar',onOk:async()=>{try{const r=await fetch(api('/api/rutas/seed',['confirm=true']),{method:'POST'});const d=await r.json();if(d.success){toast('Importado',d.message);await load();return true;}else toast('Aviso',d.detail||'Sin datos','warning');}catch(e){toast('Error',e.message,'error');}}});}
 
 function openReseedModal(){modal({title:'<i data-lucide="rotate-ccw" style="width:20px;height:20px;color:#F59E0B;"></i> Restablecer Tarifario',body:'<p style="color:#B45309;font-weight:700;">⚠️ Atención:</p><p>Se borrarán todas las rutas actuales y se recargarán las 156 originales del Excel.</p>',ok:'Restablecer',okClass:'btn-warn',onOk:async()=>{try{const r=await fetch(api('/api/rutas/reseed',['confirm=true']),{method:'POST'});const d=await r.json();if(d.success){toast('Restablecido',d.message);await load();return true;}}catch(e){toast('Error',e.message,'error');}}});}
 
-$('refreshBtn').onclick=()=>load();
+$('refreshBtn').onclick=()=>withLoading($('refreshBtn'),'…',()=>load());
 $('seedBtn').onclick=openSeedModal;
 $('reseedBtn').onclick=openReseedModal;
 

@@ -6,7 +6,7 @@
     <title>Iniciar Sesión - Camiones | Sofía Ltda</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="description" content="Acceso al sistema de gestión de camiones — Sofía Ltda Bolivia">
-    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="/static/icons/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/logo-180.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/logo-152.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/static/icons/logo-192.png">
@@ -29,46 +29,52 @@
            ═══════════════════════════════════════════════════════════════ */
         :root {
             /* ── Paleta Primaria (Rojo Sofía) ─────────────────────────── */
-            --color-primary: #C41E24;
-            --color-primary-hover: #A01820;
-            --color-primary-light: #FEF2F2;
-            --color-primary-glow: rgba(196, 30, 36, 0.15);
+            --primary: #C41E24;
+            --primary-hover: #A01820;
+            --primary-light: #FEF2F2;
+            --primary-glow: rgba(196, 30, 36, 0.15);
 
             /* ── Paleta Neutra ────────────────────────────────────────── */
-            --color-bg: #FFFFFF;
-            --color-surface: #FFFFFF;
-            --color-border: #E5E7EB;
-            --color-border-focus: #C41E24;
-            --color-text: #111827;
-            --color-text-secondary: #4B5563;
-            --color-text-muted: #9CA3AF;
+            --bg: #FFFFFF;
+            --surface: #FFFFFF;
+            --border: #E5E7EB;
+            --ink: #111827;
+            --ink2: #4B5563;
+            --ink3: #6B7280;
 
             /* ── Estados ──────────────────────────────────────────────── */
-            --color-error: #DC2626;
-            --color-error-bg: #FEF2F2;
+            --danger: #B91C1C;
+            --danger-bg: #FEF2F2;
 
             /* ── Tipografía ───────────────────────────────────────────── */
-            --font-title: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --title: 'Outfit', sans-serif;
+            --body: 'Inter', sans-serif;
 
             /* ── Bordes y Sombras ─────────────────────────────────────── */
-            --radius-lg: 16px;
-            --radius-md: 10px;
-            --radius-sm: 8px;
-            --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
-            --shadow-input-focus: 0 0 0 3px rgba(196, 30, 36, 0.12);
+            --r-lg: 16px;
+            --r-md: 10px;
+            --r-sm: 8px;
+            --s-lg: 0 8px 40px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+            --ring-primary: 0 0 0 3px rgba(196, 30, 36, 0.12);
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* ── Reset ────────────────────────────────────────────────────── */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        button, a, input { touch-action: manipulation; }
+
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: var(--r-sm);
+        }
 
         /* ── Body — Layout Dividido ────────────────────────────────────── */
         body {
-            font-family: var(--font-body);
+            font-family: var(--body);
             min-height: 100vh;
             display: flex;
-            background: var(--color-bg);
+            background: var(--bg);
         }
 
         /* ── Panel Izquierdo — Branding ────────────────────────────────── */
@@ -79,7 +85,7 @@
             align-items: center;
             width: 45%;
             min-height: 100vh;
-            background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-hover) 60%, #7A1015 100%);
+            background: linear-gradient(160deg, var(--primary) 0%, var(--primary-hover) 60%, #7A1015 100%);
             color: #FFFFFF;
             padding: 3rem;
             position: relative;
@@ -109,15 +115,15 @@
         }
 
         .brand-panel .brand-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 96px;
+            height: 86px;
+            border-radius: 22px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             margin-bottom: 2rem;
         }
 
         .brand-panel h2 {
-            font-family: var(--font-title);
+            font-family: var(--title);
             font-size: 2rem;
             font-weight: 800;
             letter-spacing: -0.03em;
@@ -162,7 +168,11 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            background: var(--color-bg);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 0% 0%, rgba(196, 30, 36, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 100% 100%, rgba(196, 30, 36, 0.04) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         .login-box {
@@ -179,31 +189,31 @@
         }
 
         .login-box .logo-mobile img {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 52px;
+            height: 47px;
+            border-radius: 13px;
             box-shadow: 0 4px 16px rgba(196, 30, 36, 0.2);
         }
 
         .login-box .logo-mobile span {
-            font-family: var(--font-title);
+            font-family: var(--title);
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--color-primary);
+            color: var(--primary);
         }
 
         .login-box h1 {
-            font-family: var(--font-title);
+            font-family: var(--title);
             font-size: 1.75rem;
             font-weight: 800;
-            color: var(--color-text);
+            color: var(--ink);
             margin-bottom: 0.35rem;
             letter-spacing: -0.02em;
         }
 
         .login-box p.sub {
             font-size: 0.9rem;
-            color: var(--color-text-secondary);
+            color: var(--ink2);
             margin-bottom: 2rem;
         }
 
@@ -216,7 +226,7 @@
             display: block;
             font-size: 0.78rem;
             font-weight: 600;
-            color: var(--color-text-secondary);
+            color: var(--ink2);
             margin-bottom: 0.4rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -226,45 +236,45 @@
         .login-box input {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1.5px solid var(--color-border);
-            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
             font-size: 0.95rem;
-            font-family: var(--font-body);
-            color: var(--color-text);
+            font-family: var(--body);
+            color: var(--ink);
             outline: none;
             transition: var(--transition);
-            background: var(--color-bg);
+            background: var(--bg);
         }
 
         .login-box input::placeholder {
-            color: var(--color-text-muted);
+            color: var(--ink3);
         }
 
         .login-box input:focus {
-            border-color: var(--color-border-focus);
-            box-shadow: var(--shadow-input-focus);
+            border-color: var(--primary);
+            box-shadow: var(--ring-primary);
         }
 
         /* ── Botón Submit ────────────────────────────────────────────── */
         .login-box button {
             width: 100%;
             padding: 0.8rem;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
             color: #FFFFFF;
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: var(--r-sm);
             font-size: 0.95rem;
             font-weight: 700;
-            font-family: var(--font-body);
+            font-family: var(--body);
             cursor: pointer;
             transition: var(--transition);
             letter-spacing: 0.02em;
-            box-shadow: 0 4px 16px rgba(196, 30, 36, 0.25);
+            box-shadow: 0 4px 16px rgba(196, 30, 36, 0.3);
             margin-top: 0.5rem;
         }
 
         .login-box button:hover {
-            background: linear-gradient(135deg, var(--color-primary-hover) 0%, #7A1015 100%);
+            background: linear-gradient(135deg, var(--primary-hover) 0%, #7A1015 100%);
             box-shadow: 0 6px 24px rgba(196, 30, 36, 0.35);
             transform: translateY(-1px);
         }
@@ -275,13 +285,13 @@
 
         /* ── Mensajes de Estado ───────────────────────────────────────── */
         .login-box .error {
-            color: var(--color-error);
+            color: var(--danger);
             font-size: 0.82rem;
             text-align: center;
             margin-top: 1rem;
             padding: 0.6rem;
-            background: var(--color-error-bg);
-            border-radius: var(--radius-sm);
+            background: var(--danger-bg);
+            border-radius: var(--r-sm);
             display: none;
             font-weight: 500;
         }
@@ -295,7 +305,7 @@
             text-align: center;
             margin-top: 1rem;
             font-size: 0.82rem;
-            color: var(--color-text-secondary);
+            color: var(--ink2);
             font-weight: 500;
         }
 
@@ -308,7 +318,7 @@
             margin-top: 2.5rem;
             text-align: center;
             font-size: 0.72rem;
-            color: var(--color-text-muted);
+            color: var(--ink3);
         }
 
         /* ── Responsive — Panel visible en desktop ────────────────────── */
@@ -329,13 +339,17 @@
                 padding: 1.5rem;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body>
     <!-- Panel Izquierdo — Branding (visible en desktop) -->
     <div class="brand-panel">
         <div class="brand-content">
-            <img src="/static/icons/logo-192.svg" alt="Sofía Ltda" class="brand-logo">
+            <img src="/static/icons/camion-sofia.png" alt="Sofía Ltda" class="brand-logo">
             <h2>Sofía Ltda</h2>
             <p>Sistema integral de gestión de flota y logística empresarial.</p>
             <div class="brand-features">
@@ -360,7 +374,7 @@
         <div class="login-box">
             <!-- Logo visible solo en mobile -->
             <div class="logo-mobile">
-                <img src="/static/icons/logo-192.svg" alt="Sofía Ltda">
+                <img src="/static/icons/camion-sofia.png" alt="Sofía Ltda">
                 <span>Sofía Ltda</span>
             </div>
 
@@ -379,7 +393,7 @@
                 <button type="submit">Ingresar</button>
             </form>
 
-            <div class="error" id="errorMsg">Credenciales inválidas</div>
+            <div class="error" id="errorMsg" role="alert">Credenciales inválidas</div>
             <div class="loading" id="loadingMsg">Verificando...</div>
 
             <div class="login-footer">

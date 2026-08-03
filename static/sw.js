@@ -1,4 +1,4 @@
-const CACHE = 'sofia-ltda-v5';
+const CACHE = 'sofia-ltda-v7';
 const STATIC_FILES = [
   '/',
   '/camiones',
@@ -8,7 +8,8 @@ const STATIC_FILES = [
   '/static/icons/logo-152.png',
   '/static/icons/logo-192.png',
   '/static/icons/logo-512.png',
-  '/static/icons/favicon.svg',
+  '/static/icons/camion-sofia.png',
+  '/static/icons/favicon.png',
   '/static/camiones/index.html',
   '/static/camiones/login.html',
   '/rutas',
@@ -24,6 +25,10 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -34,6 +39,23 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  // Navegaciones (HTML): siempre red primero, caché como respaldo.
+  // Evita que los usuarios vean versiones viejas cacheadas.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Assets estáticos: caché primero, actualización en segundo plano.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request).then((response) => {

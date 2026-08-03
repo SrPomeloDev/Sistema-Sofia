@@ -12,73 +12,94 @@
         :root {
             --primary: #C41E24;
             --primary-hover: #A01820;
+            --primary-dark: #7A1015;
             --primary-light: #FEF2F2;
-            --bg-base: #F8F9FA;
-            --bg-surface: #FFFFFF;
-            --text-main: #111827;
-            --text-muted: #6B7280;
-            --border-light: #E5E7EB;
-            --radius-xl: 24px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --shadow-float: 0 10px 30px rgba(196,30,36,0.15);
-            --font-title: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --bg: #F4F5F7;
+            --surface: #FFFFFF;
+            --ink: #111827;
+            --ink2: #4B5563;
+            --ink3: #6B7280;
+            --border: #E5E7EB;
+            --r-xl: 20px;
+            --r-lg: 14px;
+            --r-md: 10px;
+            --s-primary: 0 12px 40px rgba(196,30,36,0.18);
+            --title: 'Outfit', sans-serif;
+            --body: 'Inter', sans-serif;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        button, a, input { touch-action: manipulation; }
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: var(--r-md);
+        }
         body {
-            font-family: var(--font-body);
-            background: var(--bg-base);
+            font-family: var(--body);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 0% 0%, rgba(196, 30, 36, 0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 100% 100%, rgba(196, 30, 36, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
         .login-card {
-            background: var(--bg-surface);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xl);
+            padding: 2.25rem;
             max-width: 380px;
             width: 90%;
-            box-shadow: var(--shadow-float);
+            box-shadow: var(--s-primary);
         }
         .login-logo {
             width: 64px; height: 64px;
-            background: var(--primary-light);
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #FFF1F1, #FEE2E2);
+            border-radius: var(--r-md);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 1rem;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
         }
         h1 {
-            font-family: var(--font-title);
+            font-family: var(--title);
             text-align: center;
             font-size: 1.5rem;
             margin-bottom: 0.25rem;
         }
-        .sub { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .sub { text-align: center; color: var(--ink2); font-size: 0.9rem; margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1rem; }
-        label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem; }
+        label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem; color: var(--ink); }
         input {
             width: 100%; padding: 0.75rem 1rem;
-            border: 1px solid var(--border-light); border-radius: var(--radius-md);
+            border: 1.5px solid var(--border); border-radius: var(--r-md);
             font-family: inherit; font-size: 1rem;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--surface);
         }
-        input:focus { outline: none; border-color: var(--primary); }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(196,30,36,0.1); }
         .btn {
             width: 100%; padding: 0.8rem; border: none;
-            border-radius: var(--radius-md);
-            font-family: var(--font-title); font-weight: 700; font-size: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: white; cursor: pointer; transition: opacity 0.2s;
+            border-radius: var(--r-md);
+            font-family: var(--title); font-weight: 700; font-size: 1rem;
+            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+            color: white; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 4px 16px rgba(196,30,36,0.3);
         }
-        .btn:disabled { opacity: 0.6; }
-        #errorMsg { color: var(--primary); font-size: 0.85rem; text-align: center; margin-top: 0.75rem; }
+        .btn:hover { box-shadow: 0 8px 24px rgba(196,30,36,0.4); transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.6; transform: none; }
+        #errorMsg { color: var(--primary); font-size: 0.85rem; text-align: center; margin-top: 0.75rem; font-weight: 500; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            .btn { transform: none; }
+        }
     </style>
 </head>
 <body>
     <div class="login-card">
-        <div class="login-logo"><i data-lucide="map" style="width:28px;height:28px;color:var(--primary);"></i></div>
+        <div class="login-logo"><img src="/static/icons/camion-sofia.png" alt="Sofía Ltda" style="width:56px;height:50px;border-radius:11px;object-fit:cover;"></div>
         <h1>Rutas y Tarifas</h1>
         <p class="sub">Inicia sesión para gestionar las rutas</p>
         <form id="loginForm">
@@ -92,7 +113,7 @@
             </div>
             <button type="submit" class="btn" id="loginBtn">Ingresar</button>
         </form>
-        <div id="errorMsg"></div>
+        <div id="errorMsg" role="alert"></div>
     </div>
     <script>
         (async () => {
