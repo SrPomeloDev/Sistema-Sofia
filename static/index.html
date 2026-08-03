@@ -192,46 +192,6 @@
             position: relative;
         }
 
-        /* ─── METRICS ────────────────────────────── */
-        .metrics {
-            max-width: 1200px;
-            margin: 1.75rem auto 0 auto;
-            padding: 0 1.5rem;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .metric-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--r-xl);
-            padding: 1.5rem;
-            display: flex; align-items: center; gap: 1rem;
-            box-shadow: var(--s-sm);
-            transition: all 0.3s var(--ease);
-        }
-        .metric-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--s-md);
-            border-color: var(--border-hover);
-        }
-
-        .metric-icon {
-            width: 50px; height: 50px;
-            border-radius: var(--r-lg);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
-        }
-        .metric-icon.red { background: linear-gradient(135deg, #FFF1F1, #FEE2E2); color: var(--primary); }
-        .metric-icon.green { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: var(--success); }
-        .metric-icon.blue { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: #2563EB; }
-
-        .metric-val { font-family: var(--title); font-size: 1.5rem; font-weight: 800; color: var(--ink); line-height: 1.1; font-variant-numeric: tabular-nums; }
-        .metric-lbl { font-size: 0.75rem; color: var(--ink2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.1rem; }
-
         /* ─── MODULES ────────────────────────────── */
         .modules-area {
             max-width: 1200px;
@@ -358,8 +318,6 @@
             .hero-card { padding: 1.5rem 1.25rem; }
             .hero h2 { font-size: 1.25rem; }
             .hero p { font-size: 0.88rem; }
-            .metrics { padding: 0 0.75rem; margin-top: 1rem; grid-template-columns: 1fr; }
-            .metric-card { padding: 1.1rem; }
             .modules-area { padding: 0 0.75rem; margin-top: 1.75rem; }
             .mod-card { padding: 1.4rem; }
             .pwa-wrap { padding: 0 0.75rem; }
@@ -394,21 +352,6 @@
         <div class="hero-card">
             <h2>Portal de Control Logístico</h2>
             <p>Plataforma centralizada para la administración de la flota de camiones, asignación de fletes por viaje y control tarifario de rutas a nivel nacional en Bolivia.</p>
-        </div>
-    </section>
-
-    <section class="metrics">
-        <div class="metric-card">
-            <div class="metric-icon red"><i data-lucide="truck" style="width:24px;height:24px;"></i></div>
-            <div><div class="metric-val">Flota</div><div class="metric-lbl">Control de Camiones</div></div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-icon green"><i data-lucide="map-pin" style="width:24px;height:24px;"></i></div>
-            <div><div class="metric-val">156 Rutas</div><div class="metric-lbl">Tarifario Nacional</div></div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-icon blue"><i data-lucide="building-2" style="width:24px;height:24px;"></i></div>
-            <div><div class="metric-val">9 Sucursales</div><div class="metric-lbl">Cobertura Bolivia</div></div>
         </div>
     </section>
 
@@ -501,7 +444,16 @@
         let deferredPrompt;
         const banner = document.getElementById('pwaBanner');
         const btn = document.getElementById('installBtn');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; banner.classList.add('show'); });
+        if (isIOS && !isStandalone) {
+            banner.classList.add('show');
+            btn.textContent = 'Cómo instalar';
+            btn.addEventListener('click', () => {
+                alert('En Safari: tocá el botón Compartir (cuadrado con flecha hacia arriba) y elegí "Añadir a pantalla de inicio".');
+            });
+        }
         btn.addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); const {outcome} = await deferredPrompt.userChoice; if(outcome==='accepted') banner.classList.remove('show'); deferredPrompt = null; } });
     </script>
 </body>

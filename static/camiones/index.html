@@ -414,7 +414,7 @@
            ═══════════════════════════════════════════════════════════════ */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.65rem;
         }
 
@@ -494,11 +494,19 @@
         .stat-card.green .stat-icon { color: var(--success); background: linear-gradient(135deg, #ECFDF5, #D1FAE5); }
         .stat-card.orange .stat-icon { color: var(--warning); background: linear-gradient(135deg, #FFFBEB, #FEF3C7); }
 
+        /* Tarjetas por sucursal: compactas y simétricas (3×3) */
+        #sucursalStats { margin-top: 0.5rem; }
+        #sucursalStats .stat-card { padding: 0.55rem 0.7rem; }
+        #sucursalStats .stat-info p { font-size: 0.62rem; }
+        #sucursalStats .stat-info .value { font-size: 1.05rem; }
+        #sucursalStats .stat-icon { padding: 0.35rem; }
+
         @media (max-width: 900px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
         }
-        @media (max-width: 500px) {
-            .stats-grid { grid-template-columns: 1fr; gap: 0.4rem; }
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+            .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
             .stat-card { padding: 0.6rem 0.8rem; }
         }
 
@@ -1388,7 +1396,7 @@
             .connection-status { font-size: 0.65rem; padding: 0.2rem 0.5rem; gap: 0.25rem; }
             .header-right { gap: 0.4rem; }
             main { padding: 0 0.5rem; margin-top: 0.5rem; gap: 0.5rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
             .stat-card { padding: 0.55rem 0.65rem; }
             .stat-info .value { font-size: 0.85rem; }
             .stat-info p { font-size: 0.55rem; }
@@ -1435,6 +1443,11 @@
             .tab-btn i { width: 16px !important; height: 16px !important; }
         }
 
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.3rem; }
+            .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+        }
+
         @media (max-width: 480px) {
             header { padding: 0.25rem 0.35rem; }
             .logo-section img { width: 30px; height: 27px; border-radius: 7px; }
@@ -1454,7 +1467,7 @@
             .stat-info .subtext { font-size: 0.5rem; margin-top: 0.1rem; }
             .stat-icon { padding: 0.2rem; }
             .stat-icon i { width: 14px !important; height: 14px !important; }
-            #sucursalStats { grid-template-columns: 1fr; }
+            #sucursalStats { grid-template-columns: repeat(2, 1fr); }
             .logo-section { gap: 0.2rem; }
             .btn span { display: none; }
             .btn i { margin: 0; }
@@ -1774,7 +1787,7 @@
         </section>
 
         <!-- Tarjetas por Sucursal (dinámicas) -->
-        <section id="sucursalStats" class="stats-grid" style="margin-top:-0.5rem;"></section>
+        <section id="sucursalStats" class="stats-grid"></section>
 
         <!-- KPIs Estado de Flota (EN SERVICIO / FUERA DE SERVICIO / CONSULTAR) -->
         <section class="flota-mini-grid" id="flotaStatusGrid">
@@ -2596,19 +2609,18 @@
                     const icon = icons[i % icons.length];
                     const color = colors[i % colors.length]; i++;
                     return `
-                        <div class="stat-card ${color}" style="padding:0.75rem 1rem;">
+                        <div class="stat-card ${color}">
                             <div class="stat-info">
                                 <p>${s}</p>
-                                <div class="value" style="font-size:1.15rem;">${n}</div>
+                                <div class="value">${n}</div>
                                 <div class="subtext">Camiones</div>
                             </div>
-                            <div class="stat-icon" style="padding:0.4rem;">
+                            <div class="stat-icon">
                                 <i data-lucide="${icon}" style="width:18px;height:18px;"></i>
                             </div>
                         </div>
                     `;
                 }).join('');
-                sucursalStats.style.gridTemplateColumns = `repeat(${Math.min(Object.keys(sucursales).length, 3)}, 1fr)`;
                 lucide.createIcons({node: sucursalStats});
             }
 
