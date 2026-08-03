@@ -29,6 +29,9 @@ class Settings:
     # En Railway: contenido de authorized_user.json como string JSON
     authorized_user_json: str = os.getenv("GOOGLE_AUTHORIZED_USER_JSON", "")
 
+    # Google Sheets — hoja del módulo Jornaleros
+    jornaleros_sheet_name: str = os.getenv("JORNALEROS_SHEET_NAME", "Horas_Jornaleros")
+
     # Base de datos
     database_url: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./auditoria.db")
 

@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import FileResponse, Response
 from modules.camiones import router as camiones_router, init_module as camiones_init, shutdown_module as camiones_shutdown
 from modules.rutas import router as rutas_router, init_module as rutas_init, shutdown_module as rutas_shutdown
+from modules.jornaleros import router as jornaleros_router, init_module as jornaleros_init, shutdown_module as jornaleros_shutdown
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +17,11 @@ async def lifespan(app: FastAPI):
     logger.info("Iniciando aplicación principal...")
     await rutas_init()
     await camiones_init()
+    await jornaleros_init()
     yield
     await camiones_shutdown()
     await rutas_shutdown()
+    await jornaleros_shutdown()
     logger.info("Aplicación principal detenida.")
 
 app = FastAPI(
@@ -39,6 +42,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(camiones_router)
 app.include_router(rutas_router)
+app.include_router(jornaleros_router)
 
 @app.get("/")
 async def root():
@@ -92,3 +96,11 @@ async def rutas_dashboard():
 @app.get("/rutas/login")
 async def rutas_login():
     return FileResponse("static/rutas/login.html")
+
+@app.get("/jornaleros")
+async def jornaleros_dashboard():
+    return FileResponse("static/jornaleros/index.html")
+
+@app.get("/jornaleros/login")
+async def jornaleros_login():
+    return FileResponse("static/jornaleros/login.html")

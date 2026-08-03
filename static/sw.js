@@ -1,4 +1,4 @@
-const CACHE = 'sofia-ltda-v7';
+const CACHE = 'sofia-ltda-v8';
 const STATIC_FILES = [
   '/',
   '/camiones',
@@ -16,6 +16,10 @@ const STATIC_FILES = [
   '/rutas/login',
   '/static/rutas/index.html',
   '/static/rutas/login.html',
+  '/jornaleros',
+  '/jornaleros/login',
+  '/static/jornaleros/index.html',
+  '/static/jornaleros/login.html',
 ];
 
 self.addEventListener('install', (event) => {

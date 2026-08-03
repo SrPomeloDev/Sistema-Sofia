@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C41E24">
+<title>Jornaleros — Sofía Ltda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root {
+    --primary: #C41E24;
+    --primary-hover: #A01820;
+    --primary-dark: #7A1015;
+    --primary-light: #FEF2F2;
+    --primary-soft: rgba(196,30,36,0.06);
+    --primary-glow: 0 0 0 3px rgba(196,30,36,0.1);
+    --header-gradient: linear-gradient(135deg, #C41E24 0%, #A01820 55%, #7A1015 100%);
+
+    --surface: #FFFFFF;
+    --bg: #F4F5F7;
+
+    --border: #E8E8ED;
+    --border-hover: #D8DCE8;
+
+    --success: #047857;
+    --success-bg: rgba(5,150,105,0.08);
+    --warning: #B45309;
+    --warning-bg: rgba(217,119,6,0.08);
+    --danger: #B91C1C;
+    --danger-bg: rgba(220,38,38,0.08);
+
+    --ink: #111827;
+    --ink2: #4B5563;
+    --ink3: #6B7280;
+
+    --title: 'Outfit', sans-serif;
+    --body: 'Inter', sans-serif;
+
+    --r-2xl: 20px;
+    --r-xl: 20px;
+    --r-lg: 14px;
+    --r-md: 10px;
+    --r-sm: 6px;
+
+    --s-xs: 0 1px 3px rgba(17,24,39,0.05);
+    --s-sm: 0 2px 8px rgba(17,24,39,0.05), 0 1px 2px rgba(17,24,39,0.03);
+    --s-md: 0 6px 20px rgba(17,24,39,0.08);
+    --s-lg: 0 12px 40px rgba(17,24,39,0.12);
+    --s-primary: 0 8px 30px rgba(196,30,36,0.18);
+
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+button, .btn, a, [role="button"], .chip, .val-chip, .icon-btn, .close-x, .select-filter { touch-action: manipulation; }
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+}
+
+body {
+    font-family: var(--body);
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(ellipse at 0% 0%, rgba(196, 30, 36, 0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(196, 30, 36, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(196, 30, 36, 0.03) 0%, transparent 60%);
+    background-attachment: fixed;
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ─── HEADER ─────────────────────────────── */
+.top-bar {
+    background: var(--header-gradient);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.9rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 6px 24px rgba(122, 16, 21, 0.35);
+}
+.top-left { display: flex; align-items: center; gap: 0.85rem; }
+
+.back-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.9); text-decoration: none;
+    font-size: 0.82rem; font-weight: 600;
+    padding: 0.4rem 0.85rem; border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.2s var(--ease);
+}
+.back-pill:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255,255,255,0.3); color: #FFFFFF; transform: translateX(-2px); }
+
+.page-title { display: flex; align-items: center; gap: 0.5rem; }
+.page-title img { border-radius: 6px; object-fit: cover; }
+.page-title h1 { font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: #FFFFFF; line-height: 1.1; }
+.page-title p { font-size: 0.68rem; color: rgba(255,255,255,0.75); font-weight: 500; line-height: 1.2; }
+.page-title i { color: #FFFFFF !important; }
+
+.top-right { display: flex; align-items: center; gap: 0.65rem; }
+.user-chip {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.12); padding: 0.4rem 0.85rem; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 600; color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.user-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: #34D399; box-shadow: 0 0 8px #34D399; }
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.4rem 0.85rem; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; font-family: var(--body); transition: all 0.2s var(--ease);
+}
+.logout-btn:hover { background: rgba(255, 255, 255, 0.25); color: #FFFFFF; border-color: rgba(255,255,255,0.3); }
+
+/* ─── MAIN CONTAINER ─────────────────────── */
+.container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem 1.25rem; }
+
+/* ─── KPI STRIP ──────────────────────────── */
+.kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.85rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl);
+    padding: 1.15rem 1.25rem; display: flex; align-items: center; gap: 0.85rem;
+    box-shadow: var(--s-xs); transition: all 0.25s var(--ease);
+}
+.kpi-card:hover { box-shadow: var(--s-md); transform: translateY(-2px); border-color: var(--border-hover); }
+.kpi-icon {
+    width: 44px; height: 44px; border-radius: var(--r-lg);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+.kpi-icon.red { background: linear-gradient(135deg, #FFF1F1, #FEE2E2); color: var(--primary); }
+.kpi-icon.green { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: var(--success); }
+.kpi-icon.blue { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: #2563EB; }
+.kpi-icon.orange { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); color: var(--warning); }
+.kpi-num { font-family: var(--title); font-size: 1.4rem; font-weight: 800; color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-lbl { font-size: 0.72rem; color: var(--ink2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.1rem; }
+
+/* ─── CONTROL PANEL ──────────────────────── */
+.control-panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-2xl);
+    padding: 1.25rem 1.5rem; box-shadow: var(--s-sm); margin-bottom: 1.5rem;
+}
+.control-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;
+}
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.55rem 1.1rem; border-radius: var(--r-md); font-family: var(--body);
+    font-weight: 700; font-size: 0.82rem; cursor: pointer; border: none;
+    transition: all 0.2s var(--ease); text-decoration: none;
+}
+.btn-red {
+    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+    color: var(--surface); box-shadow: 0 4px 14px rgba(196,30,36,0.35);
+}
+.btn-red:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(196,30,36,0.45); }
+.btn-white {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    box-shadow: var(--s-xs);
+}
+.btn-white:hover { border-color: var(--border-hover); background: var(--primary-light); color: var(--primary); }
+.btn-warn {
+    background: var(--warning-bg); color: #B45309; border: 1px solid rgba(217,119,6,0.25);
+}
+.btn-warn:hover { background: var(--warning); color: var(--surface); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ─── SEARCH & FILTERS ───────────────────── */
+.search-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+.search-box { position: relative; flex: 1; min-width: 260px; }
+.search-box i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink3); }
+.search-input {
+    width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; border: 1px solid var(--border);
+    border-radius: var(--r-lg); font-family: var(--body); font-size: 0.88rem;
+    background: var(--bg); transition: all 0.2s var(--ease);
+}
+.search-input:focus { outline: none; border-color: var(--primary); background: var(--surface); box-shadow: var(--primary-glow); }
+.search-input::placeholder { color: var(--ink3); }
+
+.select-filter {
+    padding: 0.65rem 1rem; border: 1px solid var(--border);
+    border-radius: var(--r-lg); font-family: var(--body); font-size: 0.88rem;
+    background: var(--bg); color: var(--ink); cursor: pointer; min-width: 0;
+    transition: all 0.2s var(--ease);
+}
+.select-filter:focus { outline: none; border-color: var(--primary); background: var(--surface); box-shadow: var(--primary-glow); }
+
+/* ─── TABLE ──────────────────────────────── */
+.tbl-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-2xl); box-shadow: var(--s-sm);
+    max-width: 100%;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+    text-align: left; padding: 0.7rem 1.5rem; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--primary-hover);
+    background: linear-gradient(180deg, var(--primary-light), #FDE8E8);
+    border-bottom: 2px solid rgba(196, 30, 36, 0.12);
+    white-space: nowrap;
+}
+.tbl td {
+    padding: 0.8rem 1.5rem; font-size: 0.88rem; border-bottom: 1px solid #F3F5FA;
+    vertical-align: middle; font-variant-numeric: tabular-nums;
+}
+.tbl td.cell-wrap { white-space: normal; overflow-wrap: break-word; word-break: break-word; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--primary-soft); }
+
+.cell-id { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.78rem; color: var(--ink3); white-space: nowrap; }
+.cell-num { text-align: right; white-space: nowrap; }
+.cell-name { font-weight: 700; color: var(--ink); }
+.actions-cell { display: flex; gap: 0.4rem; align-items: center; }
+
+.icon-btn {
+    width: 34px; height: 34px; border-radius: var(--r-sm); border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink3); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease);
+}
+.icon-btn:hover { background: var(--primary-light); color: var(--primary); border-color: rgba(196,30,36,0.15); }
+.icon-btn.del:hover, .icon-btn.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.15); }
+
+.val-chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.3rem 0.7rem; border-radius: var(--r-sm);
+    border: 1px solid transparent;
+}
+.val-chip.green { background: var(--success-bg); color: var(--success); }
+.val-chip.amber { background: var(--warning-bg); color: var(--warning); }
+.val-chip.red { background: var(--danger-bg); color: var(--danger); }
+.val-chip.blue { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); color: #2563EB; }
+
+/* ─── STATES ─────────────────────────────── */
+.state-box { padding: 4rem 1.5rem; text-align: center; color: var(--ink3); }
+.state-box h3 { font-family: var(--title); font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-bottom: 0.3rem; }
+.state-box p { font-size: 0.88rem; }
+.spinner {
+    width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--primary);
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── TOAST ──────────────────────────────── */
+.toast-box { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; z-index: 300; pointer-events: none; }
+.toast {
+    background: var(--surface); border-left: 4px solid var(--success);
+    padding: 0.85rem 1.15rem; border-radius: var(--r-lg);
+    box-shadow: var(--s-lg); min-width: 300px; max-width: 420px;
+    transform: translateX(120%); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: auto; display: flex; align-items: flex-start; gap: 0.75rem;
+    border-top: 1px solid var(--border); border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.toast.show { transform: translateX(0); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.error { border-left-color: var(--danger); }
+.toast-t { font-size: 0.85rem; font-weight: 800; color: var(--ink); }
+.toast-d { font-size: 0.8rem; color: var(--ink3); margin-top: 0.1rem; }
+
+/* ─── MODAL ──────────────────────────────── */
+.overlay {
+    position: fixed; inset: 0; background: rgba(26,29,46,0.35); backdrop-filter: blur(6px);
+    z-index: 250; display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s var(--ease);
+}
+.overlay.show { opacity: 1; pointer-events: auto; }
+.modal {
+    background: var(--surface); border-radius: var(--r-2xl); padding: 0;
+    max-width: 560px; width: 92%; border: 1px solid var(--border);
+    transform: scale(0.95) translateY(12px);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: var(--s-lg);
+    max-height: 92vh; overflow-y: auto;
+}
+.overlay.show .modal { transform: scale(1) translateY(0); }
+.modal-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.25rem; margin: 0 0 1.25rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+    position: sticky; top: 0; z-index: 2;
+}
+.modal-top h2 {
+    font-family: var(--title); font-size: 1.2rem; font-weight: 800; color: #FFFFFF;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.modal-top h2 i { color: #FFFFFF !important; }
+.close-x { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; color: #FFFFFF; padding: 0.25rem; border-radius: var(--r-sm); }
+.close-x:hover { background: rgba(255,255,255,0.25); }
+.modal-body { padding: 0 1.25rem 1.25rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1rem; }
+.field { margin-bottom: 0.1rem; }
+.field.full { grid-column: 1 / -1; }
+.field label { display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 0.35rem; color: var(--ink); }
+.field-input {
+    width: 100%; padding: 0.7rem 1rem; border: 1px solid var(--border);
+    border-radius: var(--r-md); font-family: var(--body); font-size: 0.9rem;
+    background: var(--surface); transition: border-color 0.2s;
+}
+.field-input:focus { outline: none; border-color: var(--primary); box-shadow: var(--primary-glow); }
+.modal-btns { display: flex; gap: 0.65rem; justify-content: flex-end; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid var(--border); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .modal { transform: none; }
+}
+
+/* ─── RESPONSIVE ─────────────────────────── */
+@media (max-width: 768px) {
+    .container { padding: 1rem 0.75rem 4rem 0.75rem; }
+    .top-bar { padding: 0.7rem 0.85rem; }
+    .user-chip span:not(.dot) { display: none; }
+    .control-panel { padding: 1rem; }
+    .control-row { flex-direction: column; align-items: stretch; }
+    .control-row .actions, .control-row > div:last-child { width: 100%; }
+    .btn { flex: 1; justify-content: center; }
+
+    /* Tabla → Tarjetas */
+    .tbl-wrap { background: transparent; border: none; box-shadow: none; overflow: visible; }
+    .tbl thead { display: none; }
+    .tbl, .tbl tbody { display: block; }
+    .tbl tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem 0.85rem;
+        padding: 0.75rem 0.85rem;
+        margin: 0 0.75rem 0.65rem 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--s-xs);
+    }
+    .tbl tbody tr:last-child { margin-bottom: 0.9rem; }
+    .tbl tbody tr:hover td { background: transparent; }
+    .tbl tbody td {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: flex-start;
+        gap: 0.1rem 0.5rem;
+        padding: 0;
+        border: none;
+        font-size: 0.82rem;
+        text-align: left;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        min-width: 0;
+        max-width: 100%;
+    }
+    .tbl tbody td > * { min-width: 0; max-width: 100%; }
+    .tbl tbody td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: var(--ink3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .tbl tbody td .cell-val {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        text-align: right;
+        line-height: 1.35;
+    }
+    .tbl tbody td .cell-val .val-chip {
+        display: inline-block;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .tbl tbody td[data-label="Unidad"] {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        font-size: 0.9rem;
+    }
+    .tbl tbody td[data-label="Unidad"]::before { display: none; }
+    .tbl tbody td[data-label="Unidad"] .cell-val { text-align: left; font-weight: 600; }
+    .tbl tbody td[data-label="Acción"] {
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        border-top: 1px dashed var(--border);
+        padding-top: 0.45rem;
+    }
+    .tbl tbody td[data-label="Acción"]::before { display: none; }
+    .tbl tbody td[data-label="Acción"] .icon-btn { width: 44px; height: 44px; }
+    .cell-name { word-break: break-word; }
+    .select-filter { width: 100%; }
+    .search-box { min-width: 0; }
+    .toast-box { right: 0.75rem; left: 0.75rem; }
+    .toast { min-width: 0; max-width: none; }
+    .kpi-strip { grid-template-columns: 1fr; }
+    .kpi-card { padding: 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="top-bar">
+    <div class="top-left">
+        <a href="/" class="back-pill"><i data-lucide="arrow-left" style="width:15px;height:15px;"></i> Inicio</a>
+        <div class="page-title">
+            <img src="/static/icons/camion-sofia.png" alt="Sofía Ltda" style="width:32px;height:29px;object-fit:cover;">
+            <div>
+                <h1>Jornaleros</h1>
+                <p>Horas de Jornaleros · Sofía Ltda</p>
+            </div>
+        </div>
+    </div>
+    <div class="top-right">
+        <div class="user-chip">
+            <span class="dot"></span>
+            <span id="userDisplay">Usuario</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Salir</button>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- KPIs -->
+    <div class="kpi-strip">
+        <div class="kpi-card">
+            <div class="kpi-icon red"><i data-lucide="users" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kRegistros">0</div><div class="kpi-lbl">Registros</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><i data-lucide="clock" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kHoras">0</div><div class="kpi-lbl">Horas Trabajadas</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon green"><i data-lucide="users-round" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kCantidad">0</div><div class="kpi-lbl">Jornaleros</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon orange"><i data-lucide="calendar-days" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kDias">0</div><div class="kpi-lbl">Días Trabajados</div></div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-row">
+            <div class="actions">
+                <button id="addBtn" class="btn btn-red"><i data-lucide="plus" style="width:16px;height:16px;"></i> Registrar</button>
+                <button id="exportBtn" class="btn btn-white" title="Exportar a Excel con los filtros actuales"><i data-lucide="file-spreadsheet" style="width:16px;height:16px;"></i> Excel</button>
+                <button id="exportCsvBtn" class="btn btn-white" title="Exportar a CSV con los filtros actuales"><i data-lucide="file-text" style="width:16px;height:16px;"></i> CSV</button>
+                <button id="syncBtn" class="btn btn-white" title="Traer datos desde Google Sheets"><i data-lucide="download-cloud" style="width:16px;height:16px;"></i> Sync</button>
+                <button id="pushBtn" class="btn btn-warn" title="Subir todos los datos a Google Sheets"><i data-lucide="upload-cloud" style="width:16px;height:16px;"></i> Push</button>
+                <button id="seedBtn" class="btn btn-white" title="Importar la hoja Horas_Jornaleros del Excel"><i data-lucide="file-down" style="width:16px;height:16px;"></i> Importar Excel</button>
+                <button id="reseedBtn" class="btn btn-warn" title="Borrar todo y reimportar del Excel"><i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Restablecer</button>
+            </div>
+            <div style="display:flex;gap:0.4rem;">
+                <button id="refreshBtn" class="btn btn-white" aria-label="Recargar"><i data-lucide="refresh-cw" style="width:15px;height:15px;"></i></button>
+            </div>
+        </div>
+        <div class="search-row">
+            <select id="fCd" class="select-filter">
+                <option value="">Todas las Ciudades</option>
+                <option>COCHABAMBA</option>
+                <option>LA PAZ</option>
+                <option>SANTA CRUZ</option>
+            </select>
+            <select id="fArea" class="select-filter">
+                <option value="">Todas las Áreas</option>
+                <option>TRANSPORTE</option>
+                <option>DESPACHO</option>
+            </select>
+            <input type="date" id="fDesde" class="select-filter" title="Desde (fecha inicial)" style="padding:0.45rem 0.7rem;">
+            <input type="date" id="fHasta" class="select-filter" title="Hasta (fecha final)" style="padding:0.45rem 0.7rem;">
+            <div class="search-box">
+                <i data-lucide="search" style="width:17px;height:17px;"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar unidad o quién llenó...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Load / Empty / Table -->
+    <div id="loadState" class="state-box"><div class="spinner"></div><p>Cargando jornaleros...</p></div>
+    <div id="emptyState" class="state-box" style="display:none;">
+        <i data-lucide="users" style="width:48px;height:48px;color:var(--primary);margin-bottom:0.75rem;"></i>
+        <h3>Sin resultados</h3>
+        <p>No hay registros con los filtros actuales o la base está vacía.</p>
+        <button class="btn btn-red" style="margin-top:1rem;" onclick="openForm()"><i data-lucide="plus" style="width:16px;height:16px;"></i> Registrar jornalero</button>
+    </div>
+    <div id="list" style="display:none;"></div>
+</div>
+
+<!-- Modal -->
+<div id="overlay" class="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-top">
+            <h2 id="mTitle">Registrar</h2>
+            <button class="close-x" id="mClose" aria-label="Cerrar"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+        </div>
+        <div id="mBody"></div>
+    </div>
+</div>
+
+<div id="toasts" class="toast-box" role="status" aria-live="polite"></div>
+
+<script>
+// ── Auth ──────────────────────────────────
+(async()=>{const t=localStorage.getItem('auth_token');if(!t){location.href='/jornaleros/login';return}try{const r=await fetch('/api/check-auth?token='+encodeURIComponent(t));const d=await r.json();if(!d.success){localStorage.removeItem('auth_token');location.href='/jornaleros/login';}}catch(e){}})();
+
+const $=id=>document.getElementById(id);
+const list=$('list'), loadState=$('loadState'), emptyState=$('emptyState');
+
+$('userDisplay').textContent=localStorage.getItem('auth_display_name')||localStorage.getItem('auth_user')||'Usuario';
+
+$('logoutBtn').onclick=()=>{const t=localStorage.getItem('auth_token');if(t)fetch('/api/logout',{method:'POST',body:new URLSearchParams({token:t})}).catch(()=>{});localStorage.removeItem('auth_token');localStorage.removeItem('auth_user');localStorage.removeItem('auth_display_name');location.href='/jornaleros/login';};
+
+function token(){return localStorage.getItem('auth_token')||''}
+function api(p,x=[]){const s=p.includes('?')?'&':'?';return p+s+['token='+encodeURIComponent(token()),...x].join('&')}
+
+function fmtNum(v){const n=parseFloat(v);if(isNaN(n))return'0';return n%1===0?n.toLocaleString('es-BO'):n.toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtDate(d){if(!d)return'-';const s=String(d).slice(0,10);if(!s)return'-';const [y,m,dd]=s.split('-');return dd+'/'+m+'/'+y}
+
+// ── Toast ─────────────────────────────────
+function toast(t,d,type='success'){
+    const el=document.createElement('div');el.className='toast '+type;
+    const ic=type==='success'?'check-circle':type==='warning'?'alert-triangle':'x-circle';
+    const col=type==='success'?'#22C55E':type==='warning'?'#F59E0B':'#EF4444';
+    el.innerHTML=`<i data-lucide="${ic}" style="width:20px;height:20px;color:${col};flex-shrink:0;margin-top:1px;"></i><div><div class="toast-t">${t}</div><div class="toast-d">${d}</div></div>`;
+    $('toasts').appendChild(el);lucide.createIcons({node:el});
+    setTimeout(()=>el.classList.add('show'),20);
+    setTimeout(()=>{if(el.parentNode){el.classList.remove('show');setTimeout(()=>el.remove(),350)}},4000);
+}
+
+// ── Modal ─────────────────────────────────
+const overlay=$('overlay');
+function openModal(html){$('mBody').innerHTML=html;overlay.classList.add('show');lucide.createIcons({node:overlay});}
+function closeModal(){overlay.classList.remove('show');}
+$('mClose').onclick=closeModal;
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))closeModal();});
+
+// ── Estado ─────────────────────────────────
+let rows=[],stats={};
+
+async function load(){
+    loadState.style.display='block';emptyState.style.display='none';list.style.display='none';
+    try{
+        const params=[];
+        const cd=$('fCd').value,area=$('fArea').value,desde=$('fDesde').value,hasta=$('fHasta').value,q=$('searchInput').value.trim();
+        if(cd)params.push('cd='+encodeURIComponent(cd));
+        if(area)params.push('area='+encodeURIComponent(area));
+        if(desde)params.push('fecha_inicial__gte='+encodeURIComponent(desde));
+        if(hasta)params.push('fecha_final__lte='+encodeURIComponent(hasta));
+        if(q)params.push('llenado_por='+encodeURIComponent(q));
+        const r=await fetch('/api/jornaleros?limit=500&'+params.join('&'));
+        if(!r.ok)throw new Error((await r.json()).detail||'Error al cargar');
+        const d=await r.json();
+        rows=d.data||[];
+        try{stats=await (await fetch('/api/jornaleros/stats')).json();}catch(e){stats={};}
+        render();
+    }catch(e){
+        toast('Error',e.message||'No se pudo cargar','error');
+    }finally{loadState.style.display='none';}
+}
+
+function render(){
+    $('kRegistros').textContent=fmtNum(stats.total_registros);
+    $('kHoras').textContent=fmtNum(stats.totales?stats.totales.horas_trabajadas:0);
+    $('kCantidad').textContent=fmtNum(stats.totales?stats.totales.cantidad_jornaleros:0);
+    $('kDias').textContent=fmtNum(stats.totales?stats.totales.dias_trabajados_totales:0);
+
+    if(!rows.length){emptyState.style.display='block';list.style.display='none';return;}
+    emptyState.style.display='none';
+    const trs=rows.map(r=>`
+        <tr>
+            <td><span class="cell-id">${r.id}</span></td>
+            <td data-label="Desde"><span class="cell-val">${fmtDate(r.fecha_inicial)}</span></td>
+            <td data-label="Hasta"><span class="cell-val">${fmtDate(r.fecha_final)}</span></td>
+            <td data-label="CD"><span class="cell-val"><strong>${r.cd}</strong></span></td>
+            <td data-label="Unidad" class="cell-wrap"><span class="cell-val">${r.unidad||'-'}</span></td>
+            <td data-label="Área"><span class="cell-val"><span class="val-chip ${r.area==='TRANSPORTE'?'blue':'amber'}">${r.area}</span></span></td>
+            <td data-label="Cant."><span class="cell-val cell-num">${fmtNum(r.cantidad_jornaleros)}</span></td>
+            <td data-label="Horas"><span class="cell-val cell-num">${fmtNum(r.horas_trabajadas)}</span></td>
+            <td data-label="Días Tot."><span class="cell-val cell-num">${fmtNum(r.dias_trabajados_totales)}</span></td>
+            <td data-label="Días Lab."><span class="cell-val cell-num">${fmtNum(r.dias_trabajados_laborales)}</span></td>
+            <td data-label="Llenó" class="cell-wrap"><span class="cell-val">${r.llenado_por||'-'}</span></td>
+            <td data-label="Acción">
+                <span class="cell-val">
+                    <span class="actions-cell">
+                        <button class="icon-btn" title="Editar" onclick="openForm('${r.id}')"><i data-lucide="pencil" style="width:15px;height:15px;"></i></button>
+                        <button class="icon-btn danger" title="Eliminar" onclick="confirmDelete('${r.id}')"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>
+                    </span>
+                </span>
+            </td>
+        </tr>
+    `).join('');
+    list.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr>
+        <th>ID</th><th>Desde</th><th>Hasta</th><th>CD</th><th>Unidad</th><th>Área</th>
+        <th style="text-align:right;">Cant.</th><th style="text-align:right;">Horas</th>
+        <th style="text-align:right;">Días Tot.</th><th style="text-align:right;">Días Lab.</th>
+        <th>Llenó</th><th>Acción</th>
+    </tr></thead><tbody>${trs}</tbody></table></div>`;
+    list.style.display='block';
+    lucide.createIcons({node:list});
+}
+
+// ── Formulario ────────────────────────────
+function openForm(id){
+    const r=id?rows.find(x=>x.id===id):null;
+    const v=k=>r?(r[k]!==undefined&&r[k]!==null?r[k]:''):'';
+    const fi=r?String(r.fecha_inicial).slice(0,10):'';
+    const ff=r?String(r.fecha_final).slice(0,10):'';
+    openModal(`
+        <form id="jornalForm" class="form-grid" style="padding:1.25rem;">
+            <div class="field">
+                <label>Fecha Inicial *</label>
+                <input type="date" id="fFechaInicial" class="field-input" value="${fi}" required>
+            </div>
+            <div class="field">
+                <label>Fecha Final *</label>
+                <input type="date" id="fFechaFinal" class="field-input" value="${ff}" required>
+            </div>
+            <div class="field">
+                <label>CD (Ciudad) *</label>
+                <select id="fCdForm" class="field-input" required>
+                    <option value="">Seleccionar...</option>
+                    ${['COCHABAMBA','LA PAZ','SANTA CRUZ'].map(c=>`<option ${v('cd')===c?'selected':''}>${c}</option>`).join('')}
+                </select>
+            </div>
+            <div class="field">
+                <label>Área *</label>
+                <select id="fAreaForm" class="field-input" required>
+                    ${['TRANSPORTE','DESPACHO'].map(a=>`<option ${v('area')===a?'selected':''}>${a}</option>`).join('')}
+                </select>
+            </div>
+            <div class="field full">
+                <label>Unidad</label>
+                <input type="text" id="fUnidad" class="field-input" value="${v('unidad')}" placeholder="Ej: DISTRIBUCION REGIONAL CBBA">
+            </div>
+            <div class="field">
+                <label>Cantidad de Jornaleros</label>
+                <input type="number" id="fCantidad" class="field-input" step="any" min="0" value="${v('cantidad_jornaleros')}">
+            </div>
+            <div class="field">
+                <label>Horas Trabajadas</label>
+                <input type="number" id="fHoras" class="field-input" step="any" min="0" value="${v('horas_trabajadas')}">
+            </div>
+            <div class="field">
+                <label>Días Totales</label>
+                <input type="number" id="fDiasTotales" class="field-input" step="any" min="0" value="${v('dias_trabajados_totales')}">
+            </div>
+            <div class="field">
+                <label>Días Laborales</label>
+                <input type="number" id="fDiasLaborales" class="field-input" step="any" min="0" value="${v('dias_trabajados_laborales')}">
+            </div>
+            <div class="field full">
+                <label>Llenado por</label>
+                <input type="text" id="fLlenadoPor" class="field-input" value="${v('llenado_por')}" placeholder="Nombre de quien registra">
+            </div>
+            <div class="modal-btns full" style="grid-column:1/-1;border-top:1px solid var(--border);margin-top:0.5rem;">
+                <button type="button" class="btn btn-white" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-red" id="formSubmitBtn">${id?'Guardar cambios':'Guardar'}</button>
+            </div>
+        </form>
+    `);
+    $('mTitle').innerHTML=`${id?'<i data-lucide="pencil"></i> Editar Registro':'<i data-lucide="plus"></i> Registrar Jornalero'}`;
+    lucide.createIcons({node:overlay});
+    $('jornalForm').addEventListener('submit',async e=>{
+        e.preventDefault();
+        const body={
+            fecha_inicial:$('fFechaInicial').value+'T00:00:00',
+            fecha_final:$('fFechaFinal').value+'T00:00:00',
+            cd:$('fCdForm').value,
+            area:$('fAreaForm').value,
+            unidad:$('fUnidad').value,
+            cantidad_jornaleros:parseFloat($('fCantidad').value)||0,
+            horas_trabajadas:parseFloat($('fHoras').value)||0,
+            dias_trabajados_totales:parseFloat($('fDiasTotales').value)||0,
+            dias_trabajados_laborales:parseFloat($('fDiasLaborales').value)||0,
+            llenado_por:$('fLlenadoPor').value,
+        };
+        const btn=$('formSubmitBtn');btn.disabled=true;
+        try{
+            const url=id?api('/api/jornaleros/'+id):api('/api/jornaleros');
+            const r=await fetch(url,{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+            const d=await r.json();
+            if(!r.ok)throw new Error(d.detail||d.message||'Error al guardar');
+            toast('Guardado',d.message||'Registro guardado');
+            closeModal();await load();
+        }catch(err){toast('Error',err.message,'error');}
+        btn.disabled=false;
+    });
+}
+
+function confirmDelete(id){
+    const r=rows.find(x=>x.id===id);
+    openModal(`
+        <div style="text-align:center;padding:1rem;">
+            <div style="width:56px;height:56px;margin:0 auto 0.75rem;border-radius:50%;background:var(--danger-bg);color:var(--danger);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="alert-triangle" style="width:26px;height:26px;"></i>
+            </div>
+            <h3 style="font-family:var(--title);font-size:1.1rem;margin-bottom:0.4rem;">Eliminar registro</h3>
+            <p style="font-size:0.86rem;color:var(--ink2);margin-bottom:1rem;">
+                ${r?`Se eliminará el registro <strong>${r.id}</strong> (${r.cd} · ${r.area} · ${fmtDate(r.fecha_inicial)}).`:'¿Seguro que querés eliminarlo?'}
+            </p>
+            <div class="modal-btns" style="justify-content:center;border-top:none;padding-top:0;margin-top:0;">
+                <button class="btn btn-white" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-red" id="delOkBtn">Eliminar</button>
+            </div>
+        </div>
+    `);
+    $('mTitle').innerHTML='<i data-lucide="trash-2"></i> Eliminar';
+    lucide.createIcons({node:overlay});
+    $('delOkBtn').onclick=async()=>{
+        $('delOkBtn').disabled=true;
+        try{
+            const r=await fetch(api('/api/jornaleros/'+id),{method:'DELETE'});
+            const d=await r.json();
+            if(!r.ok)throw new Error(d.detail||d.message||'Error al eliminar');
+            toast('Eliminado',d.message||'Registro eliminado');
+            closeModal();await load();
+        }catch(err){toast('Error',err.message,'error');}
+        $('delOkBtn').disabled=false;
+    };
+}
+
+// ── Filtros / acciones ────────────────────
+$('fCd').onchange=load;$('fArea').onchange=load;$('fDesde').onchange=load;$('fHasta').onchange=load;
+let searchTimer;
+$('searchInput').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(load,350);});
+$('refreshBtn').onclick=load;
+$('addBtn').onclick=()=>openForm(null);
+
+$('exportBtn').onclick=()=>{
+    const params=[];
+    const cd=$('fCd').value,area=$('fArea').value,desde=$('fDesde').value,hasta=$('fHasta').value;
+    if(cd)params.push('cd='+encodeURIComponent(cd));
+    if(area)params.push('area='+encodeURIComponent(area));
+    if(desde)params.push('fecha_inicial__gte='+encodeURIComponent(desde));
+    if(hasta)params.push('fecha_final__lte='+encodeURIComponent(hasta));
+    window.open('/api/jornaleros/export/xlsx?'+params.join('&')+'&token='+encodeURIComponent(token()),'_blank');
+};
+
+$('exportCsvBtn').onclick=()=>{
+    if(!rows.length){toast('Sin datos','No hay registros para exportar.','warning');return;}
+    const headers=['ID','Fecha Inicial','Fecha Final','Tipo Trabajador','CD','Unidad','Área','Cant. Jornaleros','Horas Trabajadas','Días Totales','Días Laborales','Llenado por','Fecha Creación'];
+    const lines=[headers.join(',')];
+    rows.forEach(r=>{
+        const row=[
+            r.id,
+            r.fecha_inicial?String(r.fecha_inicial).slice(0,10):'',
+            r.fecha_final?String(r.fecha_final).slice(0,10):'',
+            r.tipo_trabajador||'JORNALERO',
+            r.cd||'',r.unidad||'',r.area||'',
+            r.cantidad_jornaleros||0,r.horas_trabajadas||0,
+            r.dias_trabajados_totales||0,r.dias_trabajados_laborales||0,
+            r.llenado_por||'',
+            r.fecha_creacion?String(r.fecha_creacion).slice(0,10):'',
+        ];
+        lines.push(row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+    });
+    const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8;'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`jornaleros_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Exportado',`${rows.length} registros exportados a CSV.`);
+};
+
+function confirmAction(icon,title,body,okLabel,onOk){
+    openModal(`
+        <div style="text-align:center;padding:1rem;">
+            <div style="width:56px;height:56px;margin:0 auto 0.75rem;border-radius:50%;background:var(--warning-bg);color:var(--warning);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="${icon}" style="width:26px;height:26px;"></i>
+            </div>
+            <h3 style="font-family:var(--title);font-size:1.1rem;margin-bottom:0.4rem;">${title}</h3>
+            <p style="font-size:0.86rem;color:var(--ink2);margin-bottom:1rem;">${body}</p>
+            <div class="modal-btns" style="justify-content:center;border-top:none;padding-top:0;margin-top:0;">
+                <button class="btn btn-white" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-warn" id="confirmOkBtn">${okLabel}</button>
+            </div>
+        </div>
+    `);
+    $('mTitle').innerHTML=`<i data-lucide="alert-triangle"></i> ${title}`;
+    lucide.createIcons({node:overlay});
+    $('confirmOkBtn').onclick=async()=>{
+        const b=$('confirmOkBtn');b.disabled=true;b.textContent='Procesando...';
+        try{await onOk();closeModal();}
+        catch(err){toast('Error',err.message,'error');b.disabled=false;b.textContent=okLabel;}
+    };
+}
+
+$('seedBtn').onclick=()=>confirmAction('file-spreadsheet','Importar de Excel','Se importarán los registros de la hoja <strong>Horas_Jornaleros</strong> (DB_PROD_GDN.xlsx). No se borrarán los registros existentes.','Importar',async()=>{
+    const r=await fetch(api('/api/jornaleros/seed',['confirm=true']),{method:'POST'});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.detail||'Error en la importación');
+    toast('Importado',d.message||'Importación completada');
+    await load();
+});
+
+$('reseedBtn').onclick=()=>confirmAction('rotate-ccw','Restablecer desde Excel','<span style="color:#B45309;font-weight:700;">Atención:</span> se borrarán <strong>TODOS</strong> los registros actuales y se recargarán los de la hoja <strong>Horas_Jornaleros</strong> del Excel.','Restablecer',async()=>{
+    const r=await fetch(api('/api/jornaleros/reseed',['confirm=true']),{method:'POST'});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.detail||'Error al restablecer');
+    toast('Restablecido',d.message||'Datos recargados desde Excel');
+    await load();
+});
+
+$('syncBtn').onclick=async()=>{
+    $('syncBtn').disabled=true;
+    try{
+        const r=await fetch(api('/api/jornaleros/sync'),{method:'POST'});
+        const d=await r.json();
+        if(!r.ok)throw new Error(d.detail||'Error en sync');
+        toast('Sync completado',(d.detalles?`${d.detalles.creados||0} creados, ${d.detalles.actualizados||0} actualizados`:'')||d.message);
+        await load();
+    }catch(err){toast('Sync',err.message,'error');}
+    $('syncBtn').disabled=false;
+};
+
+$('pushBtn').onclick=async()=>{
+    $('pushBtn').disabled=true;
+    try{
+        const r=await fetch(api('/api/jornaleros/push-to-sheets'),{method:'POST'});
+        const d=await r.json();
+        if(!r.ok)throw new Error(d.detail||'Error en push');
+        toast('Push iniciado',d.message||'Subiendo pendientes a Sheets...','warning');
+        setTimeout(load,3000);
+    }catch(err){toast('Push',err.message,'error');}
+    $('pushBtn').disabled=false;
+};
+
+load();
+</script>
+</body>
+</html>
