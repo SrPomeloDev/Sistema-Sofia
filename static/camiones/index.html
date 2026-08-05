@@ -3200,15 +3200,6 @@
             }
 
             // ── Filtros Activos ──────────────────────────────────────────
-            const toggleFiltersBtn = document.getElementById('toggleFiltersBtn');
-            const filtersCollapsible = document.getElementById('filtersCollapsible');
-            if (toggleFiltersBtn && filtersCollapsible) {
-                toggleFiltersBtn.addEventListener('click', () => {
-                    const isOpen = filtersCollapsible.classList.toggle('open');
-                    toggleFiltersBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                });
-            }
-
             function updateActiveFiltersBadge() {
                 const badge = document.getElementById('activeFiltersBadge');
                 if (!badge) return;
