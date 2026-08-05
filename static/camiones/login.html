@@ -19,7 +19,7 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* ═══════════════════════════════════════════════════════════════
@@ -259,7 +259,7 @@
         .login-box button {
             width: 100%;
             padding: 0.8rem;
-            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+            background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
             color: #FFFFFF;
             border: none;
             border-radius: var(--r-sm);
@@ -344,6 +344,11 @@
             *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
+<script>
+        try { if (localStorage.getItem('sofia_theme') === 'dark' || (!localStorage.getItem('sofia_theme') && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/static/design.css?v=13">
+    <script src="/static/theme.js" defer></script>
 </head>
 <body>
     <!-- Panel Izquierdo — Branding (visible en desktop) -->
@@ -447,3 +452,7 @@
     </script>
 </body>
 </html>
+
+
+
+

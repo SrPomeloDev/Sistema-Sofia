@@ -15,7 +15,7 @@ from modules.camiones.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Formato fijo de 13 columnas (coincide con la hoja Horas_Jornaleros)
+# Formato de 15 columnas (13 originales + tarifa diaria + observaciones)
 HEADERS_LIST = [
     "ID",
     "FECHA_INICIAL",
@@ -30,6 +30,8 @@ HEADERS_LIST = [
     "DIAS_TRABAJADOS_LABORALES",
     "LLENADO POR",
     "FECHA_CREACION",
+    "TARIFA_DIARIA",
+    "OBSERVACIONES",
 ]
 
 
@@ -127,7 +129,7 @@ class JornalerosSheetsClient:
             return await asyncio.to_thread(self._sheet.worksheet, nombre)
         except Exception:
             logger.info("Creando hoja '%s' en el spreadsheet", nombre)
-            ws = await asyncio.to_thread(self._sheet.add_worksheet, nombre, rows=100, cols=13)
+            ws = await asyncio.to_thread(self._sheet.add_worksheet, nombre, rows=100, cols=len(HEADERS_LIST))
             return ws
 
     async def _call_apps_script(self, payload: dict) -> dict:

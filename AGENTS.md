@@ -96,6 +96,25 @@ Seed/reseed requieren `?confirm=true` además de `?token=`.
 | `/bootstrap` | POST | Mergea HTMLs legacy a sheets |
 | `/login` / `/logout` / `/check-auth` | POST/GET | Auth |
 
+### /api/jornaleros
+
+| Ruta | Método | Auth | Notas |
+|------|--------|------|-------|
+| `/jornaleros` | GET | No | Filtros: `cd, area, tipo_trabajador, llenado_por, fecha_inicial__gte/lte, fecha_final__gte/lte` |
+| `/jornaleros` | POST | Sí | `estado_sincronizacion` inicial `pendiente` |
+| `/jornaleros/{id}` | PUT | Sí | `exclude_unset=True` |
+| `/jornaleros/{id}` | DELETE | Sí | Local primero, sheet best-effort |
+| `/jornaleros/sync` | POST | Sí | Pull sheets → local (upsert por ID) |
+| `/jornaleros/push-to-sheets` | POST | Sí | Push local → sheets completo en 1 request (`setAll`) |
+| `/jornaleros/push-status` | GET | No | `{total, sincronizados, fallidos, error?}` |
+| `/jornaleros/stats` | GET | No | Incluye `costo_total` (totales, por_cd, por_area) |
+| `/jornaleros/export/xlsx` | GET | Sí | Exporta filtrado; 17 columnas |
+| `/jornaleros/seed` / `/reseed` | POST | Sí+confirm | Desde `DB_PROD_GDN.xlsx` (hoja `Horas_Jornaleros`, 13 cols) |
+
+**Costeo:** columnas opcionales `tarifa_diaria` (Bs/día por jornalero) y `observaciones` en `jornaleros`. `costo_total = tarifa_diaria × cantidad_jornaleros × dias_trabajados_totales` (propiedad del modelo). Migraciones `ALTER TABLE` automáticas en `init_db()` (`_migrar_columnas`): agrega `tarifa_diaria`/`observaciones` y elimina `estado_pago` + tabla `jornaleros_tarifas` (quitados por decisión de negocio — el control de pago y el tarifario no se usan).
+
+**Sheets:** formato de **15 columnas** (13 originales + TARIFA_DIARIA, OBSERVACIONES). `HEADERS_LIST` en `sheets.py`. `_parse_sheet_row` tolera hojas viejas de 13 cols (sin tarifa).
+
 ## Seed de Rutas desde Excel
 
 `BBDDs_SL.xlsx` hoja `RUTAS` (155 filas: SUCURSAL, Ruta Madre, Ruta Hija, Flete, Método, Observación). `_parse_float_safe()` (`rutas/db/database.py:75`) maneja comas decimales. `metodo` con solo whitespace → `None`. `_resolve_seed_path()` busca en 3 ubicaciones.

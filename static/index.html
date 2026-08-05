@@ -11,12 +11,13 @@
     <title>Sofía Ltda — Sistema Nacional Huevo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>window.lucide=window.lucide||{createIcons:function(){}};</script>
     <style>
         :root {
             --primary: #C41E24;
-            --primary-hover: #B01A1F;
+            --primary-hover: #A01820;
             --primary-light: #FDEAEA;
             --primary-soft: rgba(196, 30, 36, 0.06);
 
@@ -147,7 +148,7 @@
         }
 
         .hero-card {
-            background: linear-gradient(135deg, var(--primary) 0%, #E53935 50%, var(--primary-hover) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #A01820 50%, var(--primary-hover) 100%);
             border-radius: var(--r-2xl);
             padding: 3rem 3.5rem;
             color: var(--surface);
@@ -212,8 +213,10 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .mod-card {
@@ -289,7 +292,7 @@
         .pwa-left strong { font-size: 0.95rem; display: block; }
         .pwa-left span { font-size: 0.8rem; color: var(--ink3); }
         .install-btn {
-            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+            background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
             color: var(--surface); border: none;
             padding: 0.55rem 1.25rem; border-radius: 50px;
             font-weight: 700; font-family: var(--body); font-size: 0.85rem;
@@ -330,6 +333,11 @@
             *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
+<script>
+        try { if (localStorage.getItem('sofia_theme') === 'dark' || (!localStorage.getItem('sofia_theme') && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/static/design.css?v=13">
+    <script src="/static/theme.js" defer></script>
 </head>
 <body>
 
@@ -478,3 +486,7 @@
     </script>
 </body>
 </html>
+
+
+
+

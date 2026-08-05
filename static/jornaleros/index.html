@@ -7,8 +7,9 @@
 <title>Jornaleros — Sofía Ltda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script>window.lucide=window.lucide||{createIcons:function(){}};</script>
 <style>
 :root {
     --primary: #C41E24;
@@ -163,7 +164,7 @@ body {
     transition: all 0.2s var(--ease); text-decoration: none;
 }
 .btn-red {
-    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+    background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
     color: var(--surface); box-shadow: 0 4px 14px rgba(196,30,36,0.35);
 }
 .btn-red:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(196,30,36,0.45); }
@@ -419,6 +420,11 @@ body {
     .form-grid { grid-template-columns: 1fr; }
 }
 </style>
+<script>
+(function(){try{if(localStorage.getItem('sofia_theme')==='dark'||(!localStorage.getItem('sofia_theme')&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();
+</script>
+<link rel="stylesheet" href="/static/design.css?v=13">
+<script src="/static/theme.js" defer></script>
 </head>
 <body>
 
@@ -462,6 +468,10 @@ body {
         <div class="kpi-card">
             <div class="kpi-icon orange"><i data-lucide="calendar-days" style="width:22px;height:22px;"></i></div>
             <div><div class="kpi-num" id="kDias">0</div><div class="kpi-lbl">Días Trabajados</div></div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon green"><i data-lucide="wallet" style="width:22px;height:22px;"></i></div>
+            <div><div class="kpi-num" id="kCosto">Bs 0</div><div class="kpi-lbl">Costo Total</div></div>
         </div>
     </div>
 
@@ -591,6 +601,7 @@ function render(){
     $('kHoras').textContent=fmtNum(stats.totales?stats.totales.horas_trabajadas:0);
     $('kCantidad').textContent=fmtNum(stats.totales?stats.totales.cantidad_jornaleros:0);
     $('kDias').textContent=fmtNum(stats.totales?stats.totales.dias_trabajados_totales:0);
+    $('kCosto').textContent='Bs '+fmtNum(stats.totales?stats.totales.costo_total:0);
 
     if(!rows.length){emptyState.style.display='block';list.style.display='none';return;}
     emptyState.style.display='none';
@@ -606,6 +617,8 @@ function render(){
             <td data-label="Horas"><span class="cell-val cell-num">${fmtNum(r.horas_trabajadas)}</span></td>
             <td data-label="Días Tot."><span class="cell-val cell-num">${fmtNum(r.dias_trabajados_totales)}</span></td>
             <td data-label="Días Lab."><span class="cell-val cell-num">${fmtNum(r.dias_trabajados_laborales)}</span></td>
+            <td data-label="Tarifa"><span class="cell-val cell-num">${r.tarifa_diaria!=null?('Bs '+fmtNum(r.tarifa_diaria)):'-'}</span></td>
+            <td data-label="Costo"><span class="cell-val cell-num"><strong>${r.costo_total!=null?('Bs '+fmtNum(r.costo_total)):'-'}</strong></span></td>
             <td data-label="Llenó" class="cell-wrap"><span class="cell-val">${r.llenado_por||'-'}</span></td>
             <td data-label="Acción">
                 <span class="cell-val">
@@ -621,6 +634,7 @@ function render(){
         <th>ID</th><th>Desde</th><th>Hasta</th><th>CD</th><th>Unidad</th><th>Área</th>
         <th style="text-align:right;">Cant.</th><th style="text-align:right;">Horas</th>
         <th style="text-align:right;">Días Tot.</th><th style="text-align:right;">Días Lab.</th>
+        <th style="text-align:right;">Tarifa</th><th style="text-align:right;">Costo</th>
         <th>Llenó</th><th>Acción</th>
     </tr></thead><tbody>${trs}</tbody></table></div>`;
     list.style.display='block';
@@ -628,11 +642,14 @@ function render(){
 }
 
 // ── Formulario ────────────────────────────
+const PERIODO_DEFECTO_INICIO='2026-06-24';
+const PERIODO_DEFECTO_FIN='2026-07-23';
+
 function openForm(id){
     const r=id?rows.find(x=>x.id===id):null;
     const v=k=>r?(r[k]!==undefined&&r[k]!==null?r[k]:''):'';
-    const fi=r?String(r.fecha_inicial).slice(0,10):'';
-    const ff=r?String(r.fecha_final).slice(0,10):'';
+    const fi=id?String(r.fecha_inicial).slice(0,10):PERIODO_DEFECTO_INICIO;
+    const ff=id?String(r.fecha_final).slice(0,10):PERIODO_DEFECTO_FIN;
     openModal(`
         <form id="jornalForm" class="form-grid" style="padding:1.25rem;">
             <div class="field">
@@ -676,6 +693,17 @@ function openForm(id){
                 <label>Días Laborales</label>
                 <input type="number" id="fDiasLaborales" class="field-input" step="any" min="0" value="${v('dias_trabajados_laborales')}">
             </div>
+            <div class="field">
+                <label>Tarifa diaria (Bs/día)</label>
+                <input type="number" id="fTarifa" class="field-input" step="any" min="0" value="${r?(r.tarifa_diaria!==undefined&&r.tarifa_diaria!==null?r.tarifa_diaria:''):''}" placeholder="Ej: 95.50">
+                <small id="tarifaHint" style="display:block;font-size:0.72rem;color:var(--ink2);margin-top:0.3rem;line-height:1.35;">
+                    Opcional. El costo total se calcula como tarifa × cantidad × días trabajados.
+                </small>
+            </div>
+            <div class="field full">
+                <label>Observaciones</label>
+                <textarea id="fObs" class="field-input" rows="2" placeholder="Incidencias, reemplazos...">${r?(r.observaciones||''):''}</textarea>
+            </div>
             <div class="field full">
                 <label>Llenado por</label>
                 <input type="text" id="fLlenadoPor" class="field-input" value="${v('llenado_por')}" placeholder="Nombre de quien registra">
@@ -688,6 +716,10 @@ function openForm(id){
     `);
     $('mTitle').innerHTML=`${id?'<i data-lucide="pencil"></i> Editar Registro':'<i data-lucide="plus"></i> Registrar Jornalero'}`;
     lucide.createIcons({node:overlay});
+    if(!id){
+        if($('fCd').value)$('fCdForm').value=$('fCd').value;
+        if($('fArea').value)$('fAreaForm').value=$('fArea').value;
+    }
     $('jornalForm').addEventListener('submit',async e=>{
         e.preventDefault();
         const body={
@@ -700,6 +732,8 @@ function openForm(id){
             horas_trabajadas:parseFloat($('fHoras').value)||0,
             dias_trabajados_totales:parseFloat($('fDiasTotales').value)||0,
             dias_trabajados_laborales:parseFloat($('fDiasLaborales').value)||0,
+            tarifa_diaria:$('fTarifa').value!==''?(parseFloat($('fTarifa').value)||0):null,
+            observaciones:$('fObs').value||null,
             llenado_por:$('fLlenadoPor').value,
         };
         const btn=$('formSubmitBtn');btn.disabled=true;
@@ -766,7 +800,7 @@ $('exportBtn').onclick=()=>{
 
 $('exportCsvBtn').onclick=()=>{
     if(!rows.length){toast('Sin datos','No hay registros para exportar.','warning');return;}
-    const headers=['ID','Fecha Inicial','Fecha Final','Tipo Trabajador','CD','Unidad','Área','Cant. Jornaleros','Horas Trabajadas','Días Totales','Días Laborales','Llenado por','Fecha Creación'];
+    const headers=['ID','Fecha Inicial','Fecha Final','Tipo Trabajador','CD','Unidad','Área','Cant. Jornaleros','Horas Trabajadas','Días Totales','Días Laborales','Tarifa Diaria','Costo Total','Observaciones','Llenado por','Fecha Creación'];
     const lines=[headers.join(',')];
     rows.forEach(r=>{
         const row=[
@@ -777,6 +811,9 @@ $('exportCsvBtn').onclick=()=>{
             r.cd||'',r.unidad||'',r.area||'',
             r.cantidad_jornaleros||0,r.horas_trabajadas||0,
             r.dias_trabajados_totales||0,r.dias_trabajados_laborales||0,
+            r.tarifa_diaria!=null?r.tarifa_diaria:'',
+            r.costo_total!=null?r.costo_total:'',
+            r.observaciones||'',
             r.llenado_por||'',
             r.fecha_creacion?String(r.fecha_creacion).slice(0,10):'',
         ];
@@ -879,3 +916,7 @@ load();
 </script>
 </body>
 </html>
+
+
+
+

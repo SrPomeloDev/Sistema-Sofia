@@ -97,6 +97,9 @@ def _a_response(row) -> JornaleroResponse:
         fecha_creacion=row.fecha_creacion,
         estado_sincronizacion=row.estado_sincronizacion,
         error_sincronizacion=row.error_sincronizacion,
+        tarifa_diaria=row.tarifa_diaria,
+        observaciones=row.observaciones,
+        costo_total=row.costo_total,
     )
 
 
@@ -245,7 +248,7 @@ def _es_fila_encabezados(fila: list) -> bool:
 
 
 def _fila_a_lista(row) -> list:
-    """Convierte un registro de BD a la lista de 13 valores del sheet."""
+    """Convierte un registro de BD a la lista de 16 valores del sheet."""
     def _fmt_dt(val: datetime) -> str:
         return val.strftime("%Y-%m-%d") if val else ""
     return [
@@ -262,6 +265,8 @@ def _fila_a_lista(row) -> list:
         row.dias_trabajados_laborales or 0,
         row.llenado_por or "",
         _fmt_dt(row.fecha_creacion),
+        row.tarifa_diaria if row.tarifa_diaria is not None else "",
+        row.observaciones or "",
     ]
 
 
@@ -357,7 +362,8 @@ async def export_jornaleros_xlsx(
 
     headers = ["ID", "Fecha Inicial", "Fecha Final", "Tipo Trabajador", "CD", "Unidad",
                "Área", "Cant. Jornaleros", "Horas Trabajadas", "Días Totales",
-               "Días Laborales", "Llenado por", "Fecha Creación", "Estado Sync"]
+               "Días Laborales", "Llenado por", "Fecha Creación", "Tarifa Diaria (Bs)",
+               "Costo Total (Bs)", "Observaciones", "Estado Sync"]
 
     header_font = Font(name="Calibri", bold=True, color="FFFFFF", size=11)
     header_fill = PatternFill(start_color="2563EB", end_color="2563EB", fill_type="solid")
@@ -381,6 +387,9 @@ async def export_jornaleros_xlsx(
             r.cantidad_jornaleros, r.horas_trabajadas, r.dias_trabajados_totales,
             r.dias_trabajados_laborales, r.llenado_por,
             r.fecha_creacion.strftime("%Y-%m-%d %H:%M") if r.fecha_creacion else "",
+            r.tarifa_diaria if r.tarifa_diaria is not None else "",
+            r.costo_total if r.costo_total is not None else "",
+            r.observaciones or "",
             r.estado_sincronizacion,
         ]
         for col, val in enumerate(valores, 1):
@@ -388,7 +397,7 @@ async def export_jornaleros_xlsx(
             cell.border = thin_border
             cell.alignment = Alignment(vertical="center")
 
-    widths = [12, 14, 14, 16, 14, 26, 12, 14, 14, 12, 12, 14, 18, 14]
+    widths = [12, 14, 14, 16, 14, 26, 12, 14, 14, 12, 12, 14, 18, 14, 14, 24, 14]
     for col, w in enumerate(widths, 1):
         ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = w
 

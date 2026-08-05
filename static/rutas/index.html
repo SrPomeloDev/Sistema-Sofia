@@ -7,8 +7,9 @@
 <title>Rutas y Tarifas — Sofía Ltda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script>window.lucide=window.lucide||{createIcons:function(){}};</script>
 <style>
 :root {
     --primary: #C41E24;
@@ -162,7 +163,7 @@ body {
     transition: all 0.2s var(--ease); text-decoration: none;
 }
 .btn-red {
-    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+    background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
     color: var(--surface); box-shadow: 0 4px 14px rgba(196,30,36,0.35);
 }
 .btn-red:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(196,30,36,0.45); }
@@ -220,7 +221,7 @@ body {
     display: flex; align-items: center; gap: 0.4rem;
 }
 .tag-suc {
-    background: linear-gradient(135deg, #D9262D 0%, var(--primary) 100%);
+    background: linear-gradient(135deg, #C41E24 0%, var(--primary) 100%);
     color: var(--surface); font-size: 0.68rem; font-weight: 800;
     padding: 0.18rem 0.55rem; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.04em;
     box-shadow: 0 2px 6px rgba(196,30,36,0.25);
@@ -479,6 +480,11 @@ body {
     .search-box { min-width: 0; }
 }
 </style>
+<script>
+(function(){try{if(localStorage.getItem('sofia_theme')==='dark'||(!localStorage.getItem('sofia_theme')&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();
+</script>
+<link rel="stylesheet" href="/static/design.css?v=13">
+<script src="/static/theme.js" defer></script>
 </head>
 <body>
 
@@ -820,3 +826,7 @@ load();
 </script>
 </body>
 </html>
+
+
+
+

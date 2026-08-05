@@ -6,8 +6,9 @@
     <title>Iniciar Sesión — Rutas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>window.lucide=window.lucide||{createIcons:function(){}};</script>
     <style>
         :root {
             --primary: #C41E24;
@@ -84,7 +85,7 @@
             width: 100%; padding: 0.8rem; border: none;
             border-radius: var(--r-md);
             font-family: var(--title); font-weight: 700; font-size: 1rem;
-            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+            background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
             color: white; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
             box-shadow: 0 4px 16px rgba(196,30,36,0.3);
         }
@@ -96,6 +97,9 @@
             .btn { transform: none; }
         }
     </style>
+<script>(function(){try{if(localStorage.getItem('sofia_theme')==='dark'||(!localStorage.getItem('sofia_theme')&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();</script>
+    <link rel="stylesheet" href="/static/design.css?v=13">
+    <script src="/static/theme.js" defer></script>
 </head>
 <body>
     <div class="login-card">
@@ -157,3 +161,7 @@
     </script>
 </body>
 </html>
+
+
+
+

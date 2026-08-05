@@ -22,6 +22,8 @@ class JornaleroBase(BaseModel):
     dias_trabajados_totales: float = Field(0.0, ge=0.0)
     dias_trabajados_laborales: float = Field(0.0, ge=0.0)
     llenado_por: str = Field("", max_length=100, description="Nombre de quien llena el registro")
+    tarifa_diaria: float | None = Field(default=None, ge=0.0, description="Bs/día por jornalero (opcional)")
+    observaciones: str | None = Field(default=None, max_length=500)
 
     @model_validator(mode="after")
     def _validar_fechas(self):
@@ -46,6 +48,8 @@ class JornaleroUpdate(BaseModel):
     dias_trabajados_totales: float | None = Field(default=None, ge=0.0)
     dias_trabajados_laborales: float | None = Field(default=None, ge=0.0)
     llenado_por: str | None = Field(default=None, max_length=100)
+    tarifa_diaria: float | None = Field(default=None, ge=0.0)
+    observaciones: str | None = Field(default=None, max_length=500)
 
     @model_validator(mode="after")
     def _validar_fechas(self):
@@ -59,6 +63,7 @@ class JornaleroResponse(JornaleroBase):
     fecha_creacion: datetime
     estado_sincronizacion: str
     error_sincronizacion: str | None = None
+    costo_total: float | None = None
 
     model_config = {"from_attributes": True}
 

@@ -1,0 +1,456 @@
+/* ============================================================
+   DESIGN OVERRIDE — Sistema de Diseño "Gaceta Municipal" (Next.js 16 + Tailwind v4)
+   Portado a CSS plano. Colores ADAPTADOS a la identidad de la app (rojo Sofía Ltda).
+   Versión SEGURA: solo tokens/estilos globales (no toca clases de componentes).
+   La fuente Merriweather se carga desde el <head> de cada página.
+   ============================================================ */
+
+/* ─── 1. Paleta de color institucional (adaptada: naranja → rojo) ─── */
+:root {
+    /* tokens del MD §3 (claros) */
+    --background: #FCF8F3;            /* crema cálido           */
+    --foreground: #132029;            /* casi negro azulado     */
+    --card: #FFFDFB;                  /* tarjetas               */
+    --popover: #FFFDFB;               /* popovers / menús       */
+    --secondary: #F9F5F1;             /* fondo secundario       */
+    --muted: #F9F5F1;                 /* elementos suavizados   */
+    --muted-foreground: #585F64;      /* texto gris             */
+    --accent: #F6F1EC;                /* hover acento           */
+    --destructive: #E60016;           /* rojo de error/borrado  */
+    --border: #E9E3DC;                /* bordes cálidos         */
+    --input: #E9E3DC;                 /* inputs                 */
+    --ring: #C41E24;                  /* anillo de foco (rojo)  */
+    --chart-1: #C41E24;
+    --chart-2: #00978A;
+    --chart-3: #005961;
+    --chart-4: #E2BA00;
+    --chart-5: #FF7D5A;
+
+    /* aliases usados por la app (lo demás lo define cada página) */
+    --bg: var(--background);
+    --surface: var(--card);
+    --success: #16a34a;
+    --success-bg: rgba(22,163,74,0.10);
+    --warning: #B45309;
+    --warning-bg: rgba(180,83,9,0.10);
+    --danger: #dc2626;
+    --danger-bg: rgba(220,38,38,0.08);
+
+    --s-xs: 0 1px 3px rgba(35,21,18,0.04);
+    --s-sm: 0 2px 10px rgba(35,21,18,0.05), 0 1px 2px rgba(35,21,18,0.03);
+    --s-md: 0 8px 24px rgba(35,21,18,0.08);
+    --s-lg: 0 14px 44px rgba(35,21,18,0.12);
+    --s-primary: 0 8px 30px rgba(196,30,36,0.16);
+}
+
+/* Fallbacks oklch() para navegadores modernos (MD §3) */
+@supports (color: oklch(0 0 0)) {
+    :root {
+        --background: oklch(0.98 0.01 80);
+        --foreground: oklch(0.2 0.03 250);
+        --card: oklch(1 0 0);
+        --ring: oklch(0.52 0.22 28);
+        --muted-foreground: oklch(0.5 0.01 80);
+        --border: oklch(0.92 0.01 80);
+    }
+}
+
+/* ─── 2. Modo oscuro (`.dark` en <html>, MD §2) ─── */
+.dark {
+    --background: #100B08;
+    --foreground: #EEEBE5;
+    --card: #1E1712;
+    --primary: #F23B4D;
+    --primary-foreground: #FEFBFA;
+    --muted: #1E1814;
+    --muted-foreground: #9E978F;
+    --border: #3A2F28;
+    --ring: #F23B4D;
+}
+
+/* ─── 5. Tipografía (MD §5): serif institucional + sans para UI ─── */
+:root {
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-serif: 'Merriweather', Georgia, serif;
+    --title: var(--font-serif);       /* titulares institucionales */
+    --body: var(--font-sans);         /* interfaz / cuerpo         */
+}
+
+/* Títulos institucionales en serif; números en sans tabular */
+.page-title h1, .page-title h2,
+.modal-title,
+h1, h2, h3,
+.mod-card h3, .mod-name, .cell-name,
+.hero-card h2, .login-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.kpi-num {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   9. Fondo, texturas y scrollbar (MD §9)
+   ============================================================ */
+body {
+    background-color: var(--background);
+    background-image:
+        radial-gradient(ellipse 120% 55% at 50% -12%, rgba(252,248,243,.5), transparent 60%),
+        radial-gradient(ellipse at 0% 0%, rgba(196,30,36,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(196,30,36,0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: var(--foreground);
+}
+.dark body { background-image: radial-gradient(ellipse 120% 55% at 50% -12%, rgba(38,33,28,.7), transparent 60%); }
+
+::selection { background: rgba(196,30,36,0.14); color: var(--primary-dark, #7A1015); }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(196,30,36,.25); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(196,30,36,.5); }
+
+/* Anillo de foco tipo "ring" (MD §7) */
+:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--r-md, 10px);
+}
+
+/* ============================================================
+   8. PATRONES DECORATIVOS (CÓDIGO EXACTO adaptado) 
+   ============================================================ */
+
+/* Fondo de puntos cálidos (light) / blancos (dark) */
+.bg-pattern-dots {
+  background-image: radial-gradient(rgba(90, 55, 30, 0.13) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+.dark .bg-pattern-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.2px, transparent 1.2px);
+}
+
+/* Rejilla rojo-sutil (naranja institucional → rojo de la app) */
+.bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(196, 30, 36, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 30, 36, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.dark .bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(240, 80, 80, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 80, 80, 0.08) 1px, transparent 1px);
+}
+
+/* LIQUID GLASS — efecto Glass "Náutico" / espejo cálido */
+.liquid-glass {
+  background: linear-gradient(145deg, rgba(255, 252, 249, 0.85) 0%, rgba(245, 235, 225, 0.60) 100%);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+}
+.dark .liquid-glass {
+  background: linear-gradient(145deg, rgba(30, 23, 18, 0.85) 0%, rgba(16, 11, 8, 0.70) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Header translúcido */
+.glass-header {
+  background: rgba(252, 248, 243, 0.92);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+.dark .glass-header {
+  background: rgba(16, 11, 8, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Tarjeta glass */
+.glass-card {
+  background: rgba(255, 253, 251, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(233, 229, 225, 0.6);
+}
+.dark .glass-card {
+  background: rgba(30, 23, 18, 0.95);
+  border: 1px solid rgba(47, 39, 33, 0.6);
+}
+
+/* ── Cabezal acceso rápido ── */
+.heading-kicker {
+  display: inline-block; font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--ring);
+}
+.section-heading-line {
+  height: 0.25rem; width: 4rem; border-radius: 999px;
+  background: linear-gradient(90deg, var(--ring), #E2BA00);
+}
+.card-hover { transition: all 300ms ease; }
+.card-hover:hover {
+  box-shadow: 0 10px 15px -3px rgba(196,30,36,.15);
+  border-color: rgba(196,30,36,.30);
+}
+
+/* Aplicación segura del vidrio (sin tocar lógica) */
+.login-card, .modal-card { backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
+.login-card { background: rgba(255,253,251,0.9); }
+
+/* ── Header GLASS corporativo — rojo vivo + blur + filo de cristal ──
+   80% de opacidad (rojo institucional domina, no se lava de blanco),
+   blur 20px + saturate para difuminar lo que pasa por detrás,
+   sheen mínimo en la esquina + filo interior de luz (canto del vidrio). */
+/* ── Header GLASS corporativo ──────────────────────────────────
+   FALLBACK por defecto (navegadores SIN backdrop-filter):
+   rojo sólido limpio + sheen → nunca se ve translúcido sin blur.
+   Si el navegador SOPORTA backdrop-filter (@supports): rojo
+   traslúcido 0.62 + blur 22px + saturate → efecto vidrio real.
+   ─────────────────────────────────────────────────────────────── */
+header, .top-bar {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 40%),
+    linear-gradient(135deg, #C41E24 0%, #A01820 55%, #7A1015 100%) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 8px 28px -10px rgba(35,21,18,0.4);
+}
+@supports (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px)) {
+  header, .top-bar {
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 38%),
+      linear-gradient(135deg, rgba(196,30,36,0.62) 0%, rgba(160,24,32,0.62) 55%, rgba(122,16,48,0.62) 100%) !important;
+    backdrop-filter: blur(22px) saturate(1.8);
+    -webkit-backdrop-filter: blur(22px) saturate(1.8);
+  }
+}
+
+/* ── Portada: el header era claro → sobre vidrio rojo el texto debe ser blanco ── */
+.top-bar .brand-name { color: #FFFFFF; }
+.top-bar .brand-name span { color: rgba(255,255,255,0.85); }
+.top-bar .live-badge {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.22);
+  color: #FFFFFF;
+}
+.top-bar .live-badge .live-dot { background: #4ADE80; box-shadow: 0 0 6px #4ADE80; }
+
+/* ── Logo limpio sobre el vidrio: sin chip rojo, solo un halo sutil ── */
+.brand-icon {
+  background: rgba(255,255,255,0.12) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.brand-icon img { border-radius: 10px; }
+
+/* Variante CLARA del MD (glass-header crema) — descomenta si preferís:
+header, .top-bar { background: rgba(252,248,243,0.6) !important; backdrop-filter: blur(22px) saturate(1.2); color: var(--foreground); }
+header .logo-text h1, header h1, .top-bar h1 { color: var(--foreground) !important; }
+*/
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODO OSCURO — paleta corporativa (marrón cálido + rojo vivo)
+   Acorde a la app: NUNCA negro puro. Se activa con .dark en <html>.
+   ═══════════════════════════════════════════════════════════════════ */
+html.dark { color-scheme: dark; }
+
+html.dark body {
+  --background: #100C0A;
+  --foreground: #EDE6DF;
+  --card: #1B1411;
+  --surface: #1B1411;
+  --bg: #100C0A;
+  --popover: #221915;
+  --secondary: #201712;
+  --muted: #1C1510;
+  --muted-foreground: #9A9087;
+  --accent: #261C16;
+  --border: #332822;
+  --border-hover: #4A3B31;
+  --input: #332822;
+  --ink: #F1EAE3;
+  --ink2: #B3ABA2;
+  --ink3: #847A70;
+  --primary: #FF4D5D;
+  --primary-hover: #FF3B4E;
+  --primary-dark: #C8102E;
+  --primary-light: rgba(255,77,93,0.14);
+  --primary-soft: rgba(255,77,93,0.10);
+  --primary-glow: 0 0 0 3px rgba(255,77,93,0.18);
+  --ring: #FF4D5D;
+  --success: #3ECF8E;
+  --success-bg: rgba(62,207,142,0.12);
+  --warning: #F0A25C;
+  --warning-bg: rgba(240,162,92,0.12);
+  --danger: #FF6B6B;
+  --danger-bg: rgba(255,107,107,0.12);
+  --s-xs: 0 1px 3px rgba(0,0,0,0.35);
+  --s-sm: 0 2px 10px rgba(0,0,0,0.35);
+  --s-md: 0 8px 24px rgba(0,0,0,0.45);
+  --s-lg: 0 14px 44px rgba(0,0,0,0.55);
+  --s-primary: 0 8px 30px rgba(255,77,93,0.25);
+  background-color: #100C0A;
+  background-image:
+    radial-gradient(ellipse 120% 55% at 50% -12%, rgba(40,28,20,.8), transparent 60%),
+    radial-gradient(ellipse at 0% 0%, rgba(255,77,93,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,77,93,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 105%, rgba(200,16,46,0.10) 0%, transparent 60%);
+  color: #EDE6DF;
+}
+
+/* ── Sombras y superficies internas ── */
+html.dark .control-panel, html.dark .tbl-wrap, html.dark .kpi-card, html.dark .mod-card,
+html.dark .stat-card, html.dark .flota-mini-card, html.dark .table-container, html.dark .audit-panel,
+html.dark .actions-panel, html.dark .modal-card, html.dark .toast, html.dark .login-card {
+  background: #1B1411;
+  border-color: #332822;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+html.dark .modal-footer { background: rgba(20,14,11,0.8); border-color: #332822; }
+html.dark .modal-overlay { background: rgba(0,0,0,0.65); }
+
+/* ── Header glass en oscuro ── */
+html.dark header, html.dark .top-bar {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0) 38%),
+    linear-gradient(135deg, rgba(200,16,46,0.72) 0%, rgba(160,24,32,0.72) 55%, rgba(122,16,48,0.72) 100%) !important;
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+
+/* ── Tablas ── */
+html.dark thead, html.dark .tbl th, html.dark .table-scroll thead th {
+  background: linear-gradient(180deg, #261912, #201510) !important;
+  color: #FF8B94 !important;
+  border-bottom-color: rgba(255,77,93,0.25);
+}
+html.dark tbody tr:nth-child(even), html.dark .tbl tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+html.dark tbody tr:hover td, html.dark .tbl tr:hover td { background: rgba(255,77,93,0.08); }
+html.dark td { color: #EDE6DF; }
+html.dark .placa-badge { background: rgba(255,77,93,0.14); border-color: rgba(255,77,93,0.3); color: #FF8B94; }
+
+/* ── Inputs / selects (incluye el date picker nativo vía color-scheme) ── */
+html.dark .search-input, html.dark .select-filter, html.dark .form-input, html.dark .field-input,
+html.dark .in, html.dark .if, html.dark .im, html.dark .add-form input {
+  background: #1B1411;
+  border-color: #332822;
+  color: #EDE6DF;
+}
+html.dark .search-input:focus, html.dark .select-filter:focus, html.dark .form-input:focus,
+html.dark .field-input:focus, html.dark .in:focus, html.dark .if:focus, html.dark .im:focus {
+  background: #221915;
+  border-color: #FF4D5D;
+  box-shadow: 0 0 0 3px rgba(255,77,93,0.18);
+}
+html.dark .search-input::placeholder, html.dark .form-input::placeholder { color: #847A70; }
+
+/* ── Chips / badges (fondo translúcido + texto vivo, alto contraste) ── */
+html.dark .val-chip.blue, html.dark .sync-badge.sincronizado { background: rgba(96,165,250,0.14); color: #9CC4FF; border-color: rgba(96,165,250,0.25); }
+html.dark .val-chip.amber, html.dark .sync-badge.pendiente { background: rgba(240,162,92,0.14); color: #F5BE85; border-color: rgba(240,162,92,0.25); }
+html.dark .val-chip.green { background: rgba(62,207,142,0.14); color: #7DE4B5; }
+html.dark .val-chip.red, html.dark .sync-badge.error { background: rgba(255,107,107,0.14); color: #FF9A9A; border-color: rgba(255,107,107,0.25); }
+html.dark .val-chip.flete-chip { background: rgba(62,207,142,0.18); color: #7DE4B5; }
+html.dark .val-chip.metodo-chip { background: #221915; color: #EDE6DF; border-color: #332822; }
+html.dark .audit-item { background: #16100D; border-color: #332822; }
+html.dark .audit-badge.pendiente { background: rgba(240,162,92,0.14); color: #F5BE85; }
+html.dark .audit-badge.exito { background: rgba(62,207,142,0.14); color: #7DE4B5; }
+html.dark .audit-badge.fallido { background: rgba(255,107,107,0.14); color: #FF9A9A; }
+
+/* ── KPIs (iconos pastel → oscuros con acento de color) ── */
+html.dark .kpi-icon.red, html.dark .stat-icon, html.dark .flota-mini-icon { background: linear-gradient(135deg, #33171B, #231013); }
+html.dark .kpi-icon.red { color: #FF6B7A; }
+html.dark .kpi-icon.blue { background: linear-gradient(135deg, #14233A, #0E1A2B); color: #6FA8FF; }
+html.dark .kpi-icon.green { background: linear-gradient(135deg, #0F2B20, #0B2119); color: #4FD79B; }
+html.dark .kpi-icon.orange { background: linear-gradient(135deg, #2E2413, #231B0E); color: #F5BE85; }
+html.dark .kpi-lbl, html.dark .stat-info p { color: #B3ABA2; }
+html.dark .kpi-num, html.dark .stat-info .value, html.dark .flota-mini-info .number { color: #F1EAE3; }
+
+/* ── Texto genérico / placeholders ── */
+html.dark .page-title p, html.dark .mod-tag, html.dark .cell-val, html.dark .search-wrapper i { color: #B3ABA2; }
+html.dark .section-label, html.dark .cell-name, html.dark h3, html.dark .confirm-text { color: #EDE6DF; }
+html.dark .hero-card { box-shadow: 0 14px 44px rgba(0,0,0,0.5); }
+
+/* ── Portada (estados "próximamente", módulos apagados) ── */
+html.dark .mod-status.soon { background: #221915; color: #847A70; border-color: #332822; }
+html.dark .mod-card.off .mod-icon { background: #221915; color: #847A70; }
+html.dark .mod-card .mod-desc { color: #B3ABA2; }
+
+/* ── Bottom nav móvil (camiones) ── */
+html.dark .mobile-bottom-nav { background: linear-gradient(180deg, rgba(27,20,17,0.98), #1B1411); border-top-color: #332822; }
+html.dark .mobile-bottom-nav .mobile-tab-btn { color: #B3ABA2; }
+html.dark .mobile-bottom-nav .mobile-tab-btn.active { color: #FF6B7A; }
+
+/* ── Botones secundarios ── */
+html.dark .btn-white, html.dark .btn-secondary, html.dark .btn-outline {
+  background: #221915; color: #EDE6DF; border-color: #332822; box-shadow: none;
+}
+html.dark .btn-white:hover, html.dark .btn-secondary:hover, html.dark .btn-outline:hover {
+  background: rgba(255,77,93,0.12); color: #FF6B7A; border-color: rgba(255,77,93,0.3);
+}
+html.dark .login-logo, html.dark .brand-icon { border-color: rgba(255,255,255,0.12); }
+
+/* ============================================================
+   BOTÓN DE TEMA (FAB) + EFECTO AURA
+   ============================================================ */
+#themeFab {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 9500;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  background: linear-gradient(135deg, rgba(200,16,46,0.92), rgba(122,16,48,0.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 24px -6px rgba(35,21,18,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#themeFab:active { transform: scale(0.92); }
+#themeFab svg { width: 21px; height: 21px; pointer-events: none; }
+#themeFab .fab-sun { display: none; }
+html.dark #themeFab { background: linear-gradient(135deg, rgba(255,77,93,0.9), rgba(160,24,32,0.9)); }
+html.dark #themeFab .fab-moon { display: none; }
+html.dark #themeFab .fab-sun { display: block; }
+@media (max-width: 768px) {
+  #themeFab { bottom: 5.25rem; right: 0.9rem; width: 46px; height: 46px; }
+}
+
+/* Aura: círculo que se expande desde el punto del toque */
+#themeAura {
+  position: fixed;
+  inset: 0;
+  z-index: 9600;
+  pointer-events: none;
+  background: var(--aura-color, #F6EFE3);
+  clip-path: circle(0px at var(--x, 50%) var(--y, 50%));
+  opacity: 0;
+  visibility: hidden;
+  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.3s ease;
+  will-change: clip-path;
+}
+#themeAura.active {
+  opacity: 1;
+  visibility: visible;
+  clip-path: circle(150vmax at var(--x, 50%) var(--y, 50%));
+}
+#themeAura.done { visibility: hidden; opacity: 0; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  #themeAura { display: none !important; }
+  #themeFab { transition: none; }
+}

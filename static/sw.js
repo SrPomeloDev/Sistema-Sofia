@@ -1,4 +1,4 @@
-const CACHE = 'sofia-ltda-v8';
+const CACHE = 'sofia-ltda-v17';
 const STATIC_FILES = [
   '/',
   '/camiones',
@@ -10,6 +10,8 @@ const STATIC_FILES = [
   '/static/icons/logo-512.png',
   '/static/icons/camion-sofia.png',
   '/static/icons/favicon.png',
+  '/static/design.css',
+  '/static/theme.js',
   '/static/camiones/index.html',
   '/static/camiones/login.html',
   '/rutas',
@@ -73,3 +75,6 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+
+

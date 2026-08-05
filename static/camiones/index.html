@@ -21,10 +21,11 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>window.lucide=window.lucide||{createIcons:function(){}};</script>
 
     <style>
         /* ═══════════════════════════════════════════════════════════════
@@ -413,7 +414,7 @@
            STATS GRID — Tarjetas de estadísticas
            ═══════════════════════════════════════════════════════════════ */
         .stats-grid {
-            display: grid;
+            display: grid; 
             grid-template-columns: repeat(3, 1fr);
             gap: 0.65rem;
         }
@@ -448,7 +449,7 @@
             transform: translateY(-2px);
         }
 
-        .stat-card.blue::before { background: linear-gradient(90deg, var(--primary), #E11D48); }
+        .stat-card.blue::before { background: linear-gradient(90deg, var(--primary), #A01820); }
         .stat-card.green::before { background: linear-gradient(90deg, var(--success), #10B981); }
         .stat-card.orange::before { background: linear-gradient(90deg, var(--warning), #F59E0B); }
 
@@ -622,7 +623,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #D9262D 0%, var(--primary) 50%, var(--primary-hover) 100%);
+            background: linear-gradient(135deg, #C41E24 0%, var(--primary) 50%, var(--primary-hover) 100%);
             color: #FFFFFF;
             box-shadow: 0 4px 14px rgba(196, 30, 36, 0.35);
         }
@@ -1509,6 +1510,11 @@
             .toast { font-size: 0.7rem; padding: 0.5rem 0.6rem; min-width: 200px; }
         }
     </style>
+<script>
+        try { if (localStorage.getItem('sofia_theme') === 'dark' || (!localStorage.getItem('sofia_theme') && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/static/design.css?v=13">
+    <script src="/static/theme.js" defer></script>
 </head>
 <body>
 
@@ -1816,7 +1822,7 @@
 
         <!-- Filtros y Acciones -->
         <section class="actions-panel">
-            <button id="toggleFiltersBtn" class="btn btn-secondary filters-toggle" aria-expanded="false" aria-controls="filtersCollapsible" type="button">
+            <button id="toggleFiltersBtn" class="btn btn-secondary filters-toggle" aria-expanded="false" aria-controls="filtersCollapsible" type="button" onclick="var c=document.getElementById('filtersCollapsible');if(c){var o=c.classList.toggle('open');this.setAttribute('aria-expanded',o?'true':'false');}">
                 <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
                 <span>Filtros</span>
                 <span id="activeFiltersBadge" class="active-filters-badge" style="display:none;">0</span>
@@ -2181,7 +2187,7 @@
                         <!-- Capacidad Útil KG (Auto-calculada) -->
                         <div class="form-group full-width">
                             <label for="formCapacidadUtilKg" style="color: var(--primary); font-weight: 600;">
-                                Capacidad Útil en Kg (Calculada: Maples × 1.95)
+                                Capacidad Maple/Kilogramos 
                             </label>
                             <input type="number" id="formCapacidadUtilKg" class="form-input" placeholder="Ej: 877.5" min="0" step="0.01" value="0" readonly>
                         </div>
@@ -3393,3 +3399,6 @@
     </script>
 </body>
 </html>
+
+
+

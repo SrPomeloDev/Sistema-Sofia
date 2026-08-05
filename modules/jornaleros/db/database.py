@@ -11,7 +11,7 @@ import os
 import uuid
 from datetime import datetime, date
 
-from sqlalchemy import String, Float, DateTime, Index, select, func, delete
+from sqlalchemy import String, Float, DateTime, Index, Text, select, func, delete
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
@@ -50,16 +50,60 @@ class JornaleroDb(Base):
     fecha_creacion: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     estado_sincronizacion: Mapped[str] = mapped_column(String(20), default="pendiente", nullable=False)
     error_sincronizacion: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Costeo: tarifa opcional por registro
+    tarifa_diaria: Mapped[float | None] = mapped_column(Float, nullable=True)
+    observaciones: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     __table_args__ = (
         Index("ix_jornaleros_cd_area_fecha", "cd", "area", "fecha_inicial"),
     )
 
+    @property
+    def costo_total(self) -> float | None:
+        """Costo del período: tarifa diaria × jornaleros × días trabajados."""
+        if self.tarifa_diaria is None:
+            return None
+        return round(
+            self.tarifa_diaria * (self.cantidad_jornaleros or 0.0) * (self.dias_trabajados_totales or 0.0),
+            2,
+        )
+
+
+_COLUMNAS_NUEVAS = {
+    "tarifa_diaria": "ALTER TABLE jornaleros ADD COLUMN tarifa_diaria FLOAT",
+    "observaciones": "ALTER TABLE jornaleros ADD COLUMN observaciones TEXT",
+}
+
+_COLUMNAS_ELIMINADAS = {
+    "estado_pago": "ALTER TABLE jornaleros DROP COLUMN estado_pago",
+}
+
+
+def _migrar_columnas(conn):
+    import sqlalchemy as sa
+
+    insp = sa.inspect(conn)
+    if "jornaleros" not in insp.get_table_names():
+        return
+    existentes = {c["name"] for c in insp.get_columns("jornaleros")}
+    for nombre, sql in _COLUMNAS_NUEVAS.items():
+        if nombre not in existentes:
+            conn.exec_driver_sql(sql)
+            logger.info("Columna 'jornaleros.%s' agregada (migración)", nombre)
+    for nombre, sql in _COLUMNAS_ELIMINADAS.items():
+        if nombre in existentes:
+            conn.exec_driver_sql(sql)
+            logger.info("Columna 'jornaleros.%s' eliminada (migración)", nombre)
+    if "jornaleros_tarifas" in insp.get_table_names():
+        conn.exec_driver_sql("DROP TABLE IF EXISTS jornaleros_tarifas")
+        logger.info("Tabla 'jornaleros_tarifas' eliminada (migración)")
+
 
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Tabla jornaleros creada/verificada")
+        await conn.run_sync(_migrar_columnas)
+    logger.info("Tablas jornaleros creadas/verificadas")
 
 
 # ── Helpers ────────────────────────────────────────────────────────────
@@ -108,6 +152,9 @@ def _to_dict(row: JornaleroDb) -> dict:
         "fecha_creacion": row.fecha_creacion,
         "estado_sincronizacion": row.estado_sincronizacion,
         "error_sincronizacion": row.error_sincronizacion,
+        "tarifa_diaria": row.tarifa_diaria,
+        "observaciones": row.observaciones,
+        "costo_total": row.costo_total,
     }
 
 
@@ -194,6 +241,8 @@ async def create_jornalero(data: dict) -> JornaleroDb:
             dias_trabajados_totales=data.get("dias_trabajados_totales", 0.0),
             dias_trabajados_laborales=data.get("dias_trabajados_laborales", 0.0),
             llenado_por=data.get("llenado_por", ""),
+            tarifa_diaria=data.get("tarifa_diaria"),
+            observaciones=data.get("observaciones") or None,
             estado_sincronizacion="pendiente",
         )
         session.add(row)
@@ -339,6 +388,7 @@ def _parse_sheet_row(headers: list[str], row: list) -> dict | None:
         "HORAS_TRABAJADAS": "horas_trabajadas", "DIAS_TRABAJADOS_TOTALES": "dias_trabajados_totales",
         "DIAS_TRABAJADOS_LABORALES": "dias_trabajados_laborales",
         "LLENADO POR": "llenado_por", "FECHA_CREACION": "fecha_creacion",
+        "TARIFA_DIARIA": "tarifa_diaria", "OBSERVACIONES": "observaciones",
     }
     data: dict = {}
     for i, header in enumerate(headers):
@@ -348,7 +398,7 @@ def _parse_sheet_row(headers: list[str], row: list) -> dict | None:
         val = row[i] if i < len(row) else None
         if key in ("fecha_inicial", "fecha_final", "fecha_creacion"):
             data[key] = _parse_datetime_safe(val)
-        elif key in ("cantidad_jornaleros", "horas_trabajadas", "dias_trabajados_totales", "dias_trabajados_laborales"):
+        elif key in ("cantidad_jornaleros", "horas_trabajadas", "dias_trabajados_totales", "dias_trabajados_laborales", "tarifa_diaria"):
             data[key] = _parse_float_safe(val)
         elif val is not None:
             data[key] = str(val).strip()
@@ -396,6 +446,8 @@ async def upsert_from_sheet_rows(rows: list[list]) -> dict:
                     dias_trabajados_laborales=datos.get("dias_trabajados_laborales", 0.0),
                     llenado_por=datos.get("llenado_por", ""),
                     fecha_creacion=datos.get("fecha_creacion") or datetime.now(),
+                    tarifa_diaria=datos.get("tarifa_diaria") or None,
+                    observaciones=datos.get("observaciones") or None,
                     estado_sincronizacion="sincronizado",
                 )
                 session.add(row_db)
@@ -439,8 +491,10 @@ async def obtener_stats() -> dict:
                 func.sum(JornaleroDb.horas_trabajadas),
                 func.sum(JornaleroDb.dias_trabajados_totales),
                 func.sum(JornaleroDb.dias_trabajados_laborales),
+                func.sum(JornaleroDb.tarifa_diaria * JornaleroDb.cantidad_jornaleros * JornaleroDb.dias_trabajados_totales),
             )
         )).one()
+        costo_total = round(totales[4] or 0, 2)
 
         rows_cd = (await session.execute(
             select(
@@ -448,6 +502,7 @@ async def obtener_stats() -> dict:
                 func.count(JornaleroDb.id),
                 func.sum(JornaleroDb.cantidad_jornaleros),
                 func.sum(JornaleroDb.horas_trabajadas),
+                func.sum(JornaleroDb.tarifa_diaria * JornaleroDb.cantidad_jornaleros * JornaleroDb.dias_trabajados_totales),
             ).group_by(JornaleroDb.cd).order_by(JornaleroDb.cd)
         )).all()
         por_cd = [
@@ -456,6 +511,7 @@ async def obtener_stats() -> dict:
                 "registros": r[1],
                 "cantidad_jornaleros": round(r[2] or 0, 2),
                 "horas_trabajadas": round(r[3] or 0, 2),
+                "costo_total": round(r[4] or 0, 2),
             }
             for r in rows_cd
         ]
@@ -466,6 +522,7 @@ async def obtener_stats() -> dict:
                 func.count(JornaleroDb.id),
                 func.sum(JornaleroDb.cantidad_jornaleros),
                 func.sum(JornaleroDb.horas_trabajadas),
+                func.sum(JornaleroDb.tarifa_diaria * JornaleroDb.cantidad_jornaleros * JornaleroDb.dias_trabajados_totales),
             ).group_by(JornaleroDb.area).order_by(JornaleroDb.area)
         )).all()
         por_area = [
@@ -474,6 +531,7 @@ async def obtener_stats() -> dict:
                 "registros": r[1],
                 "cantidad_jornaleros": round(r[2] or 0, 2),
                 "horas_trabajadas": round(r[3] or 0, 2),
+                "costo_total": round(r[4] or 0, 2),
             }
             for r in rows_area
         ]
@@ -490,6 +548,7 @@ async def obtener_stats() -> dict:
                 "horas_trabajadas": round(totales[1] or 0, 2),
                 "dias_trabajados_totales": round(totales[2] or 0, 2),
                 "dias_trabajados_laborales": round(totales[3] or 0, 2),
+                "costo_total": costo_total,
             },
             "por_cd": por_cd,
             "por_area": por_area,
