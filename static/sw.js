@@ -1,4 +1,4 @@
-const CACHE = 'sofia-ltda-v17';
+const CACHE = 'sofia-ltda-v18';
 const STATIC_FILES = [
   '/',
   '/camiones',
